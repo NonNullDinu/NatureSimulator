@@ -20,7 +20,6 @@ public class LoadWorldMaster {
 			Terrain terrain = null;
 			while(true) {
 				o = stream.readObject();
-				System.out.println(o);
 				if(o instanceof EntityData)
 					entities.add(((EntityData) o).asInstance());
 				else if(o instanceof TerrainData)
