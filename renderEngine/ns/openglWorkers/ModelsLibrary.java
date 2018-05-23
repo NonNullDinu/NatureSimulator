@@ -10,7 +10,7 @@ public class ModelsLibrary {
 	private static Map<String, VAO> models = new HashMap<>();
 	
 	/**
-	 * Intended to be called by the secondary thread, but it's not that much of a difference because @see DataPacking#createVAO
+	 * Intended to be called by the secondary thread, but it's not that much of a difference because @see ns.openglWorkers.DataPacking#createVAO
 	 */
 	public static VAO createEmptyVAO(String objFile) {
 		return getModel(objFile);
