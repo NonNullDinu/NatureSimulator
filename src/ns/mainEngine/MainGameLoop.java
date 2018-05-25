@@ -17,9 +17,12 @@ import ns.renderers.Blurer;
 import ns.renderers.GUIRenderer;
 import ns.renderers.MainMenuRenderer;
 import ns.renderers.MasterRenderer;
+import ns.renderers.ShopRenderer;
 import ns.renderers.WaterRenderer;
 import ns.shaders.GUIShader;
 import ns.shaders.WaterShader;
+import ns.ui.shop.Shop;
+import ns.ui.shop.ShopMaster;
 import ns.water.WaterFBOs;
 import ns.water.WaterTile;
 import ns.world.World;
@@ -45,6 +48,8 @@ public class MainGameLoop implements Runnable {
 	private FBO sceneFBO;
 	private FBO bluredSceneFBO;
 	private Blurer blurer;
+	private Shop shop;
+	private ShopRenderer shopRenderer;
 	
 	private MainMenu menu;
 	private MainMenuRenderer menuRenderer;
@@ -72,9 +77,15 @@ public class MainGameLoop implements Runnable {
 		GUIRenderer guiRenderer = new GUIRenderer(guiShader, MasterRenderer.standardModels.get(0));
 		menu = MenuMaster.createMainMenu();
 		menuRenderer = new MainMenuRenderer(guiRenderer);
+		shopRenderer = new ShopRenderer(guiRenderer);
+		while(ShopMaster.shop == null)
+			Thread.yield();
+		shop = ShopMaster.shop;
 		executeRequests();
 		System.out.println("Primary thread finished in " + (System.nanoTime() - btime));
 		while (!Display.isCloseRequested()) {
+			if(state == GS.EXIT)
+				break;
 			runLogicAndRender();
 			DisplayManager.updateDisplay();
 		}
@@ -84,6 +95,7 @@ public class MainGameLoop implements Runnable {
 		menuRenderer.cleanUp();
 		shader.cleanUp();
 		blurer.cleanUp();
+		shopRenderer.cleanUp();
 		sceneFBO.cleanUp();
 		bluredSceneFBO.cleanUp();
 		guiShader.cleanUp();
@@ -98,6 +110,7 @@ public class MainGameLoop implements Runnable {
 
 	public void logic() {
 		if (state == GS.GAME) {
+			shop.update();
 			camera.update(world);
 			world.update();
 		} else if (state == GS.MENU) {
@@ -122,6 +135,7 @@ public class MainGameLoop implements Runnable {
 			MasterRenderer.prepare();
 			renderer.renderScene(world, camera, sun, new Vector4f(0, 0, 0, 0), false);
 			waterRenderer.render(water, camera, fbos, sun);
+			shopRenderer.render(shop);
 		} else if (state == GS.MENU) {
 			GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 			fbos.bindReflexion();

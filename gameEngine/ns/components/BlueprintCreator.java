@@ -28,4 +28,17 @@ public class BlueprintCreator {
 		}
 		return blueprint;
 	}
+	
+
+	public static Blueprint createModelBlueprintFor(String entityFolder) {
+		Blueprint blueprint = new Blueprint(entityFolder);
+		if (entityFolder.equals("1000")) {
+			blueprint.withModel(new ModelComponent(ModelsLibrary.getModel("res/models/1000/tree.obj")));
+		} else if (entityFolder.equals("1001")) {
+			blueprint.withModel(new ModelComponent(ModelsLibrary.getModel("res/models/1001/tree.obj")));
+		} else if (entityFolder.equals("menuDNA")) {
+			blueprint.withModel(new ModelComponent(ModelsLibrary.getModel("res/models/others/menu_DNA.obj")));
+		}
+		return blueprint;
+	}
 }

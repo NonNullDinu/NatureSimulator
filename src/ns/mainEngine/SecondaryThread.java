@@ -9,6 +9,7 @@ import ns.openglWorkers.ModelsLibrary;
 import ns.renderers.MasterRenderer;
 import ns.shaders.ShaderLib;
 import ns.shaders.StructLib;
+import ns.ui.shop.ShopMaster;
 import ns.water.WaterTile;
 import ns.world.World;
 import ns.world.WorldGenerator;
@@ -27,8 +28,12 @@ public class SecondaryThread implements Runnable {
 		new Light(new Vector3f(0.5f, -0.5f, 0), new Vector3f(1, 1, 1), new Vector2f(0.5f, 0.5f));
 		World w = WorldGenerator.generateWorld();
 		new WaterTile(0, 0);
+		
 		// Read model files and create CVAOR
 		ModelsLibrary.getModel("res/models/others/menu_DNA.obj");
+		
+		ShopMaster.createShop();
+		
 		Runtime.getRuntime().gc();
 		System.out.println("Secondary thread finished in " + (System.nanoTime() - timeb));
 		

@@ -13,6 +13,7 @@ import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 import ns.camera.ICamera;
+import ns.components.Blueprint;
 import ns.display.DisplayManager;
 import ns.entities.Entity;
 import ns.entities.Light;
@@ -169,5 +170,9 @@ public class MasterRenderer {
 		for(Entity e : world.getEntities())
 			process(e);
 		process(world.getTerrain());
+	}
+
+	public void render(Blueprint blueprint, Vector3f position) {
+		renderer.render(blueprint, position);
 	}
 }

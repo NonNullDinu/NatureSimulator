@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
+import ns.components.Blueprint;
 import ns.components.CustomColorsComponent;
 import ns.entities.Entity;
 import ns.openglObjects.VAO;
@@ -28,13 +31,25 @@ public class Renderer {
 			for (Entity e : entities.get(vao)) {
 				shader.transformationMatrix.load(Maths.createTreansformationMatrix(e));
 				CustomColorsComponent customColors = e.getCustomColors();
-				if(customColors != null)
-					for(int i = 0; i < customColors.getColors().size(); i++) {
+				if (customColors != null)
+					for (int i = 0; i < customColors.getColors().size(); i++) {
 						shader.customColors[i].load(customColors.getColors().get(i));
 					}
 				vao.batchRenderCall();
 			}
 			vao.unbind();
 		}
+	}
+
+	public void render(Blueprint blueprint, Vector3f position) {
+		shader.start();
+		shader.viewMatrix.load((Matrix4f) new Matrix4f().setZero());
+		shader.transformationMatrix.load(Maths.createTransformationMatrix(position, 0, 0, 0, 1));
+		shader.clipPlane.load(new Vector4f(0, 0, 0, 0));
+		VAO vao = blueprint.getModel().getModel();
+		vao.bind();
+		vao.batchRenderCall();
+		vao.unbind();
+		shader.stop();
 	}
 }

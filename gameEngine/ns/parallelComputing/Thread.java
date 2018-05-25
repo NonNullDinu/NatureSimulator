@@ -8,7 +8,7 @@ public class Thread extends java.lang.Thread {
 	public List<Request> toCarryOutRequests = new ArrayList<>();
 	public List<CreateVAORequest> vaoCreateRequests = new ArrayList<>();
 
-	public Thread(String name, Runnable runnable) {
+	protected Thread(String name, Runnable runnable) {
 		super(runnable, name);
 	}
 
