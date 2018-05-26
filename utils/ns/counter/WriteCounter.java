@@ -8,6 +8,7 @@ import java.io.IOException;
 public class WriteCounter {
 	private static int counter;
 	private static int lineCounter;
+	private static long mem;
 
 	public static void main(String[] args) {
 		int totalCounter = 0, totalLineCounter = 0;
@@ -51,7 +52,7 @@ public class WriteCounter {
 		counter = 0;
 		lineCounter = 0;
 		
-		System.out.println("total = " + totalCounter + "(" + totalLineCounter + " lines)");
+		System.out.println("total = " + totalCounter + "(" + totalLineCounter + " lines), " + mem + " bytes, or " + (mem / 1024) + " kilobytes");
 	}
 
 	private static void count(File file) {
@@ -61,6 +62,7 @@ public class WriteCounter {
 			}
 		else {
 			try {
+				mem += file.length();
 				BufferedReader reader = new BufferedReader(new FileReader(file));
 				String line;
 				while ((line = reader.readLine()) != null) {

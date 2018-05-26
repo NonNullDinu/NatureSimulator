@@ -44,7 +44,7 @@ public class TexFile implements File {
 						pixels.put((byte) ((pixel >> 24) & 0xFF));
 					} catch (NumberFormatException e) {
 						throw new CorruptFileException(
-								"File at " + location + " is corrupt(found: " + pts[x] + " while expecting an int)");
+								"File at " + location + " is corrupt(found: \"" + pts[x] + "\" while expecting an int)");
 					}
 				}
 			}
