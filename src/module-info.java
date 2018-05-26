@@ -52,6 +52,7 @@ module src {
 	opens res.shaders.blur;
 	opens res.shaders.guis;
 	opens res.shaders.menuDNA;
+	opens res.shaders.colorQuad;
 
 	// Textures
 	opens res.textures.buttonTextures;

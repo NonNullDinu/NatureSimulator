@@ -6,6 +6,7 @@ import org.lwjgl.util.vector.Vector3f;
 import ns.camera.Camera;
 import ns.entities.Light;
 import ns.openglWorkers.ModelsLibrary;
+import ns.renderers.GUIRenderer;
 import ns.renderers.MasterRenderer;
 import ns.shaders.ShaderLib;
 import ns.shaders.StructLib;
@@ -32,7 +33,10 @@ public class SecondaryThread implements Runnable {
 		// Read model files and create CVAOR
 		ModelsLibrary.getModel("res/models/others/menu_DNA.obj");
 		
-		ShopMaster.createShop();
+		while(GUIRenderer.instance == null)
+			Thread.yield();
+		
+		ShopMaster.createShop(GUIRenderer.instance);
 		
 		Runtime.getRuntime().gc();
 		System.out.println("Secondary thread finished in " + (System.nanoTime() - timeb));

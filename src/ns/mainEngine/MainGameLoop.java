@@ -15,6 +15,7 @@ import ns.openglObjects.Texture;
 import ns.openglWorkers.DataPacking;
 import ns.parallelComputing.ThreadMaster;
 import ns.renderers.Blurer;
+import ns.renderers.ColorQuadFiller;
 import ns.renderers.GUIRenderer;
 import ns.renderers.MainMenuRenderer;
 import ns.renderers.MasterRenderer;
@@ -30,9 +31,8 @@ import ns.water.WaterFBOs;
 import ns.water.WaterTile;
 import ns.world.World;
 import ns.world.WorldGenerator;
-
 /**
- * @version 1.1.3
+ * @version 1.1.4
  * @author Dinu B.
  * @since 1.0
  */
@@ -85,6 +85,7 @@ public class MainGameLoop implements Runnable {
 			Thread.yield();
 		shop = ShopMaster.shop;
 		MousePicker.init(camera, renderer.getProjectionMatrix(), world.getTerrain());
+		ColorQuadFiller.init();
 		executeRequests();
 		System.out.println("Primary thread finished in " + (System.nanoTime() - btime));
 		while (!Display.isCloseRequested()) {
@@ -103,6 +104,7 @@ public class MainGameLoop implements Runnable {
 		sceneFBO.cleanUp();
 		bluredSceneFBO.cleanUp();
 		guiShader.cleanUp();
+		ColorQuadFiller.cleanUp();
 		Texture.cleanUp();
 		DisplayManager.closeDisplay();
 	}

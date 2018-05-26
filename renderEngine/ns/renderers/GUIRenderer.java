@@ -1,5 +1,7 @@
 package ns.renderers;
 
+import java.util.List;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -12,10 +14,12 @@ import ns.utils.Maths;
 
 public class GUIRenderer {
 	public static final Vector3f TRANSPARENCY = new Vector3f(1.0f, 0.016f, 0.839f);
+	public static GUIRenderer instance;
 	private GUIShader shader;
 	private VAO quad;
 	
 	public GUIRenderer(GUIShader shader, VAO quad) {
+		instance = this;
 		this.shader = shader;
 		this.quad = quad;
 	}
@@ -48,5 +52,12 @@ public class GUIRenderer {
 		quad.unbind();
 		shader.stop();
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+	}
+
+	public void render(List<GUITexture> guis) {
+		bind();
+		for(GUITexture gui : guis)
+			batchRenderCall(gui);
+		unbind();
 	}
 }

@@ -17,7 +17,6 @@ public class ShopItem extends Button {
 		super(position, SCALE);
 		this.position = position;
 		this.blueprint = blueprint;
-//		System.out.println(blueprint.getModel().getModel().getID());
 	}
 
 	public Vector2f getPosition() {
@@ -30,8 +29,8 @@ public class ShopItem extends Button {
 
 	public static ShopItem item(int i) {
 		Vector2f position = new Vector2f();
-		position.x = -0.9f + ((i % 4) * (SCALE.x + 0.3f));
-		position.y = 0.9f - ((i / 4) * (SCALE.y + 0.3f));
+		position.x = -0.9f + ((i % 4) * (SCALE.x + 0.1f));
+		position.y = 0.75f - ((i / 4) * (SCALE.y + 0.05f));
 		return new ShopItem(position, BlueprintCreator.createModelBlueprintFor(Integer.toString(1000 + i)));
 	}
 }
