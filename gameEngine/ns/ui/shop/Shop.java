@@ -35,6 +35,7 @@ public class Shop {
 				state = SS.CLOSED;
 			}
 			currentlySelected = null;
+			GU.setMouseCursor(null);
 		}
 		if (state == SS.CLOSED)
 			return null;
@@ -44,6 +45,7 @@ public class Shop {
 					currentlySelected = item;
 					state = SS.BUYING;
 					complex.getCenter().x -= SLIDE_OFFSET;
+					GU.setMouseCursor(GU.createCursor(0, 63, 1, GU.getMouseTexture(item.getEntityBlueprint().getFolder()), null));
 					return null;
 				}
 			}
@@ -55,6 +57,7 @@ public class Shop {
 			else if (Mouse.isButtonDown(1) && GU.mouseDelta.length() == 0f && GU.lastFramesLengths == 0f) {
 				complex.getCenter().x += SLIDE_OFFSET;
 				state = SS.CLOSED;
+				GU.setMouseCursor(null);
 			}
 		}
 		return null;

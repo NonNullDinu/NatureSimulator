@@ -31,7 +31,7 @@ public class MasterRenderer {
 	protected static final float NEAR_PLANE = 0.1f, FAR_PLANE = 1000f;
 	protected static final float RED = 0.435f, GREEN = 0.812f, BLUE = 1.0f;
 	protected static final Vector2f FOG_VALUES = new Vector2f(0.0015f, 5.0f);
-	
+
 	private static final float TIME_SPEED = 1f;
 	private static final float INCREASE_LIMIT = 1f;
 
@@ -55,7 +55,7 @@ public class MasterRenderer {
 	private Map<VAO, List<Entity>> entities = new HashMap<>();
 
 	private Terrain terrain;
-	
+
 	private float time;
 	private boolean inc;
 
@@ -97,7 +97,7 @@ public class MasterRenderer {
 	public void render(ICamera camera, Light sun, Vector4f clipPlane, boolean updateTime) {
 		Matrix4f viewMatrix = Maths.createViewMatrix(camera);
 		shader.start();
-		if(updateTime) {
+		if (updateTime) {
 			time += TIME_SPEED * DisplayManager.getFrameTimeSeconds() * (inc ? 1f : -1f);
 			time = time(time);
 			shader.time.load(time);
@@ -110,24 +110,25 @@ public class MasterRenderer {
 		renderer.render(entities);
 		shader.stop();
 		entities.clear();
-
-		terrainShader.start();
-		terrainShader.skyColor.load(new Vector3f(RED, GREEN, BLUE));
-		terrainShader.fogValues.load(FOG_VALUES);
-		terrainShader.light.load(sun);
-		terrainShader.viewMatrix.load(viewMatrix);
-		terrainShader.clipPlane.load(clipPlane);
-		terrainRenderer.render(terrain);
-		terrainShader.stop();
-		terrain = null;
+		
+		if (terrain != null) {
+			terrainShader.start();
+			terrainShader.skyColor.load(new Vector3f(RED, GREEN, BLUE));
+			terrainShader.fogValues.load(FOG_VALUES);
+			terrainShader.light.load(sun);
+			terrainShader.viewMatrix.load(viewMatrix);
+			terrainShader.clipPlane.load(clipPlane);
+			terrainRenderer.render(terrain);
+			terrainShader.stop();
+			terrain = null;
+		}
 	}
 
 	private float time(float time) {
-		if(time > INCREASE_LIMIT) {
+		if (time > INCREASE_LIMIT) {
 			time = INCREASE_LIMIT;
 			inc = false;
-		}
-		else if(time < 0) {
+		} else if (time < 0) {
 			time = 0;
 			inc = true;
 		}
@@ -161,13 +162,13 @@ public class MasterRenderer {
 
 	public void prepareAndProcess(World world) {
 		prepare();
-		for(Entity e : world.getEntities())
+		for (Entity e : world.getEntities())
 			process(e);
 		process(world.getTerrain());
 	}
 
 	public void process(World world) {
-		for(Entity e : world.getEntities())
+		for (Entity e : world.getEntities())
 			process(e);
 		process(world.getTerrain());
 	}

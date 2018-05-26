@@ -33,7 +33,7 @@ import ns.world.World;
 import ns.world.WorldGenerator;
 
 /**
- * @version 1.1.4
+ * @version 1.1.5
  * @author Dinu B.
  * @since 1.0
  */
@@ -87,6 +87,8 @@ public class MainGameLoop implements Runnable {
 		shop = ShopMaster.shop;
 		MousePicker.init(camera, renderer.getProjectionMatrix(), world.getTerrain());
 		ColorQuadFiller.init();
+		renderer.render(camera, sun, new Vector4f(0, 0, 0, 0), false);
+		GU.initMouseCursors(renderer);
 		executeRequests();
 		System.out.println("Primary thread finished in " + (System.nanoTime() - btime));
 		while (!Display.isCloseRequested()) {

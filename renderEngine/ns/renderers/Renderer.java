@@ -47,6 +47,11 @@ public class Renderer {
 		shader.viewMatrix.load(new Matrix4f());
 		shader.transformationMatrix.load(Maths.createTransformationMatrix(position, 0, 0, 0, 1));
 		shader.clipPlane.load(new Vector4f(0, 0, 0, 0));
+		CustomColorsComponent customColors = blueprint.getCustomColors();
+		if (customColors != null)
+			for (int i = 0; i < customColors.getColors().size(); i++) {
+				shader.customColors[i].load(customColors.getColors().get(i));
+			}
 		VAO vao = blueprint.getModel().getModel();
 		vao.bind();
 		vao.batchRenderCall();

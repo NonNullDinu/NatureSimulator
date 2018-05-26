@@ -1,7 +1,11 @@
 package ns.components;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.lwjgl.util.vector.Vector3f;
 
 import ns.entities.Entity;
 import ns.world.World;
@@ -75,5 +79,13 @@ public class Blueprint implements SerializableWorldObject {
 
 	public String getFolder() {
 		return objectName;
+	}
+
+	public Blueprint withDefaultCustomColors() {
+		List<Vector3f> cc = new ArrayList<>();
+		if(objectName.equals("1000") || objectName.equals("1001")) {
+			cc.add(new Vector3f(0f, 0.750769f, 0f));
+		}
+		return this.withCuctomColors(new CustomColorsComponent(cc));
 	}
 }

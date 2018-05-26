@@ -3,6 +3,7 @@ package ns.openglObjects;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,9 @@ public class Texture implements IOpenGLObject {
 	private Resource resource;
 	private int id;
 
+	private int width;
+	private int height;
+
 	public Texture(String location) {
 		this(new Resource(location));
 	}
@@ -28,8 +32,10 @@ public class Texture implements IOpenGLObject {
 		this.resource = resource;
 	}
 
-	public Texture(int id) {
+	public Texture(int id, int width, int height) {
 		this.id = id;
+		this.width = width;
+		this.height = height;
 	}
 
 	public Texture create() {
@@ -41,8 +47,8 @@ public class Texture implements IOpenGLObject {
 				e.printStackTrace();
 				return null;
 			}
-			int width = asImage.getWidth();
-			int height = asImage.getHeight();
+			width = asImage.getWidth();
+			height = asImage.getHeight();
 			int[] pixels_raw = asImage.getRGB(0, 0, width, height, null, 0, height);
 			ByteBuffer pixels = BufferUtils.createByteBuffer(width * height * 4);
 			for (int y = height - 1; y >= 0; y--)
@@ -88,5 +94,13 @@ public class Texture implements IOpenGLObject {
 	public static void cleanUp() {
 		for(Texture tex : textures)
 			tex.delete();
+	}
+
+	public IntBuffer getAsIntBuffer() {
+		IntBuffer pixels = BufferUtils.createIntBuffer(width * height);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
+		GL11.glGetTexImage(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, pixels);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+		return pixels;
 	}
 }

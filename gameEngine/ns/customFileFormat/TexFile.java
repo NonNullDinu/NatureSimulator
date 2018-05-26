@@ -24,11 +24,13 @@ public class TexFile implements File {
 	public Texture load() throws LoadingException {
 		BufferedReader reader = GU.open(new Resource(location));
 		int id = 0;
+		int width = 0;
+		int height = 0;
 		try {
 			String line = reader.readLine();
 			String[] pts = line.split(" ");
-			int width = Integer.parseInt(pts[0]);
-			int height = Integer.parseInt(pts[1]);
+			width = Integer.parseInt(pts[0]);
+			height = Integer.parseInt(pts[1]);
 			ByteBuffer pixels = BufferUtils.createByteBuffer(width * height * 4);
 			for (int y = height - 1; y >= 0; y--) {
 				line = reader.readLine();
@@ -41,7 +43,8 @@ public class TexFile implements File {
 						pixels.put((byte) (pixel & 0xFF));
 						pixels.put((byte) ((pixel >> 24) & 0xFF));
 					} catch (NumberFormatException e) {
-						throw new CorruptFileException("File at " + location + " is corrupt(found: " + pts[x] + " while expecting an int)");
+						throw new CorruptFileException(
+								"File at " + location + " is corrupt(found: " + pts[x] + " while expecting an int)");
 					}
 				}
 			}
@@ -59,6 +62,6 @@ public class TexFile implements File {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return (id == 0 ? null : new Texture(id));
+		return (id == 0 ? null : new Texture(id, width, height));
 	}
 }

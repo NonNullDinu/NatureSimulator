@@ -3,11 +3,21 @@ package ns.utils;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
 
+import ns.components.BlueprintCreator;
+import ns.openglObjects.FBO;
+import ns.renderers.MasterRenderer;
 import res.Resource;
 import res.WritingResource;
 
@@ -17,6 +27,7 @@ public class GU {
 	public static Vector2f mouseDelta;
 	public static float lastFramesLengths;
 	private static float[] mouseLengths = new float[10];
+	public static final List<IntBuffer> textures = new ArrayList<>();
 
 	public static BufferedReader open(Resource resource) {
 		return new BufferedReader(new InputStreamReader(resource.asInputStream()));
@@ -31,12 +42,35 @@ public class GU {
 		mouseDelta = new Vector2f(Mouse.getDX(), Mouse.getDY());
 		for (Key k : Key.values())
 			k.setKeyPressedPrevFrame(k.isPressed());
-		for(int i = 0; i < mouseLengths.length - 1; i++)
+		for (int i = 0; i < mouseLengths.length - 1; i++)
 			mouseLengths[i] = mouseLengths[i + 1];
 		mouseLengths[mouseLengths.length - 1] = mouseDelta.length();
 		lastFramesLengths = 0;
-		for(float l : mouseLengths)
+		for (float l : mouseLengths)
 			lastFramesLengths += l;
+	}
+
+	public static void setMouseCursor(Cursor cursor) {
+		try {
+			Mouse.setNativeCursor(cursor);
+		} catch (LWJGLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static final synchronized void initMouseCursors(MasterRenderer renderer) {
+		FBO fbo = new FBO(64, 64, (FBO.COLOR_TEXTURE | FBO.DEPTH_RENDERBUFFER)).create();
+		fbo.bind();
+		GL11.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+		for (int i = 0; i < 2; i++) {
+			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+			renderer.render(BlueprintCreator.createModelBlueprintFor(Integer.toString(1000 + i)).withDefaultCustomColors(), new Vector3f(0f, -3f, -20f));
+			textures.add(i, fbo.getTex().getAsIntBuffer());
+			fbo.createNewTexture();
+		}
+		fbo.setTextureNull();
+		FBO.unbind();
+		fbo.delete();
 	}
 
 	public static class Random {
@@ -72,5 +106,20 @@ public class GU {
 		private void setKeyPressedPrevFrame(boolean pressed) {
 			pressedPrevFrame = pressed;
 		}
+	}
+
+	public static Cursor createCursor(int xHotspot, int yHotspot, int nrOfFrames,
+			IntBuffer textures, IntBuffer delays) {
+		try {
+			return new Cursor(64, 64, xHotspot, yHotspot, nrOfFrames, textures, delays);
+		} catch (LWJGLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static IntBuffer getMouseTexture(String modelFolder) {
+		int idx = Integer.parseInt(modelFolder) - 1000;
+		return textures.get(idx);
 	}
 }
