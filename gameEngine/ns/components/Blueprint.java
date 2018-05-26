@@ -72,4 +72,8 @@ public class Blueprint implements SerializableWorldObject {
 		data.setObjectName(objectName);
 		return data;
 	}
+
+	public String getFolder() {
+		return objectName;
+	}
 }

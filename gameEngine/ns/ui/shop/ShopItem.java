@@ -17,7 +17,7 @@ public class ShopItem extends Button {
 		super(position, SCALE);
 		this.position = position;
 		this.blueprint = blueprint;
-		System.out.println(position);
+//		System.out.println(blueprint.getModel().getModel().getID());
 	}
 
 	public Vector2f getPosition() {

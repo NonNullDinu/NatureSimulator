@@ -26,4 +26,10 @@ public class World {
 	public Terrain getTerrain() {
 		return terrain;
 	}
+
+	public void add(Entity e) {
+		entities.add(e);
+		if(e.getBiomeSpreadComponent() != null)
+			terrain.initColors(entities);
+	}
 }

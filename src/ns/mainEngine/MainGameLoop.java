@@ -7,6 +7,7 @@ import org.lwjgl.util.vector.Vector4f;
 
 import ns.camera.ICamera;
 import ns.display.DisplayManager;
+import ns.entities.Entity;
 import ns.entities.Light;
 import ns.mainMenu.MainMenu;
 import ns.openglObjects.FBO;
@@ -23,6 +24,8 @@ import ns.shaders.GUIShader;
 import ns.shaders.WaterShader;
 import ns.ui.shop.Shop;
 import ns.ui.shop.ShopMaster;
+import ns.utils.GU;
+import ns.utils.MousePicker;
 import ns.water.WaterFBOs;
 import ns.water.WaterTile;
 import ns.world.World;
@@ -50,7 +53,7 @@ public class MainGameLoop implements Runnable {
 	private Blurer blurer;
 	private Shop shop;
 	private ShopRenderer shopRenderer;
-	
+
 	private MainMenu menu;
 	private MainMenuRenderer menuRenderer;
 
@@ -78,13 +81,14 @@ public class MainGameLoop implements Runnable {
 		menu = MenuMaster.createMainMenu();
 		menuRenderer = new MainMenuRenderer(guiRenderer);
 		shopRenderer = new ShopRenderer(guiRenderer);
-		while(ShopMaster.shop == null)
+		while (ShopMaster.shop == null)
 			Thread.yield();
 		shop = ShopMaster.shop;
+		MousePicker.init(camera, renderer.getProjectionMatrix(), world.getTerrain());
 		executeRequests();
 		System.out.println("Primary thread finished in " + (System.nanoTime() - btime));
 		while (!Display.isCloseRequested()) {
-			if(state == GS.EXIT)
+			if (state == GS.EXIT)
 				break;
 			runLogicAndRender();
 			DisplayManager.updateDisplay();
@@ -110,12 +114,16 @@ public class MainGameLoop implements Runnable {
 
 	public void logic() {
 		if (state == GS.GAME) {
-			shop.update();
+			MousePicker.update();
+			Entity e = shop.update();
+			if (e != null)
+				world.add(e);
 			camera.update(world);
 			world.update();
 		} else if (state == GS.MENU) {
 			menu.update();
 		}
+		GU.update();
 	}
 
 	public void render() {

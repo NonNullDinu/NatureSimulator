@@ -96,6 +96,35 @@ public class DataPacking {
 					new VAOUpdateRequest("update vao", new VBOUpdateData(data).withAttToWriteTo(attn), model));
 		}
 	}
+	
+
+
+	public static void replace(VAO model, int attn, float[] data, long begin) {
+		if (Thread.currentThread().getName().equals("main thread")) {
+			new VBOUpdateData(data).withAttToWriteTo(attn).withBegin(begin).updateWithin(model);
+		} else {
+			ThreadMaster.getThread("main thread").setToCarryOutRequest(
+					new VAOUpdateRequest("update vao", new VBOUpdateData(data).withBegin(begin).withAttToWriteTo(attn), model));
+		}
+	}
+
+	public static void replace(VAO model, int attn, int[] data, long begin) {
+		if (Thread.currentThread().getName().equals("main thread")) {
+			new VBOUpdateData(data).withAttToWriteTo(attn).withBegin(begin).updateWithin(model);
+		} else {
+			ThreadMaster.getThread("main thread").setToCarryOutRequest(
+					new VAOUpdateRequest("update vao", new VBOUpdateData(data).withBegin(begin).withAttToWriteTo(attn), model));
+		}
+	}
+
+	public static void replace(VAO model, int attn, byte[] data, long begin) {
+		if (Thread.currentThread().getName().equals("main thread")) {
+			new VBOUpdateData(data).withAttToWriteTo(attn).withBegin(begin).updateWithin(model);
+		} else {
+			ThreadMaster.getThread("main thread").setToCarryOutRequest(
+					new VAOUpdateRequest("update vao", new VBOUpdateData(data).withBegin(begin).withAttToWriteTo(attn), model));
+		}
+	}
 
 	public static void createVAOAndStore(VAO vao, VBOData... data) {
 		int vaoId = GL30.glGenVertexArrays(), vertexCount = -1;

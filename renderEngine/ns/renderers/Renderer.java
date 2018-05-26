@@ -43,7 +43,8 @@ public class Renderer {
 
 	public void render(Blueprint blueprint, Vector3f position) {
 		shader.start();
-		shader.viewMatrix.load((Matrix4f) new Matrix4f().setZero());
+		shader.time.load(0);
+		shader.viewMatrix.load(new Matrix4f());
 		shader.transformationMatrix.load(Maths.createTransformationMatrix(position, 0, 0, 0, 1));
 		shader.clipPlane.load(new Vector4f(0, 0, 0, 0));
 		VAO vao = blueprint.getModel().getModel();

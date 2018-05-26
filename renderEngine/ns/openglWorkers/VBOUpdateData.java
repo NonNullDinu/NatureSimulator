@@ -75,4 +75,9 @@ public class VBOUpdateData {
 	private static ByteBuffer storeDataInByteBuffer(byte[] data) {
 		return (ByteBuffer) BufferUtils.createByteBuffer(data.length).put(data).flip();
 	}
+
+	public VBOUpdateData withBegin(long begin) {
+		this.begin = begin;
+		return this;
+	}
 }

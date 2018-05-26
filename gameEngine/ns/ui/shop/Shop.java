@@ -3,9 +3,11 @@ package ns.ui.shop;
 import java.util.List;
 
 import org.lwjgl.input.Mouse;
-import org.lwjgl.util.vector.Vector3f;
 
+import ns.components.BlueprintCreator;
 import ns.entities.Entity;
+import ns.utils.GU;
+import ns.utils.MousePicker;
 
 public class Shop {
 	private List<ShopItem> items;
@@ -28,8 +30,12 @@ public class Shop {
 				}
 			}
 		if (state == SS.BUYING) {
-			if (!Mouse.isButtonDown(1))
-				return new Entity(currentlySelected.getEntityBlueprint(), new Vector3f());
+			if (Mouse.isButtonDown(0) && !GU.prevFrameClicked)
+				return new Entity(
+						BlueprintCreator.createBlueprintFor(currentlySelected.getEntityBlueprint().getFolder()),
+						MousePicker.getCurrentTerrainPoint());
+			else if (Mouse.isButtonDown(1))
+				state = SS.CLOSED;
 		}
 		return null;
 	}
