@@ -16,9 +16,9 @@ import ns.utils.Maths;
 import ns.worldSave.SerializableWorldObject;
 import ns.worldSave.TerrainData;
 
-public class Terrain implements SerializableWorldObject{
+public class Terrain implements SerializableWorldObject {
 	public static final float SIZE = 2400;
-	public static final int VERTEX_COUNT = (int) (256f * (SIZE / 1200f));
+	public static final int VERTEX_COUNT = (int) (256f * (SIZE / 2400f));
 	private VAO model;
 	private float x, z;
 	private HeightsGenerator generator;
@@ -60,8 +60,12 @@ public class Terrain implements SerializableWorldObject{
 						prevC.scale(fac);
 						cl = new Vector3f(Vector3f.add(bcl, prevC, null));
 					}
-					if (!(cl.x == 0 && cl.y == 0 && cl.z == 0))
-						vertex.color = cl;
+					if (!(cl.x == 0 && cl.y == 0 && cl.z == 0)) {
+						if (vertex.color.x == 1.0f && vertex.color.y == 0.766f && vertex.color.z == 0.061f)
+							vertex.color = cl;
+						else
+							Vector3f.add(vertex.color, cl, vertex.color).scale(0.5f); // Average colors
+					}
 				}
 			}
 		}
@@ -73,6 +77,53 @@ public class Terrain implements SerializableWorldObject{
 			cls[ptr++] = vertex.color.z;
 		}
 		DataPacking.replace(model, 2, cls);
+	}
+
+	public void updateColors(Entity e) {
+		float[] cls = new float[VERTEX_COUNT * VERTEX_COUNT * 3];
+		int ptr = 0;
+		List<Integer> changes = new ArrayList<>();
+		for (TerrainVertex vertex : vertices) {
+			BiomeSpreadComponent comp = e.getBiomeSpreadComponent();
+			if (comp != null) {
+				Vector3f pos = posRelToTerrain(e.getPosition());
+				float len = Vector3f.sub(pos, vertex.position, null).length();
+				Vector2f minMax = comp.getMinMax();
+				Vector3f cl = new Vector3f();
+				if (len < minMax.x) {
+					cl = comp.getBiome().getColor();
+				} else if (len < minMax.y) {
+					Vector3f bcl = new Vector3f(comp.getBiome().getColor());
+					float fac = (len - minMax.x) / (minMax.y - minMax.x);
+					bcl.scale(1.0f - fac);
+					Vector3f prevC = new Vector3f(vertex.color);
+					prevC.scale(fac);
+					cl = new Vector3f(Vector3f.add(bcl, prevC, null));
+				}
+				if (!(cl.x == 0 && cl.y == 0 && cl.z == 0)) {
+					if (vertex.color.x == 1.0f && vertex.color.y == 0.766f && vertex.color.z == 0.061f) {
+						cls[ptr * 3] = cl.x;
+						cls[ptr * 3 + 1] = cl.y;
+						cls[ptr * 3 + 2] = cl.z;
+					} else {
+						cls[ptr * 3] = (vertex.color.x + cl.x) / 2f;
+						cls[ptr * 3 + 1] = (vertex.color.y + cl.y) / 2f;
+						cls[ptr * 3 + 2] = (vertex.color.z + cl.z) / 2f;
+					}
+					changes.add(ptr);
+				}
+			}
+			ptr++;
+		}
+		List<Integer> ch = new ArrayList<>();
+		for (int c : changes) {
+			ptr = c;
+			TerrainVertex vertex = vertices.get(ptr);
+			if(vertex.color.x != cls[ptr * 3] || vertex.color.y != cls[ptr * 3 + 1] || vertex.color.z != cls[ptr * 3 + 2]) {
+				ch.add(ptr);
+			}
+		}
+		DataPacking.replace(model, 2, cls, ch, 3);
 	}
 
 	private Vector3f posRelToTerrain(Vector3f position) {

@@ -96,15 +96,13 @@ public class DataPacking {
 					new VAOUpdateRequest("update vao", new VBOUpdateData(data).withAttToWriteTo(attn), model));
 		}
 	}
-	
-
 
 	public static void replace(VAO model, int attn, float[] data, long begin) {
 		if (Thread.currentThread().getName().equals("main thread")) {
 			new VBOUpdateData(data).withAttToWriteTo(attn).withBegin(begin).updateWithin(model);
 		} else {
-			ThreadMaster.getThread("main thread").setToCarryOutRequest(
-					new VAOUpdateRequest("update vao", new VBOUpdateData(data).withBegin(begin).withAttToWriteTo(attn), model));
+			ThreadMaster.getThread("main thread").setToCarryOutRequest(new VAOUpdateRequest("update vao",
+					new VBOUpdateData(data).withBegin(begin).withAttToWriteTo(attn), model));
 		}
 	}
 
@@ -112,8 +110,8 @@ public class DataPacking {
 		if (Thread.currentThread().getName().equals("main thread")) {
 			new VBOUpdateData(data).withAttToWriteTo(attn).withBegin(begin).updateWithin(model);
 		} else {
-			ThreadMaster.getThread("main thread").setToCarryOutRequest(
-					new VAOUpdateRequest("update vao", new VBOUpdateData(data).withBegin(begin).withAttToWriteTo(attn), model));
+			ThreadMaster.getThread("main thread").setToCarryOutRequest(new VAOUpdateRequest("update vao",
+					new VBOUpdateData(data).withBegin(begin).withAttToWriteTo(attn), model));
 		}
 	}
 
@@ -121,8 +119,8 @@ public class DataPacking {
 		if (Thread.currentThread().getName().equals("main thread")) {
 			new VBOUpdateData(data).withAttToWriteTo(attn).withBegin(begin).updateWithin(model);
 		} else {
-			ThreadMaster.getThread("main thread").setToCarryOutRequest(
-					new VAOUpdateRequest("update vao", new VBOUpdateData(data).withBegin(begin).withAttToWriteTo(attn), model));
+			ThreadMaster.getThread("main thread").setToCarryOutRequest(new VAOUpdateRequest("update vao",
+					new VBOUpdateData(data).withBegin(begin).withAttToWriteTo(attn), model));
 		}
 	}
 
@@ -161,5 +159,23 @@ public class DataPacking {
 
 	private static ByteBuffer storeDataInByteBuffer(byte[] data) {
 		return (ByteBuffer) BufferUtils.createByteBuffer(data.length).put(data).flip();
+	}
+
+	public static void replace(VAO model, int attn, float[] data, List<Integer> changes, int dimensions) {
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, model.getBuffers().get(attn));
+		FloatBuffer buffer = null;
+		for (int i : changes) {
+			long offset = i * dimensions * 4;
+			if (dimensions == 2)
+				buffer = storeDataInFloatBuffer(new float[] { data[i * 2], data[i * 2 + 1] });
+			if (dimensions == 3)
+				buffer = storeDataInFloatBuffer(new float[] { data[i * 3], data[i * 3 + 1], data[i * 3 + 2] });
+			if (dimensions == 4)
+				buffer = storeDataInFloatBuffer(
+						new float[] { data[i * 4], data[i * 4 + 1], data[i * 4 + 2], data[i * 4 + 3] });
+			GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, offset, buffer);
+			buffer.clear();
+		}
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 	}
 }

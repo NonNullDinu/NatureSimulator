@@ -30,6 +30,6 @@ public class World {
 	public void add(Entity e) {
 		entities.add(e);
 		if(e.getBiomeSpreadComponent() != null)
-			terrain.initColors(entities);
+			terrain.updateColors(e);
 	}
 }

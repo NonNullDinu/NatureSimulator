@@ -31,6 +31,7 @@ import ns.water.WaterFBOs;
 import ns.water.WaterTile;
 import ns.world.World;
 import ns.world.WorldGenerator;
+
 /**
  * @version 1.1.4
  * @author Dinu B.
@@ -93,6 +94,7 @@ public class MainGameLoop implements Runnable {
 				break;
 			runLogicAndRender();
 			DisplayManager.updateDisplay();
+			executeRequests();
 		}
 		inLoop = false;
 		DataPacking.cleanUp();
