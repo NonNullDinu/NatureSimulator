@@ -1,6 +1,7 @@
 package ns.renderers;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import ns.openglObjects.FBO;
@@ -27,7 +28,7 @@ public class ShopRenderer {
 			MasterRenderer.instance.render(item.getEntityBlueprint(), new Vector3f(0, -3f, -20f));
 			FBO.unbind();
 			guiRenderer.bind();
-			guiRenderer.batchRenderCall(item.getCenter(), ShopItem.SCALE, fbo.getTex());
+			guiRenderer.batchRenderCall(Vector2f.add(s.getComplex().getCenter(), item.getCenter(), null), ShopItem.SCALE, fbo.getTex());
 			guiRenderer.unbind();
 		}
 	}

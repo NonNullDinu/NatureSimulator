@@ -7,6 +7,7 @@ import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 import ns.display.DisplayManager;
+import ns.utils.GU;
 import ns.utils.Maths;
 import ns.world.World;
 
@@ -34,7 +35,7 @@ public class Camera extends ICamera {
 
 	@Override
 	public void update(World world) {
-		Vector2f mouseDelta = new Vector2f(Mouse.getDX(), Mouse.getDY());
+		Vector2f mouseDelta = new Vector2f(GU.mouseDelta);
 		if (Mouse.isButtonDown(1)) {
 			if (mouseDelta.lengthSquared() != 0f) {
 				mouseDelta.scale(SENSITIVITY);

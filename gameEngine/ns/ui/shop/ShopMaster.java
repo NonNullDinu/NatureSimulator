@@ -13,9 +13,10 @@ public class ShopMaster {
 	
 	public static Shop createShop(GUIRenderer guiRenderer) {
 		List<ShopItem> items = new ArrayList<>();
+		ComplexGUI complex = new ComplexGUI(new Vector2f(-0.6f, 0f), new Vector2f(0.4f, 0.9f), null, guiRenderer);
 		for(int i = 0; i < 2; i++)
-			items.add(ShopItem.item(i));
-		Shop s = new Shop(items, new ComplexGUI(new Vector2f(-0.6f, 0f), new Vector2f(0.4f, 0.9f), null, guiRenderer));
+			items.add(ShopItem.item(i, complex));
+		Shop s = new Shop(items, complex);
 		shop = s;
 		return s;
 	}

@@ -2,7 +2,6 @@ package ns.ui.shop;
 
 import java.util.List;
 
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import ns.components.BlueprintCreator;
@@ -12,6 +11,7 @@ import ns.utils.GU;
 import ns.utils.MousePicker;
 
 public class Shop {
+	private static final float SLIDE_OFFSET = 0.7f;
 	private List<ShopItem> items;
 	private ShopItem currentlySelected;
 	private SS state;
@@ -24,11 +24,16 @@ public class Shop {
 	}
 
 	public Entity update() {
-		if(Keyboard.isKeyDown(Keyboard.KEY_S)) {
-			if(state != SS.OPEN)
+		if (GU.Key.KEY_S.isPressed() && !GU.Key.KEY_S.pressedPreviousFrame()) {
+			if (state != SS.OPEN) {
+				if (state == SS.BUYING)
+					complex.getCenter().x += SLIDE_OFFSET;
 				state = SS.OPEN;
-			else
+			} else {
+				if (state == SS.BUYING)
+					complex.getCenter().x += SLIDE_OFFSET;
 				state = SS.CLOSED;
+			}
 			currentlySelected = null;
 		}
 		if (state == SS.CLOSED)
@@ -38,6 +43,8 @@ public class Shop {
 				if (item.clicked()) {
 					currentlySelected = item;
 					state = SS.BUYING;
+					complex.getCenter().x -= SLIDE_OFFSET;
+					return null;
 				}
 			}
 		if (state == SS.BUYING) {
@@ -45,8 +52,10 @@ public class Shop {
 				return new Entity(
 						BlueprintCreator.createBlueprintFor(currentlySelected.getEntityBlueprint().getFolder()),
 						MousePicker.getCurrentTerrainPoint());
-			else if (Mouse.isButtonDown(1))
+			else if (Mouse.isButtonDown(1) && GU.mouseDelta.length() == 0f && GU.lastFramesLengths == 0f) {
+				complex.getCenter().x += SLIDE_OFFSET;
 				state = SS.CLOSED;
+			}
 		}
 		return null;
 	}
@@ -56,7 +65,7 @@ public class Shop {
 	}
 
 	public boolean open() {
-		return state == SS.OPEN;
+		return state != SS.CLOSED;
 	}
 
 	public ComplexGUI getComplex() {
