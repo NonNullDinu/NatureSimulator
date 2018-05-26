@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class HeightsGenerator {
 	private static final float AMPLITUDE = 300f;
-	private static final int OCTAVES = 6;
+	private static final int OCTAVES = 5;
 	private static final float ROUGHNESS = 0.25f;
 
 	private Random random = new Random();
