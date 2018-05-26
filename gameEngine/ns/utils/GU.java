@@ -17,6 +17,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 import ns.components.BlueprintCreator;
 import ns.openglObjects.FBO;
+import ns.openglObjects.Texture;
 import ns.renderers.MasterRenderer;
 import res.Resource;
 import res.WritingResource;
@@ -27,7 +28,7 @@ public class GU {
 	public static Vector2f mouseDelta;
 	public static float lastFramesLengths;
 	private static float[] mouseLengths = new float[10];
-	public static final List<IntBuffer> textures = new ArrayList<>();
+	public static final List<Texture> textures = new ArrayList<>();
 
 	public static BufferedReader open(Resource resource) {
 		return new BufferedReader(new InputStreamReader(resource.asInputStream()));
@@ -64,8 +65,10 @@ public class GU {
 		GL11.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 		for (int i = 0; i < 2; i++) {
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-			renderer.render(BlueprintCreator.createModelBlueprintFor(Integer.toString(1000 + i)).withDefaultCustomColors(), new Vector3f(0f, -3f, -20f));
-			textures.add(i, fbo.getTex().getAsIntBuffer());
+			renderer.render(
+					BlueprintCreator.createModelBlueprintFor(Integer.toString(1000 + i)).withDefaultCustomColors(),
+					new Vector3f(0f, -3f, -20f));
+			textures.add(i, fbo.getTex());
 			fbo.createNewTexture();
 		}
 		fbo.setTextureNull();
@@ -108,8 +111,8 @@ public class GU {
 		}
 	}
 
-	public static Cursor createCursor(int xHotspot, int yHotspot, int nrOfFrames,
-			IntBuffer textures, IntBuffer delays) {
+	public static Cursor createCursor(int xHotspot, int yHotspot, int nrOfFrames, IntBuffer textures,
+			IntBuffer delays) {
 		try {
 			return new Cursor(64, 64, xHotspot, yHotspot, nrOfFrames, textures, delays);
 		} catch (LWJGLException e) {
@@ -118,8 +121,18 @@ public class GU {
 		}
 	}
 
-	public static IntBuffer getMouseTexture(String modelFolder) {
+	public static IntBuffer getMouseTexture(String modelFolder, int sub) {
 		int idx = Integer.parseInt(modelFolder) - 1000;
-		return textures.get(idx);
+		return textures.get(idx).getAsIntBuffer(sub);
+	}
+
+	public static Cursor createCursor(int xHotspot, int yHotspot, int nrOfFrames, IntBuffer textures, IntBuffer delays,
+			int sub) {
+		try {
+			return new Cursor(64 - sub, 64 - sub, xHotspot, yHotspot - sub, nrOfFrames, textures, delays);
+		} catch (LWJGLException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

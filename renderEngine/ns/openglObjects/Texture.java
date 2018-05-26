@@ -103,4 +103,16 @@ public class Texture implements IOpenGLObject {
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
 		return pixels;
 	}
+
+	public IntBuffer getAsIntBuffer(int sub) {
+		IntBuffer pixels = getAsIntBuffer();
+		IntBuffer true_pixels = BufferUtils.createIntBuffer((width - sub) * (height - sub));
+		for(int y = sub / 2; y < height - sub / 2; y++) {
+			for(int x = sub / 2; x < width - sub / 2; x++) {
+				true_pixels.put(pixels.get(y * width + x));
+			}
+		}
+		true_pixels.flip();
+		return true_pixels;
+	}
 }

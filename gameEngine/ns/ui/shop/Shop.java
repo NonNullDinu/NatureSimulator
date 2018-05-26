@@ -16,6 +16,8 @@ public class Shop {
 	private ShopItem currentlySelected;
 	private SS state;
 	private ComplexGUI complex;
+	private int d;
+	private boolean increasing;
 
 	public Shop(List<ShopItem> items, ComplexGUI complex) {
 		this.items = items;
@@ -24,6 +26,16 @@ public class Shop {
 	}
 
 	public Entity update() {
+		if (d > 0) {
+			if (increasing) {
+				d += 2;
+				increasing = d < 20;
+			}
+			else
+				d -= 2;
+			GU.setMouseCursor(GU.createCursor(0, 63, 1,
+					GU.getMouseTexture(currentlySelected.getEntityBlueprint().getFolder(), d), null, d));
+		}
 		if (GU.Key.KEY_S.isPressed() && !GU.Key.KEY_S.pressedPreviousFrame()) {
 			if (state != SS.OPEN) {
 				if (state == SS.BUYING)
@@ -45,16 +57,21 @@ public class Shop {
 					currentlySelected = item;
 					state = SS.BUYING;
 					complex.getCenter().x -= SLIDE_OFFSET;
-					GU.setMouseCursor(GU.createCursor(0, 63, 1, GU.getMouseTexture(item.getEntityBlueprint().getFolder()), null));
+					GU.setMouseCursor(
+							GU.createCursor(0, 63, 1, GU.getMouseTexture(item.getEntityBlueprint().getFolder(), 0), null));
 					return null;
 				}
 			}
 		if (state == SS.BUYING) {
-			if (Mouse.isButtonDown(0) && !GU.prevFrameClicked)
+			if (Mouse.isButtonDown(0) && !GU.prevFrameClicked) {
+				GU.setMouseCursor(GU.createCursor(0, 63, 1,
+						GU.getMouseTexture(currentlySelected.getEntityBlueprint().getFolder(), 2), null, 2));
+				d = 2;
+				increasing = true;
 				return new Entity(
 						BlueprintCreator.createBlueprintFor(currentlySelected.getEntityBlueprint().getFolder()),
 						MousePicker.getCurrentTerrainPoint());
-			else if (Mouse.isButtonDown(1) && GU.mouseDelta.length() == 0f && GU.lastFramesLengths == 0f) {
+			} else if (Mouse.isButtonDown(1) && GU.mouseDelta.length() == 0f && GU.lastFramesLengths == 0f) {
 				complex.getCenter().x += SLIDE_OFFSET;
 				state = SS.CLOSED;
 				GU.setMouseCursor(null);
