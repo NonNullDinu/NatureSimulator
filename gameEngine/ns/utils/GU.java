@@ -144,6 +144,8 @@ public class GU {
 	}
 
 	public static int binaryInt(String string) {
-		return Integer.parseInt(string.replaceAll(" ", ""), 2);
+		string = string.replaceAll(" ", "");
+		System.out.println(string.length());
+		return Integer.parseInt(string, 2);
 	}
 }

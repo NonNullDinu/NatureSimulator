@@ -88,8 +88,8 @@ public class MainGameLoop implements Runnable {
 		MousePicker.init(camera, renderer.getProjectionMatrix(), world.getTerrain());
 		ColorQuadFiller.init();
 		renderer.render(camera, sun, new Vector4f(0, 0, 0, 0), false);
-		GU.initMouseCursors(renderer);
 		executeRequests();
+		GU.initMouseCursors(renderer);
 		System.out.println("Primary thread finished in " + (System.nanoTime() - btime));
 		while (!Display.isCloseRequested()) {
 			if (state == GS.EXIT)
