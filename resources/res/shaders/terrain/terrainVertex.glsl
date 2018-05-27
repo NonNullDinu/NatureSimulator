@@ -20,6 +20,8 @@ uniform vec4 clipPlane;
 
 uniform FogValues fogValues;
 
+const float COLOR_CHANGE_SPEED = 0.001;
+
 layout(std430, binding = 0) buffer colors
 {
 	float cls[];
@@ -42,7 +44,7 @@ void main(void) {
 	gl_ClipDistance[0] = dot(worldPosition, clipPlane);
 	vec3 color = mix(
 			vec3(cls[gl_VertexID * 3], cls[gl_VertexID * 3 + 1],
-					cls[gl_VertexID * 3 + 2]), final_color, 0.0015);
+					cls[gl_VertexID * 3 + 2]), final_color, COLOR_CHANGE_SPEED);
 	out_color = color;
 	cls[gl_VertexID * 3] = color.x;
 	cls[gl_VertexID * 3 + 1] = color.y;

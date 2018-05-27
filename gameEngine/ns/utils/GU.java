@@ -30,9 +30,9 @@ public class GU {
 	public static boolean prevFrameClicked;
 	public static Vector2f mouseDelta;
 	public static float lastFramesLengths;
-	private static float[] mouseLengths = new float[10];
+	private static float[] mouseLengths = new float[20];
 	public static final List<Texture> textures = new ArrayList<>();
-	public static final int TOTAL_NUMBER_OF_ENTITIES = 3;
+	public static final int TOTAL_NUMBER_OF_ENTITIES = 4;
 
 	public static BufferedReader open(Resource resource) {
 		return new BufferedReader(new InputStreamReader(resource.asInputStream()));
@@ -148,7 +148,6 @@ public class GU {
 
 	public static int binaryInt(String string) {
 		string = string.replaceAll(" ", "");
-		System.out.println(string.length());
 		return Integer.parseInt(string, 2);
 	}
 

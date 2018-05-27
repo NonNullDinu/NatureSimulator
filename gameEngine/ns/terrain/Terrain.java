@@ -51,7 +51,7 @@ public class Terrain implements SerializableWorldObject {
 					Vector2f minMax = comp.getMinMax();
 					Vector3f cl = new Vector3f();
 					if (len < minMax.x) {
-						cl = comp.getBiome().getColor();
+						cl = new Vector3f(comp.getBiome().getColor());
 					} else if (len < minMax.y) {
 						Vector3f bcl = new Vector3f(comp.getBiome().getColor());
 						float fac = (len - minMax.x) / (minMax.y - minMax.x);
@@ -91,7 +91,7 @@ public class Terrain implements SerializableWorldObject {
 				Vector2f minMax = comp.getMinMax();
 				Vector3f cl = new Vector3f();
 				if (len < minMax.x) {
-					cl = comp.getBiome().getColor();
+					cl = new Vector3f(comp.getBiome().getColor());
 				} else if (len < minMax.y) {
 					Vector3f bcl = new Vector3f(comp.getBiome().getColor());
 					float fac = (len - minMax.x) / (minMax.y - minMax.x);

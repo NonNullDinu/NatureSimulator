@@ -33,7 +33,7 @@ import ns.world.World;
 import ns.world.WorldGenerator;
 
 /**
- * @version 1.1.5
+ * @version 1.1.6
  * @author Dinu B.
  * @since 1.0
  */

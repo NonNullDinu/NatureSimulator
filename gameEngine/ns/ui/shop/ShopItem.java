@@ -40,8 +40,8 @@ public class ShopItem extends Button {
 
 	public static ShopItem item(int i, ComplexGUI complex) {
 		Vector2f position = new Vector2f();
-		position.x = -0.25f + ((i % 4) * (SCALE.x + 0.1f));
-		position.y = 0.75f - ((i / 4) * (SCALE.y + 0.05f));
+		position.x = -0.3f + ((i % 4) * (SCALE.x * 2.0f));
+		position.y = 0.75f - ((i / 4) * (SCALE.y));
 		return new ShopItem(position, BlueprintCreator.createModelBlueprintFor(Integer.toString(1000 + i)), complex);
 	}
 }
