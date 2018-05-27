@@ -83,7 +83,7 @@ public class Blueprint implements SerializableWorldObject {
 
 	public Blueprint withDefaultCustomColors() {
 		List<Vector3f> cc = new ArrayList<>();
-		if(objectName.equals("1000") || objectName.equals("1001")) {
+		if(objectName.equals("1000") || objectName.equals("1001") || objectName.equals("1002")) {
 			cc.add(new Vector3f(0f, 0.750769f, 0f));
 		}
 		return this.withCuctomColors(new CustomColorsComponent(cc));

@@ -39,7 +39,7 @@ public class MousePicker {
 
 	private static Vector3f calculateTerrainPos() {
 		Vector3f pos = new Vector3f(camera.getPosition());
-		while(pos.length() < Terrain.SIZE / 2f && terrain.getHeight(pos.x, pos.z) < pos.y)
+		while(Math.abs(pos.x) < Terrain.SIZE / 2f && Math.abs(pos.z) < Terrain.SIZE / 2f && terrain.getHeight(pos.x, pos.z) < pos.y)
 			Vector3f.add(pos, currentRay, pos);
 		return pos;
 	}

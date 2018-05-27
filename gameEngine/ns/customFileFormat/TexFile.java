@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-import ns.exceptions.CorruptFileException;
+import ns.exceptions.CorruptException;
 import ns.exceptions.LoadingException;
 import ns.openglObjects.Texture;
 import ns.utils.GU;
@@ -43,7 +43,7 @@ public class TexFile implements File {
 						pixels.put((byte) (pixel & 0xFF));
 						pixels.put((byte) ((pixel >> 24) & 0xFF));
 					} catch (NumberFormatException e) {
-						throw new CorruptFileException(
+						throw new CorruptException(
 								"File at " + location + " is corrupt(found: \"" + pts[x] + "\" while expecting an int)");
 					}
 				}

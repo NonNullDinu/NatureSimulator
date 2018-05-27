@@ -17,7 +17,7 @@ import ns.worldSave.SerializableWorldObject;
 import ns.worldSave.TerrainData;
 
 public class Terrain implements SerializableWorldObject {
-	public static final float SIZE = 2400;
+	public static final float SIZE = 4800;
 	public static final int VERTEX_COUNT = (int) (256f * (SIZE / 2400f));
 	private VAO model;
 	private float x, z;
@@ -172,7 +172,7 @@ public class Terrain implements SerializableWorldObject {
 				int topRight = topLeft + 1;
 				int bottomLeft = (z + 1) * VERTEX_COUNT + x;
 				int bottomRight = bottomLeft + 1;
-				if ((x + z) % 2 == 0) {
+				if ((x + z) % 2 != 0) {
 					indices[pointer++] = topLeft;
 					indices[pointer++] = bottomLeft;
 					indices[pointer++] = bottomRight;

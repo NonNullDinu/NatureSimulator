@@ -43,7 +43,7 @@ public class WorldGenerator {
 			z *= TS;
 			float y = terrain.getHeight(x, z);
 			Vector3f pos = new Vector3f(x, y, z);
-			int type = GU.random.genInt(2);
+			int type = GU.random.genInt(GU.TOTAL_NUMBER_OF_ENTITIES);
 			Blueprint b = BlueprintCreator.createBlueprintFor(Integer.toString(1000 + type));
 			entities.add(new Entity(b, pos));
 		}

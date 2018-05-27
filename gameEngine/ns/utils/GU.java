@@ -29,6 +29,7 @@ public class GU {
 	public static float lastFramesLengths;
 	private static float[] mouseLengths = new float[10];
 	public static final List<Texture> textures = new ArrayList<>();
+	public static final int TOTAL_NUMBER_OF_ENTITIES = 3;
 
 	public static BufferedReader open(Resource resource) {
 		return new BufferedReader(new InputStreamReader(resource.asInputStream()));
@@ -49,6 +50,12 @@ public class GU {
 		lastFramesLengths = 0;
 		for (float l : mouseLengths)
 			lastFramesLengths += l;
+		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, (Key.KEY_W.isPressed() ? GL11.GL_LINE : GL11.GL_FILL)); // Press key
+																											// 'W' on
+																											// the
+																											// keyboard
+																											// for
+																											// wire-frame
 	}
 
 	public static void setMouseCursor(Cursor cursor) {
@@ -63,7 +70,7 @@ public class GU {
 		FBO fbo = new FBO(64, 64, (FBO.COLOR_TEXTURE | FBO.DEPTH_RENDERBUFFER)).create();
 		fbo.bind();
 		GL11.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < TOTAL_NUMBER_OF_ENTITIES; i++) {
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 			renderer.render(
 					BlueprintCreator.createModelBlueprintFor(Integer.toString(1000 + i)).withDefaultCustomColors(),
@@ -89,7 +96,7 @@ public class GU {
 	}
 
 	public enum Key {
-		KEY_S(Keyboard.KEY_S);
+		KEY_S(Keyboard.KEY_S), KEY_W(Keyboard.KEY_W);
 
 		private int id;
 		private boolean pressedPrevFrame;
@@ -134,5 +141,9 @@ public class GU {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public static int binaryInt(String string) {
+		return Integer.parseInt(string.replaceAll(" ", ""), 2);
 	}
 }
