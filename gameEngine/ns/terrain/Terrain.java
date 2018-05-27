@@ -10,7 +10,7 @@ import org.lwjgl.util.vector.Vector3f;
 import ns.components.BiomeSpreadComponent;
 import ns.entities.Entity;
 import ns.openglObjects.VAO;
-import ns.openglWorkers.DataPacking;
+import ns.openglWorkers.VAOLoader;
 import ns.openglWorkers.VBOData;
 import ns.utils.Maths;
 import ns.worldSave.SerializableWorldObject;
@@ -76,7 +76,7 @@ public class Terrain implements SerializableWorldObject {
 			cls[ptr++] = vertex.color.y;
 			cls[ptr++] = vertex.color.z;
 		}
-		DataPacking.replace(model, 2, cls);
+		VAOLoader.replace(model, 2, cls);
 	}
 
 	public void updateColors(Entity e) {
@@ -123,7 +123,7 @@ public class Terrain implements SerializableWorldObject {
 				ch.add(ptr);
 			}
 		}
-		DataPacking.replace(model, 2, cls, ch, 3);
+		VAOLoader.replace(model, 2, cls, ch, 3);
 	}
 
 	private Vector3f posRelToTerrain(Vector3f position) {
@@ -189,7 +189,7 @@ public class Terrain implements SerializableWorldObject {
 				}
 			}
 		}
-		return DataPacking.storeDataInVAO(new VBOData(vao_vertices).withAttributeNumber(0).withDimensions(3),
+		return VAOLoader.storeDataInVAO(new VBOData(vao_vertices).withAttributeNumber(0).withDimensions(3),
 				new VBOData(vao_normals).withAttributeNumber(1).withDimensions(3),
 				new VBOData(vao_colors).withAttributeNumber(2).withDimensions(3).withUsage(GL15.GL_DYNAMIC_DRAW),
 				new VBOData(indices).isIndices(true));

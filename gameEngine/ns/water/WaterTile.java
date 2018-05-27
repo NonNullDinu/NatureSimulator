@@ -1,7 +1,7 @@
 package ns.water;
 
 import ns.openglObjects.VAO;
-import ns.openglWorkers.DataPacking;
+import ns.openglWorkers.VAOLoader;
 import ns.openglWorkers.VBOData;
 import ns.terrain.Terrain;
 
@@ -80,7 +80,7 @@ public class WaterTile {
 				vertexPointer++;
 			}
 		}
-		return DataPacking.storeDataInVAO(new VBOData(vao_pos).withAttributeNumber(0).withDimensions(2),
+		return VAOLoader.storeDataInVAO(new VBOData(vao_pos).withAttributeNumber(0).withDimensions(2),
 				new VBOData(vao_indicators).withAttributeNumber(1).withDimensions(4));
 	}
 

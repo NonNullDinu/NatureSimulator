@@ -3,10 +3,13 @@ package ns.utils;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
@@ -147,5 +150,27 @@ public class GU {
 		string = string.replaceAll(" ", "");
 		System.out.println(string.length());
 		return Integer.parseInt(string, 2);
+	}
+
+	public static int sizeof(int gl_type) {
+		if (gl_type == GL11.GL_FLOAT)
+			return 4;
+		if (gl_type == GL11.GL_BYTE)
+			return 1;
+		if (gl_type == GL11.GL_INT)
+			return 4;
+		return 0;
+	}
+
+	public static FloatBuffer storeDataInFloatBuffer(float[] data) {
+		return (FloatBuffer) BufferUtils.createFloatBuffer(data.length).put(data).flip();
+	}
+
+	public static IntBuffer storeDataInIntBuffer(int[] data) {
+		return (IntBuffer) BufferUtils.createIntBuffer(data.length).put(data).flip();
+	}
+
+	public static ByteBuffer storeDataInByteBuffer(byte[] data) {
+		return (ByteBuffer) BufferUtils.createByteBuffer(data.length).put(data).flip();
 	}
 }

@@ -28,6 +28,11 @@ uniform FogValues fogValues;
 
 uniform float time;
 
+const float windLength = 20.0;
+const float amplitude = 0.8;
+
+const float PI = 3.1415926535897932384626433832795;
+
 vec3 calculateDiffuse(vec3 normal) {
 	float dot1 = max(dot(-normalize(light.direction), normal), 0.0);
 	return (light.color * light.bias.x) + (dot1 * light.color * light.bias.y);
@@ -54,20 +59,41 @@ vec3 customColor(vec3 normal) {
 			* (indc < 0 ? color : (customColors[indc] + colorsIndicators.y * f));
 }
 
-vec4 calculatePosition() {
+float generateOffset(float x, float z, float val1, float val2) {
+	float radiansX = ((mod(x + z * x * val1, windLength) / windLength)
+			+ time * mod(x * 0.8 + z, 1.5)) * 2.0 * PI;
+	float radiansZ = ((mod(val2 * (z * x + x * z), windLength) / windLength)
+			+ time * 2.0 * mod(x, 2.0)) * 2.0 * PI;
+	return amplitude * 0.5 * (sin(radiansZ) + cos(radiansX));
+}
+
+vec3 applyDistortion(vec3 vertex, vec3 normal) {
+	float xDistortion = generateOffset(vertex.x, vertex.y, 0.2, 0.1);
+	float yDistortion = generateOffset(vertex.x, vertex.z, 0.1, 0.3);
+	float zDistortion = generateOffset(vertex.x, vertex.y, 0.15, 0.2);
+	return vertex
+			+ mix(normal, vec3(xDistortion, yDistortion, zDistortion), 0.4)
+					* in_materialData.x;
+}
+
+vec4 calculatePosition(vec3 normal) {
 	vec4 pos = vec4(in_position, 1.0);
-	pos += time * vec4(in_normal, 0.0) * in_materialData.x;
+//	pos += time * vec4(in_normal, 0.0) * in_materialData.x;
+	pos = transformationMatrix * pos;
+	vec3 p = applyDistortion(pos.xyz, normal);
+	pos.xyz = p;
 	return pos;
 }
 
 void main(void) {
-	vec4 worldPosition = transformationMatrix * calculatePosition();
+	vec3 normal = normalize(in_normal);
+	normal = (transformationMatrix * vec4(normal, 0.0)).xyz;
+
+	vec4 worldPosition = calculatePosition(normal);
 	vec4 posRelativeToCamera = viewMatrix * worldPosition;
 	gl_Position = projectionMatrix * posRelativeToCamera;
 	gl_ClipDistance[0] = dot(worldPosition, clipPlane);
 	out_texCoords = in_texCoords;
-	vec3 normal = normalize(in_normal);
-	normal = (transformationMatrix * vec4(normal, 0.0)).xyz;
 	out_cc = vec4(customColor(normal), (colorsIndicators.z == -1 ? 0 : 1));
 	float distance = length(posRelativeToCamera.xyz);
 	out_visibility = exp(

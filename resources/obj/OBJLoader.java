@@ -8,7 +8,7 @@ import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 import ns.openglObjects.VAO;
-import ns.openglWorkers.DataPacking;
+import ns.openglWorkers.VAOLoader;
 import ns.openglWorkers.VBOData;
 import ns.utils.GU;
 import res.Resource;
@@ -114,7 +114,7 @@ public class OBJLoader {
 			indicesArray[i] = indices.get(i);
 		}
 
-		return DataPacking.storeDataInVAO(new VBOData(verticesArray).withAttributeNumber(0).withDimensions(3),
+		return VAOLoader.storeDataInVAO(new VBOData(verticesArray).withAttributeNumber(0).withDimensions(3),
 				new VBOData(normalsArray).withAttributeNumber(1).withDimensions(3),
 				new VBOData(texturesArray).withAttributeNumber(2).withDimensions(2),
 				new VBOData(colorsArray).withAttributeNumber(3).withDimensions(3),

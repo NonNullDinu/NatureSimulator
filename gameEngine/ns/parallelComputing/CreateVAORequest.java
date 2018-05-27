@@ -1,7 +1,7 @@
 package ns.parallelComputing;
 
 import ns.openglObjects.VAO;
-import ns.openglWorkers.DataPacking;
+import ns.openglWorkers.VAOLoader;
 import ns.openglWorkers.VBOData;
 
 public class CreateVAORequest extends Request {
@@ -17,6 +17,6 @@ public class CreateVAORequest extends Request {
 
 	@Override
 	public void execute() {
-		DataPacking.createVAOAndStore(vao, args);
+		VAOLoader.createVAOAndStore(vao, args);
 	}
 }

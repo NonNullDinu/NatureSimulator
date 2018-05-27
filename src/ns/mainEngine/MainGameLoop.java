@@ -12,7 +12,7 @@ import ns.entities.Light;
 import ns.mainMenu.MainMenu;
 import ns.openglObjects.FBO;
 import ns.openglObjects.Texture;
-import ns.openglWorkers.DataPacking;
+import ns.openglWorkers.VAOLoader;
 import ns.parallelComputing.ThreadMaster;
 import ns.renderers.Blurer;
 import ns.renderers.ColorQuadFiller;
@@ -99,7 +99,7 @@ public class MainGameLoop implements Runnable {
 			executeRequests();
 		}
 		inLoop = false;
-		DataPacking.cleanUp();
+		VAOLoader.cleanUp();
 		renderer.cleanUp();
 		menuRenderer.cleanUp();
 		shader.cleanUp();

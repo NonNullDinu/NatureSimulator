@@ -19,7 +19,7 @@ import ns.display.DisplayManager;
 import ns.entities.Entity;
 import ns.entities.Light;
 import ns.openglObjects.VAO;
-import ns.openglWorkers.DataPacking;
+import ns.openglWorkers.VAOLoader;
 import ns.openglWorkers.VBOData;
 import ns.shaders.StaticShader;
 import ns.shaders.TerrainShader;
@@ -33,14 +33,13 @@ public class MasterRenderer {
 	protected static final float RED = 0.435f, GREEN = 0.812f, BLUE = 1.0f;
 	protected static final Vector2f FOG_VALUES = new Vector2f(0.0015f, 5.0f);
 
-	private static final float TIME_SPEED = 1f;
-	private static final float INCREASE_LIMIT = 1f;
+	private static final float TIME_SPEED = 0.15f;
 
 	public static final List<VAO> standardModels = new ArrayList<>();
 	public static MasterRenderer instance;
 
 	public static void initStandardModels() {
-		VAO vao = DataPacking.storeDataInVAO(
+		VAO vao = VAOLoader.storeDataInVAO(
 				new VBOData(new float[] { -1, 1, -1, -1, 1, 1, 1, -1, }).withAttributeNumber(0).withDimensions(2));
 		standardModels.add(vao);
 	}
@@ -101,7 +100,6 @@ public class MasterRenderer {
 		shader.start();
 		if (updateTime) {
 			time += TIME_SPEED * DisplayManager.getFrameTimeSeconds() * (inc ? 1f : -1f);
-			time = time(time);
 			shader.time.load(time);
 		}
 		shader.skyColor.load(new Vector3f(RED, GREEN, BLUE));
@@ -124,17 +122,6 @@ public class MasterRenderer {
 			terrainShader.stop();
 			terrain = null;
 		}
-	}
-
-	private float time(float time) {
-		if (time > INCREASE_LIMIT) {
-			time = INCREASE_LIMIT;
-			inc = false;
-		} else if (time < 0) {
-			time = 0;
-			inc = true;
-		}
-		return time;
 	}
 
 	private void createProjectionMatrix() {
