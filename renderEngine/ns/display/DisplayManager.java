@@ -39,6 +39,7 @@ public class DisplayManager {
 		long currentTime = getCurrentTime();
 		delta = (currentTime - lastFrameTime) / 1000f;
 		lastFrameTime = currentTime;
+//		System.out.println(1f / delta);
 	}
 
 	public static void closeDisplay() {

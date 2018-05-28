@@ -8,10 +8,12 @@ import org.lwjgl.input.Mouse;
 import ns.entities.Entity;
 
 public class MainMenu {
+	public static MainMenu instance;
 	private List<MainMenuButton> buttons = new ArrayList<>();
 	private Entity DNA;
 	
 	public MainMenu(List<MainMenuButton> buttons, Entity DNA) {
+		instance = this;
 		this.buttons = buttons;
 		this.DNA = DNA;
 	}
@@ -21,8 +23,9 @@ public class MainMenu {
 		for(MainMenuButton button : buttons) {
 			if(button.isMouseOver()) {
 				DNA.setRotY(idx * 36f);
-				if(Mouse.isButtonDown(0))
+				if(Mouse.isButtonDown(0)) {
 					button.executeAction();
+				}
 			}
 			idx++;
 		}

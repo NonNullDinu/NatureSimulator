@@ -40,6 +40,7 @@ import ns.world.WorldGenerator;
 public class MainGameLoop implements Runnable {
 	protected static boolean inLoop = true;
 	public static GS state = GS.MENU;
+	public static boolean loopStarted = false;
 
 	private WaterRenderer waterRenderer;
 	private WaterFBOs fbos;
@@ -91,6 +92,7 @@ public class MainGameLoop implements Runnable {
 		executeRequests();
 		GU.initMouseCursors(renderer);
 		System.out.println("Primary thread finished in " + (System.nanoTime() - btime));
+		loopStarted = true;
 		while (!Display.isCloseRequested()) {
 			if (state == GS.EXIT)
 				break;
@@ -130,10 +132,11 @@ public class MainGameLoop implements Runnable {
 			menu.update();
 		}
 		GU.update();
+		GU.updateWireFrame();
 	}
 
 	public void render() {
-		if (state == GS.GAME) {
+		if (state == GS.GAME || state == GS.MENU) {
 			GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 			fbos.bindReflexion();
 			float distance = 2 * camera.getPosition().y;
@@ -145,31 +148,22 @@ public class MainGameLoop implements Runnable {
 			camera.invertPitch();
 			renderer.renderScene(world, camera, sun, new Vector4f(0, -1, 0, 2.0f), false);
 			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
-			FBO.unbind();
-			MasterRenderer.prepare();
-			renderer.renderScene(world, camera, sun, new Vector4f(0, 0, 0, 0), false);
-			waterRenderer.render(water, camera, fbos, sun);
-			shopRenderer.render(shop);
-		} else if (state == GS.MENU) {
-			GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
-			fbos.bindReflexion();
-			float distance = 2 * camera.getPosition().y;
-			camera.getPosition().y -= distance;
-			camera.invertPitch();
-			renderer.renderScene(world, camera, sun, new Vector4f(0, 1, 0, 0f), true);
-			fbos.bindRefraction();
-			camera.getPosition().y += distance;
-			camera.invertPitch();
-			renderer.renderScene(world, camera, sun, new Vector4f(0, -1, 0, 2.0f), false);
-			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
-			sceneFBO.bind();
-			renderer.renderScene(world, camera, sun, new Vector4f(0, 0, 0, 0), false);
-			waterRenderer.render(water, camera, fbos, sun);
-			FBO.unbind();
-			MasterRenderer.prepare();
-			blurer.apply(sceneFBO, bluredSceneFBO);
-			bluredSceneFBO.blitToScreen();
-			menuRenderer.render(menu);
+			if (state == GS.GAME) {
+				FBO.unbind();
+				MasterRenderer.prepare();
+				renderer.renderScene(world, camera, sun, new Vector4f(0, 0, 0, 0), false);
+				waterRenderer.render(water, camera, fbos, sun);
+				shopRenderer.render(shop);
+			} else if (state == GS.MENU) {
+				sceneFBO.bind();
+				renderer.renderScene(world, camera, sun, new Vector4f(0, 0, 0, 0), false);
+				waterRenderer.render(water, camera, fbos, sun);
+				FBO.unbind();
+				MasterRenderer.prepare();
+				blurer.apply(sceneFBO, bluredSceneFBO);
+				bluredSceneFBO.blitToScreen();
+				menuRenderer.render(menu);
+			}
 		}
 	}
 

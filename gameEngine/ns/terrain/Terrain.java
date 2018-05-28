@@ -82,6 +82,12 @@ public class Terrain implements SerializableWorldObject {
 	public void updateColors(Entity e) {
 		float[] cls = new float[VERTEX_COUNT * VERTEX_COUNT * 3];
 		int ptr = 0;
+		for (TerrainVertex v : vertices) {
+			cls[ptr++] = v.color.x;
+			cls[ptr++] = v.color.y;
+			cls[ptr++] = v.color.z;
+		}
+		ptr = 0;
 		List<Integer> changes = new ArrayList<>();
 		for (TerrainVertex vertex : vertices) {
 			BiomeSpreadComponent comp = e.getBiomeSpreadComponent();
@@ -100,18 +106,17 @@ public class Terrain implements SerializableWorldObject {
 					prevC.scale(fac);
 					cl = new Vector3f(Vector3f.add(bcl, prevC, null));
 				}
-				if (!(cl.x == 0 && cl.y == 0 && cl.z == 0)) {
-					if (vertex.color.x == 1.0f && vertex.color.y == 0.766f && vertex.color.z == 0.061f) {
+				if (cl.length() > 0f)
+					if (cls[ptr * 3] == 1.0f && cls[ptr * 3 + 1] == 0.766f && cls[ptr * 3 + 2] == 0.061f) {
 						cls[ptr * 3] = cl.x;
 						cls[ptr * 3 + 1] = cl.y;
 						cls[ptr * 3 + 2] = cl.z;
 					} else {
-						cls[ptr * 3] = (vertex.color.x + cl.x) / 2f;
-						cls[ptr * 3 + 1] = (vertex.color.y + cl.y) / 2f;
-						cls[ptr * 3 + 2] = (vertex.color.z + cl.z) / 2f;
+						cls[ptr * 3] = (cls[ptr * 3] + cl.x) / 2f;
+						cls[ptr * 3 + 1] = (cls[ptr * 3 + 1] + cl.y) / 2f;
+						cls[ptr * 3 + 2] = (cls[ptr * 3 + 2] + cl.z) / 2f;
 					}
-					changes.add(ptr);
-				}
+				changes.add(ptr);
 			}
 			ptr++;
 		}
@@ -119,8 +124,12 @@ public class Terrain implements SerializableWorldObject {
 		for (int c : changes) {
 			ptr = c;
 			TerrainVertex vertex = vertices.get(ptr);
-			if(vertex.color.x != cls[ptr * 3] || vertex.color.y != cls[ptr * 3 + 1] || vertex.color.z != cls[ptr * 3 + 2]) {
+			if (vertex.color.x != cls[ptr * 3] || vertex.color.y != cls[ptr * 3 + 1]
+					|| vertex.color.z != cls[ptr * 3 + 2]) {
 				ch.add(ptr);
+				vertex.color.x = cls[ptr * 3];
+				vertex.color.y = cls[ptr * 3 + 1];
+				vertex.color.z = cls[ptr * 3 + 2];
 			}
 		}
 		VAOLoader.replace(model, 2, cls, ch, 3);

@@ -53,8 +53,12 @@ public class GU {
 		lastFramesLengths = 0;
 		for (float l : mouseLengths)
 			lastFramesLengths += l;
-		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, (Key.KEY_W.isPressed() ? GL11.GL_LINE : GL11.GL_FILL)); // Press key
-																											// 'W' on
+	}
+
+	public static void updateWireFrame() {
+		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, (Key.KEY_W.isPressed() ? GL11.GL_LINE : GL11.GL_FILL)); // Press
+																											// key 'W'
+																											// on
 																											// the
 																											// keyboard
 																											// for

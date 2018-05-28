@@ -27,23 +27,23 @@ public class SecondaryThread implements Runnable {
 		ShaderLib.loadAll();
 		new Camera();
 		new Light(new Vector3f(0.5f, -0.5f, 0), new Vector3f(1, 1, 1), new Vector2f(0.5f, 0.5f));
-		World w = WorldGenerator.generateWorld();
+		World world = WorldGenerator.generateWorld();
 		new WaterTile(0, 0);
-		
+
 		// Read model files and create CVAOR
 		ModelsLibrary.getModel("res/models/others/menu_DNA.obj");
-		
-		while(GUIRenderer.instance == null)
-			Thread.yield();
-		
-		ShopMaster.createShop(GUIRenderer.instance);
-		
-		Runtime.getRuntime().gc();
-		System.out.println("Secondary thread finished in " + (System.nanoTime() - timeb));
-		
-		while(MainGameLoop.inLoop)
+
+		while (GUIRenderer.instance == null)
 			Thread.yield();
 
-		SaveWorldMaster.save(w, new WritingResource("saveData/save0.sav"));		
+		ShopMaster.createShop(GUIRenderer.instance);
+
+		Runtime.getRuntime().gc();
+		System.out.println("Secondary thread finished in " + (System.nanoTime() - timeb));
+		while (MainGameLoop.inLoop) {
+			Thread.yield();
+		}
+
+		SaveWorldMaster.save(world, new WritingResource("saveData/save0.sav"));
 	}
 }
