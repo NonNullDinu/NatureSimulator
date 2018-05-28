@@ -1,16 +1,26 @@
 package ns.configuration;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import res.Resource;
+
 public class GameConfig {
-	public static final int FULLSCREEN = 1;
+	public static final int FULLSCREEN = 0;
 	
 	private static final Map<Integer, Config> configuration = new HashMap<>();
 	private static final Map<Integer, Float> configurationf = new HashMap<>();
+
+	public static final int TOTAL = 1;
 	
 	static {
-		configuration.put(FULLSCREEN, Config.FALSE);
+		ConfigInputStream inp = new ConfigInputStream(new Resource("ns/configuration/gameConfiguration.config").asInputStream());
+		try {
+			inp.readTo(configuration);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void setConfig(int key, Config value) {

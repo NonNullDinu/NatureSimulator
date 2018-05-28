@@ -59,4 +59,7 @@ module src {
 
 	// Models
 	opens res.models.others;
+	
+	//Game configuration
+	opens ns.configuration;
 }
