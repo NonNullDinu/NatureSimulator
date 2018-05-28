@@ -19,7 +19,7 @@ public class WriteCounter {
 		totalLineCounter += lineCounter;
 		counter = 0;
 		lineCounter = 0;
-		
+
 		sourceFolder = new File("updater");
 		count(sourceFolder);
 		System.out.println("updater = " + counter + "(" + lineCounter + " lines)");
@@ -27,7 +27,7 @@ public class WriteCounter {
 		totalLineCounter += lineCounter;
 		counter = 0;
 		lineCounter = 0;
-		
+
 		sourceFolder = new File("gameEngine");
 		count(sourceFolder);
 		System.out.println("gameEngine = " + counter + "(" + lineCounter + " lines)");
@@ -35,7 +35,7 @@ public class WriteCounter {
 		totalLineCounter += lineCounter;
 		counter = 0;
 		lineCounter = 0;
-		
+
 		sourceFolder = new File("renderEngine");
 		count(sourceFolder);
 		System.out.println("renderEngine = " + counter + "(" + lineCounter + " lines)");
@@ -43,7 +43,7 @@ public class WriteCounter {
 		totalLineCounter += lineCounter;
 		counter = 0;
 		lineCounter = 0;
-		
+
 		sourceFolder = new File("resources/res/shaders");
 		count(sourceFolder);
 		System.out.println("shaders = " + counter + "(" + lineCounter + " lines)");
@@ -51,8 +51,9 @@ public class WriteCounter {
 		totalLineCounter += lineCounter;
 		counter = 0;
 		lineCounter = 0;
-		
-		System.out.println("total = " + totalCounter + "(" + totalLineCounter + " lines), " + mem + " bytes, or " + (mem / 1024) + " kilobytes");
+
+		System.out.println("total = " + totalCounter + "(" + totalLineCounter + " lines), " + mem + " bytes, or "
+				+ Math.floor((double) mem / 10.24) / 100.0 + " kilobytes");
 	}
 
 	private static void count(File file) {

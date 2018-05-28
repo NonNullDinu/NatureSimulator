@@ -12,10 +12,10 @@ public class GameConfig {
 	private static final Map<Integer, Config> configuration = new HashMap<>();
 	private static final Map<Integer, Float> configurationf = new HashMap<>();
 
-	public static final int TOTAL = 1;
+	protected static final int TOTAL = 1;
 	
 	static {
-		ConfigInputStream inp = new ConfigInputStream(new Resource("ns/configuration/gameConfiguration.config").asInputStream());
+		ConfigInputStream inp = new ConfigInputStream(new Resource("gameEngine/ns/configuration/gameConfiguration.config").asInputStream());
 		try {
 			inp.readTo(configuration);
 		} catch (IOException e) {
