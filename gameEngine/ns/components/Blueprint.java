@@ -101,7 +101,6 @@ public class Blueprint implements SerializableWorldObject {
 				front2 = mvm.getConfig();
 			BiomeSpreadComponent comp = getBiomeSpread();
 			int back = 0;
-			System.out.println(comp);
 			if(comp != null)
 				back = comp.getBiome().getId();
 			return (front2 << 4) | back;
