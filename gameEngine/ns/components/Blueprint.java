@@ -73,7 +73,7 @@ public class Blueprint implements SerializableWorldObject {
 	@Override
 	public BlueprintData asData() {
 		BlueprintData data = new BlueprintData();
-		data.setObjectName(objectName);
+		data.setBlueprint(this);
 		return data;
 	}
 
@@ -83,9 +83,42 @@ public class Blueprint implements SerializableWorldObject {
 
 	public Blueprint withDefaultCustomColors() {
 		List<Vector3f> cc = new ArrayList<>();
-		if(objectName.equals("1000") || objectName.equals("1001") || objectName.equals("1002")) {
+		if (objectName.equals("1000") || objectName.equals("1001") || objectName.equals("1002")) {
 			cc.add(new Vector3f(0f, 0.750769f, 0f));
 		}
 		return this.withCuctomColors(new CustomColorsComponent(cc));
+	}
+
+	public int flags(int i) {
+		switch (i) {
+		case 0: // Model
+			int front = Integer.parseInt(objectName) - 999;
+			return front;
+		case 1: // Movement and biome spread 1
+			MovementComponent mvm = getMovement();
+			int front2 = 0;
+			if(mvm != null)
+				front2 = mvm.getConfig();
+			BiomeSpreadComponent comp = getBiomeSpread();
+			int back = 0;
+			System.out.println(comp);
+			if(comp != null)
+				back = comp.getBiome().getId();
+			return (front2 << 4) | back;
+		case 2: // Biome spread part 2
+			BiomeSpreadComponent comp2 = getBiomeSpread();
+			if (comp2 != null) {
+				return (int) comp2.getMinMax().x;
+			}
+			return 0;
+		case 3: // Biome spread part 3
+			BiomeSpreadComponent comp3 = getBiomeSpread();
+			if (comp3 != null) {
+				return (int) comp3.getMinMax().y;
+			}
+			return 0;
+		default:
+			return 0;
+		}
 	}
 }

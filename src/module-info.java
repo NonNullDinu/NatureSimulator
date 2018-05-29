@@ -3,7 +3,7 @@
  * 
  * @author Dinu B.
  */
-module src {
+module GameModule {
 	// Dependencies
 	requires java.se;
 	requires transitive lwjgl;

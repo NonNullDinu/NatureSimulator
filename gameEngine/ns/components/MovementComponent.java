@@ -46,4 +46,8 @@ public class MovementComponent implements IComponent {
 			vel.y -= GRAVITY * DisplayManager.getFrameTimeSeconds();
 		}
 	}
+
+	public int getConfig() {
+		return config;
+	}
 }
