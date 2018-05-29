@@ -16,7 +16,7 @@ public class BlueprintInputStream {
 	public Blueprint read() throws IOException {
 		byte[] data = new byte[4];
 		in.read(data, 0, 4);
-		System.out.println(data[0] + " " + data[1] + " " + data[2] + " " + data[3]);
+		
 		int dataIn = data[0];
 		String enFolder = Integer.toString(999 + dataIn);
 		String modelName = "";
