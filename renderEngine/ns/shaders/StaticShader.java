@@ -1,5 +1,7 @@
 package ns.shaders;
 
+import org.lwjgl.opengl.GL20;
+
 import ns.shaders.uniformStructs.UniformFogValues;
 import ns.shaders.uniformStructs.UniformLight;
 
@@ -25,6 +27,6 @@ public class StaticShader extends ShaderProgram {
 	public UniformFloat time = locator.locateUniformFloat("time");
 	
 	public StaticShader() {
-		super(VERTEX_SHADER, FRAGMENT_SHADER);
+		super(new Shader(VERTEX_SHADER, GL20.GL_VERTEX_SHADER), new Shader(FRAGMENT_SHADER, GL20.GL_FRAGMENT_SHADER));
 	}
 }

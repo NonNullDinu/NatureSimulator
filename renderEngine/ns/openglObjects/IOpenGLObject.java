@@ -6,4 +6,6 @@ public interface IOpenGLObject {
 	public abstract void delete();
 
 	public abstract int getID();
+	
+	public abstract boolean isCreated();
 }

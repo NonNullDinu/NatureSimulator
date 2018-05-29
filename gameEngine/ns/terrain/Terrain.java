@@ -246,6 +246,10 @@ public class Terrain implements SerializableWorldObject {
 		float left = getHeight(x - 1, z);
 		float right = getHeight(x + 1, z);
 		Vector3f normal = new Vector3f(left - right, 2f, down - up);
+//		Vector3f v0 = new Vector3f(x, getHeight(x, z), z);
+//		Vector3f v1 = new Vector3f(x, getHeight(x, z + 1), z + 1);
+//		Vector3f v2 = new Vector3f(x - 1, getHeight(x - 1, z), z);
+//		Vector3f normal = Vector3f.cross(Vector3f.sub(v1, v0, null), Vector3f.sub(v2, v0, null), null);
 		normal.normalise();
 		return normal;
 	}

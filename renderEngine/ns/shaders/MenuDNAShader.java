@@ -1,5 +1,7 @@
 package ns.shaders;
 
+import org.lwjgl.opengl.GL20;
+
 public class MenuDNAShader extends ShaderProgram {
 
 	private static final String VERTEX_SHADER = "res/shaders/menuDNA/vertexShader.glsl";
@@ -9,6 +11,6 @@ public class MenuDNAShader extends ShaderProgram {
 	public UniformMat4 transformationMatrix = locator.locateUniformMat4("transformationMatrix");
 	
 	public MenuDNAShader() {
-		super(VERTEX_SHADER, FRAGMENT_SHADER);
+		super(new Shader(VERTEX_SHADER, GL20.GL_VERTEX_SHADER), new Shader(FRAGMENT_SHADER, GL20.GL_FRAGMENT_SHADER));
 	}
 }

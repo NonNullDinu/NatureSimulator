@@ -16,11 +16,14 @@ public class VAO implements IOpenGLObject, IRenderable {
 
 	private boolean hasIndices;
 
+	private boolean created = false;
+
 	public VAO(int id, int vertexCount, Map<Integer, Integer> current, boolean hasIndices) {
 		this.id = id;
 		this.vertexCount = vertexCount;
 		this.vbos = current;
 		this.hasIndices = hasIndices;
+		this.created = true;
 	}
 
 	public VAO() {
@@ -90,6 +93,7 @@ public class VAO implements IOpenGLObject, IRenderable {
 		GL30.glDeleteVertexArrays(id);
 		for (int buffer : vbos.values())
 			GL15.glDeleteBuffers(buffer);
+		created = false;
 	}
 
 	@Override
@@ -114,5 +118,10 @@ public class VAO implements IOpenGLObject, IRenderable {
 
 	public boolean hasIndices() {
 		return hasIndices;
+	}
+
+	@Override
+	public boolean isCreated() {
+		return created;
 	}
 }

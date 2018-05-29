@@ -1,5 +1,7 @@
 package ns.shaders;
 
+import org.lwjgl.opengl.GL20;
+
 public class ColorQuadFillShader extends ShaderProgram {
 
 	private static final String VERTEX_SHADER = "res/shaders/colorQuad/quadVertex.glsl";
@@ -9,6 +11,6 @@ public class ColorQuadFillShader extends ShaderProgram {
 	public UniformVec3 color = locator.locateUniformVec3("color");
 
 	public ColorQuadFillShader() {
-		super(VERTEX_SHADER, FRAGMENT_SHADER);
+		super(new Shader(VERTEX_SHADER, GL20.GL_VERTEX_SHADER), new Shader(FRAGMENT_SHADER, GL20.GL_FRAGMENT_SHADER));
 	}
 }

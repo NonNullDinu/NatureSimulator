@@ -1,5 +1,7 @@
 package ns.shaders;
 
+import org.lwjgl.opengl.GL20;
+
 public class VBlurShader extends ShaderProgram {
 
 	private static final String VERTEX_SHADER = "res/shaders/blur/vvshader.glsl";
@@ -8,6 +10,6 @@ public class VBlurShader extends ShaderProgram {
 	public UniformVec2 size = locator.locateUniformVec2("size");
 	
 	public VBlurShader() {
-		super(VERTEX_SHADER, FRAGMENT_SHADER);
+		super(new Shader(VERTEX_SHADER, GL20.GL_VERTEX_SHADER), new Shader(FRAGMENT_SHADER, GL20.GL_FRAGMENT_SHADER));
 	}
 }

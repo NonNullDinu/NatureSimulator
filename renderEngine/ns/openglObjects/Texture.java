@@ -24,6 +24,8 @@ public class Texture implements IOpenGLObject {
 	private int width;
 	private int height;
 
+	private boolean created = false;
+
 	public Texture(String location) {
 		this(new Resource(location));
 	}
@@ -68,9 +70,9 @@ public class Texture implements IOpenGLObject {
 
 			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0, GL11.GL_RGBA,
 					GL11.GL_UNSIGNED_BYTE, pixels);
-			
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
 
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+			created = true;
 			return this;
 		} else
 			return null;
@@ -80,19 +82,20 @@ public class Texture implements IOpenGLObject {
 		GL13.glActiveTexture(GL13.GL_TEXTURE0 + texUnit);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
 	}
-	
+
 	@Override
 	public void delete() {
 		GL11.glDeleteTextures(id);
+		created = false;
 	}
 
 	@Override
 	public int getID() {
 		return id;
 	}
-	
+
 	public static void cleanUp() {
-		for(Texture tex : textures)
+		for (Texture tex : textures)
 			tex.delete();
 	}
 
@@ -107,12 +110,17 @@ public class Texture implements IOpenGLObject {
 	public IntBuffer getAsIntBuffer(int sub) {
 		IntBuffer pixels = getAsIntBuffer();
 		IntBuffer true_pixels = BufferUtils.createIntBuffer((width - sub) * (height - sub));
-		for(int y = sub / 2; y < height - sub / 2; y++) {
-			for(int x = sub / 2; x < width - sub / 2; x++) {
+		for (int y = sub / 2; y < height - sub / 2; y++) {
+			for (int x = sub / 2; x < width - sub / 2; x++) {
 				true_pixels.put(pixels.get(y * width + x));
 			}
 		}
 		true_pixels.flip();
 		return true_pixels;
+	}
+
+	@Override
+	public boolean isCreated() {
+		return created;
 	}
 }

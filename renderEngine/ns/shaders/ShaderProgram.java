@@ -1,28 +1,45 @@
 package ns.shaders;
 
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 import ns.openglObjects.IOpenGLObject;
 
 public abstract class ShaderProgram implements IOpenGLObject {
 	private final int programId;
-	private final int vertexShaderId;
-	private final int fragmentShaderId;
+//	private int vertexShaderId;
+//	private int fragmentShaderId;
 	protected StringBuffer src;
 	protected UniformLocator locator = new UniformLocator(this);
+	private boolean created = false;
+	private Shader[] shaders;
 
-	public ShaderProgram(String VERTEX_SHADER, String FRAGMENT_SHADER) {
+//	public ShaderProgram(String VERTEX_SHADER, String FRAGMENT_SHADER) {
+//		programId = GL20.glCreateProgram();
+//		src = new StringBuffer();
+//		vertexShaderId = createShader(VERTEX_SHADER, GL20.GL_VERTEX_SHADER);
+//		fragmentShaderId = createShader(FRAGMENT_SHADER, GL20.GL_FRAGMENT_SHADER);
+//		GL20.glAttachShader(programId, vertexShaderId);
+//		GL20.glAttachShader(programId, fragmentShaderId);
+//		preLink();
+//		GL20.glLinkProgram(programId);
+//		GL20.glValidateProgram(programId);
+//		postLink();
+//		created = true;
+//	}
+	
+	public ShaderProgram(Shader... shaderStages) {
 		programId = GL20.glCreateProgram();
 		src = new StringBuffer();
-		vertexShaderId = createShader(VERTEX_SHADER, GL20.GL_VERTEX_SHADER);
-		fragmentShaderId = createShader(FRAGMENT_SHADER, GL20.GL_FRAGMENT_SHADER);
-		GL20.glAttachShader(programId, vertexShaderId);
-		GL20.glAttachShader(programId, fragmentShaderId);
+		for(Shader sh : shaderStages) {
+			sh.create().bindToProgram(this);
+			src.append(sh.getSource());
+		}
+		shaders = shaderStages;
 		preLink();
 		GL20.glLinkProgram(programId);
 		GL20.glValidateProgram(programId);
 		postLink();
+		created = true;
 	}
 
 	protected void preLink() {
@@ -71,21 +88,21 @@ public abstract class ShaderProgram implements IOpenGLObject {
 		return GL20.glGetUniformLocation(programId, name);
 	}
 
-	private int createShader(String shader, int shaderType) {
-		String source = "";
-		String shaderSource = ShaderLib.getSource(shader);
-		source += shaderSource;
-		src.append(shaderSource);
-		int shaderId = GL20.glCreateShader(shaderType);
-		GL20.glShaderSource(shaderId, source);
-		GL20.glCompileShader(shaderId);
-		if (GL20.glGetShaderi(shaderId, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
-			System.err.println("Error compiling shader :" + shader + ", log:");
-			System.err.print(GL20.glGetShaderInfoLog(shaderId, 500));
-			System.exit(-1);
-		}
-		return shaderId;
-	}
+//	private int createShader(String shader, int shaderType) {
+//		String source = "";
+//		String shaderSource = ShaderLib.getSource(shader);
+//		source = shaderSource;
+//		src.append(shaderSource);
+//		int shaderId = GL20.glCreateShader(shaderType);
+//		GL20.glShaderSource(shaderId, source);
+//		GL20.glCompileShader(shaderId);
+//		if (GL20.glGetShaderi(shaderId, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
+//			System.err.println("Error compiling shader :" + shader + ", log:");
+//			System.err.print(GL20.glGetShaderInfoLog(shaderId, 500));
+//			System.exit(-1);
+//		}
+//		return shaderId;
+//	}
 
 	public void start() {
 		GL20.glUseProgram(programId);
@@ -97,11 +114,12 @@ public abstract class ShaderProgram implements IOpenGLObject {
 
 	public void cleanUp() {
 		stop();
-		GL20.glDetachShader(programId, vertexShaderId);
-		GL20.glDetachShader(programId, fragmentShaderId);
-		GL20.glDeleteShader(vertexShaderId);
-		GL20.glDeleteShader(fragmentShaderId);
+		for(Shader s : shaders) {
+			GL20.glDetachShader(programId, s.getID());
+			s.delete();
+		}
 		GL20.glDeleteProgram(programId);
+		created = false;
 	}
 	
 	public ShaderProgram create() {
@@ -114,5 +132,9 @@ public abstract class ShaderProgram implements IOpenGLObject {
 	
 	public int getID() {
 		return programId;
+	}
+	
+	public boolean isCreated() {
+		return created;
 	}
 }

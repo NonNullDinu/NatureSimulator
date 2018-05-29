@@ -22,8 +22,6 @@ public class ConfigInputStream {
 		int flags = data[0];
 		int configType = (flags & CONF_TYPE) >> 4;
 		int conf = (flags & CONF);
-		System.out.println(flags + ":" + configType + " " + conf);
-		System.out.println(Integer.toBinaryString(flags));
 		Config config = null;
 		if (configType == 1) {
 			config = (conf == 0 ? Config.FALSE : Config.TRUE);

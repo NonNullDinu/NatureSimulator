@@ -21,6 +21,7 @@ public class FBO implements IOpenGLObject {
 	private Texture tex;
 	private Texture depthTex;
 	private int depthRenderBufferId = -1;
+	private boolean created = false;
 
 	public FBO(int width, int height, int config) {
 		this.id = GL30.glGenFramebuffers();
@@ -138,6 +139,7 @@ public class FBO implements IOpenGLObject {
 	@Override
 	public FBO create() {
 		this.init(width, height, config);
+		created = true;
 		return this;
 	}
 
@@ -150,10 +152,16 @@ public class FBO implements IOpenGLObject {
 		if (depthRenderBufferId != -1)
 			GL30.glDeleteRenderbuffers(depthRenderBufferId);
 		GL30.glDeleteFramebuffers(id);
+		created = false;
 	}
 
 	@Override
 	public int getID() {
 		return id;
+	}
+
+	@Override
+	public boolean isCreated() {
+		return created;
 	}
 }

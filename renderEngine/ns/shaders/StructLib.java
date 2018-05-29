@@ -16,19 +16,17 @@ public class StructLib {
 		try {
 			String line;
 			String currentStructName = null, structBody = null;
-			while((line = reader.readLine()) != null) {
-				if(line.startsWith("}")) {
+			while ((line = reader.readLine()) != null) {
+				if (line.startsWith("}")) {
 					structBody += "};";
 					structs.put(currentStructName, structBody);
-				}
-				else if(line.startsWith("struct ")) {
+				} else if (line.startsWith("struct ")) {
 					currentStructName = line.split(" ")[1];
-					if(currentStructName.contains("{")) {
+					if (currentStructName.contains("{")) {
 						currentStructName = currentStructName.replace("{", "");
 					}
 					structBody = line + "\n";
-				}
-				else if(!line.equals(""))
+				} else if (!line.equals(""))
 					structBody += line + "\n";
 			}
 			reader.close();
@@ -36,7 +34,7 @@ public class StructLib {
 			e.printStackTrace();
 		}
 	}
-	
+
 	static String get(String name) {
 		return structs.get(name);
 	}
