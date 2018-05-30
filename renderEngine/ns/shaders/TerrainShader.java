@@ -3,7 +3,6 @@ package ns.shaders;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.GL43;
 
 import ns.shaders.uniformStructs.UniformFogValues;
@@ -13,7 +12,6 @@ import ns.terrain.Terrain;
 public class TerrainShader extends ShaderProgram {
 
 	private static final String VERTEX_SHADER = "res/shaders/terrain/terrainVertex.glsl";
-	private static final String GEOMETRY_SHADER = "res/shaders/terrain/terrainGeometry.glsl";
 	private static final String FRAGMENT_SHADER = "res/shaders/terrain/terrainFragment.glsl";
 	
 	public UniformMat4 projectionMatrix = locator.locateUniformMat4("projectionMatrix");
@@ -31,7 +29,7 @@ public class TerrainShader extends ShaderProgram {
 	private int colors_buffer;
 	
 	public TerrainShader() {
-		super(new Shader(VERTEX_SHADER, GL20.GL_VERTEX_SHADER), new Shader(GEOMETRY_SHADER, GL32.GL_GEOMETRY_SHADER),new Shader(FRAGMENT_SHADER, GL20.GL_FRAGMENT_SHADER));
+		super(new Shader(VERTEX_SHADER, GL20.GL_VERTEX_SHADER), new Shader(FRAGMENT_SHADER, GL20.GL_FRAGMENT_SHADER));
 	}
 	
 	@Override
