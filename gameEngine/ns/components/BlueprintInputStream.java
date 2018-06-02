@@ -20,7 +20,7 @@ public class BlueprintInputStream {
 		int dataIn = data[0];
 		String enFolder = Integer.toString(999 + dataIn);
 		String modelName = "";
-		if(dataIn == 1 || dataIn == 2 || dataIn == 3) {
+		if(dataIn == 1 || dataIn == 2 || dataIn == 3 || dataIn == 5) {
 			modelName = "tree";
 		}
 		if(dataIn == 4) {

@@ -2,7 +2,6 @@
 
 const vec3 waterColour = vec3(0.604, 0.867, 0.851);
 const float fresnelReflective = 2.5;
-const float edgeSoftness = 1;
 const float minBlueness = 0.2;
 const float maxBlueness = 0.6;
 const float murkyDepth = 14;
@@ -23,16 +22,12 @@ uniform sampler2D depthTexture;
 uniform vec2 nearFarPlanes;
 uniform vec3 skyColor;
 
+#define toLinearDepth(depth) (2.0 * nearFarPlanes.x * nearFarPlanes.y / (nearFarPlanes.y + nearFarPlanes.x - (2.0 * depth - 1.0) * (nearFarPlanes.y - nearFarPlanes.x)))
+
 vec3 applyMurkiness(vec3 refractColour, float waterDepth) {
 	float murkyFactor = clamp(waterDepth / murkyDepth, 0.0, 1.0);
 	float murkiness = minBlueness + murkyFactor * (maxBlueness - minBlueness);
 	return mix(refractColour, waterColour, murkiness);
-}
-
-float toLinearDepth(float zDepth) {
-	float near = nearFarPlanes.x;
-	float far = nearFarPlanes.y;
-	return 2.0 * near * far / (far + near - (2.0 * zDepth - 1.0) * (far - near));
 }
 
 float calculateWaterDepth(vec2 texCoords) {
@@ -61,6 +56,7 @@ void main(void) {
 
 	vec2 texCoordsReal = clipSpaceToTexCoords(pass_clipSpaceReal);
 	vec2 texCoordsGrid = clipSpaceToTexCoords(pass_clipSpaceGrid);
+	texCoordsGrid = mix(texCoordsReal, texCoordsGrid, 0.4);
 
 	vec2 refractionTexCoords = texCoordsGrid;
 	vec2 reflectionTexCoords = vec2(texCoordsGrid.x, 1.0 - texCoordsGrid.y);
@@ -79,8 +75,5 @@ void main(void) {
 	frag_Color = vec4(finalColour, 1.0);
 
 	frag_Color = mix(vec4(skyColor, 1.0), frag_Color, in_visibility);
-
-	//apply soft edges
-//	out_colour.a = clamp(waterDepth / edgeSoftness, 0.0, 1.0);
 
 }

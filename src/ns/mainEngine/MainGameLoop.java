@@ -48,6 +48,7 @@ public class MainGameLoop implements Runnable {
 		thread = ThreadMaster.createThread(new SecondaryThread(), "secondary thread");
 		thread.start();
 	}
+
 	private FBO bluredSceneFBO;
 	private Blurer blurer;
 	private ICamera camera;

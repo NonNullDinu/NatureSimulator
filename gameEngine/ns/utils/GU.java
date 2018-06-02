@@ -32,7 +32,7 @@ public class GU {
 	public static float lastFramesLengths;
 	private static float[] mouseLengths = new float[20];
 	public static final List<Texture> textures = new ArrayList<>();
-	public static final int TOTAL_NUMBER_OF_ENTITIES = 4;
+	public static final int TOTAL_NUMBER_OF_ENTITIES = 5;
 
 	public static BufferedReader open(Resource resource) {
 		return new BufferedReader(new InputStreamReader(resource.asInputStream()));

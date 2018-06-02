@@ -86,6 +86,10 @@ public class Blueprint implements SerializableWorldObject {
 		if (objectName.equals("1000") || objectName.equals("1001") || objectName.equals("1002")) {
 			cc.add(new Vector3f(0f, 0.750769f, 0f));
 		}
+		else if(objectName.equals("1004")) {
+			cc.add(new Vector3f(0.002494f, 0.350834f, 0.000000f));
+			cc.add(new Vector3f(0.000000f, 0.307499f, 0.002174f));
+		}
 		return this.withCuctomColors(new CustomColorsComponent(cc));
 	}
 

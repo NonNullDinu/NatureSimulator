@@ -27,14 +27,16 @@ layout(std430, binding = 0) buffer colors
 	float cls[];
 };
 
-vec3 calculateDiffuse(vec3 normal) {
+void calculateDiffuse(in vec3 normal, out vec3 diffuse) {
 	float dot1 = dot(normalize(-light.direction), normal);
 	dot1 = max(dot1, 0.0);
-	return (light.color * light.bias.x) + (dot1 * light.color * light.bias.y);
+	diffuse = (light.color * light.bias.x) + (dot1 * light.color * light.bias.y);
 }
 
 void calculateColor(inout vec3 color, in vec3 normal) {
-	color = color * calculateDiffuse(normal);
+	vec3 diffuse;
+	calculateDiffuse(normal, diffuse);
+	color = color * diffuse;
 }
 
 void main(void) {

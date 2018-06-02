@@ -30,6 +30,7 @@ public class LoadWorldMaster {
 			world = new World(entities, terrain);
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
+			System.exit(-1);
 		}
 		return world;
 	}

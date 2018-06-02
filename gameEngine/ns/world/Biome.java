@@ -4,7 +4,8 @@ import org.lwjgl.util.vector.Vector3f;
 
 public enum Biome {
 
-	FOREST(1, new Vector3f(0.02f, 0.678f, 0.22f)), SWAMP(2, new Vector3f(0.659f, 0.569f, 0.62f)),;
+	FOREST(1, new Vector3f(0.02f, 0.678f, 0.22f)), SWAMP(2, new Vector3f(0.659f, 0.569f, 0.62f)),
+	SNOW_LANDS(3, new Vector3f(0.9f, 0.9f, 0.9f)),;
 
 	protected int biomeId;
 	protected Vector3f color;
@@ -27,6 +28,8 @@ public enum Biome {
 			return FOREST;
 		else if (id == SWAMP.biomeId)
 			return SWAMP;
+		else if (id == SNOW_LANDS.biomeId)
+			return SNOW_LANDS;
 		return null;
 	}
 }

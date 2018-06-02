@@ -19,7 +19,7 @@ public class StructLib {
 			while ((line = reader.readLine()) != null) {
 				if (line.startsWith("}")) {
 					structBody += "};";
-					structs.put(currentStructName, structBody);
+					structs.put(currentStructName, structBody.replaceAll("\n", ""));
 				} else if (line.startsWith("struct ")) {
 					currentStructName = line.split(" ")[1];
 					if (currentStructName.contains("{")) {
