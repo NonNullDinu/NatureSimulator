@@ -1,2 +1,3 @@
 Please put you system-specific OS executable in a folder, since the game will create
 new folders in the directory where the executable is for save data(the folder name is saveData)
+NOTE: HIGHLY UNSTABLE
