@@ -23,15 +23,15 @@ public class SecondaryThread implements Runnable {
 	public void run() {
 		long timeb = System.nanoTime();
 		MasterRenderer.initStandardModels();
-		StructLib.load(new Resource("ns/shaders/uniformStructs/structlib.glsl"));
+		StructLib.load(new Resource("shaders/structlib.glsl"));
 		ShaderLib.loadAll();
 		new Camera();
 		new Light(new Vector3f(0.5f, -0.5f, 0), new Vector3f(1, 1, 1), new Vector2f(0.5f, 0.5f));
 		World world = WorldGenerator.generateWorld();
 		new WaterTile(0, 0);
 
-		// Read model files and create CVAOR
-		ModelsLibrary.getModel("res/models/others/menu_DNA.obj");
+		// Read model files and create CreateVAORequests
+		ModelsLibrary.getModel("models/others/menu_DNA.obj");
 
 		while (GUIRenderer.instance == null)
 			Thread.yield();

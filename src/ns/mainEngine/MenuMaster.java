@@ -24,13 +24,13 @@ public class MenuMaster {
 			public void execute() {
 				MainGameLoop.state = GS.GAME;
 			}
-		}, new TexFile("res/textures/buttonTextures/mainMenu_Start.tex").load()));
+		}, new TexFile("textures/buttonTextures/mainMenu_Start.tex").load()));
 		buttons.add(new MainMenuButton(new Vector2f(0f, -0.7f), new Vector2f(0.1f, 0.05f), new Action() {
 			@Override
 			public void execute() {
 				MainGameLoop.state = GS.EXIT;
 			}
-		}, new TexFile("res/textures/buttonTextures/mainMenu_Exit.tex").load()));
+		}, new TexFile("textures/buttonTextures/mainMenu_Exit.tex").load()));
 		Blueprint dnaBlueprint = BlueprintCreator.createModelBlueprintFor("menuDNA");
 		menu = new MainMenu(buttons, new Entity(dnaBlueprint, new Vector3f(1f, -5f, -8.1f)));
 		return menu;

@@ -1,7 +1,5 @@
 package res;
 
-import java.io.DataInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -9,14 +7,20 @@ import java.io.InputStream;
 public class Resource {
 	private String location;
 	private InputStream asInputStream;
-	private final boolean exists;
+	private boolean exists;
 
 	public Resource(String location) {
-		this.location = location;
-		try {
-			this.asInputStream = new DataInputStream(new FileInputStream(new File(location)));
-		} catch (FileNotFoundException e) {
-			this.asInputStream = ClassLoader.getSystemResourceAsStream(this.location);
+		this.location = // System.getProperty("user.dir") + "/" +
+				location;
+		this.asInputStream = Resource.class.getResourceAsStream(location.replace("res/", ""));
+		if (this.asInputStream == null) {
+			this.asInputStream = ClassLoader.getSystemResourceAsStream("res/" + location);
+			if (this.asInputStream == null) {
+				try {
+					this.asInputStream = new FileInputStream(location);
+				} catch (FileNotFoundException e) {
+				}
+			}
 		}
 		this.exists = this.asInputStream != null;
 	}
@@ -26,7 +30,10 @@ public class Resource {
 	}
 
 	public InputStream asInputStream() {
-		return asInputStream;
+		if (asInputStream != null)
+			return asInputStream;
+		else
+			throw new NullPointerException("File at " + location + " could not be found");
 	}
 
 	public boolean exists() {

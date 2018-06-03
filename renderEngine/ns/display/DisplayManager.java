@@ -24,8 +24,8 @@ public class DisplayManager {
 			else
 				Display.setDisplayMode(new DisplayMode(1200, 800));
 			Display.setVSyncEnabled(true);
-			Display.create(new PixelFormat(),
-					new ContextAttribs(4, 3).withForwardCompatible(true).withProfileCore(true));
+			Display.create(new PixelFormat(), new ContextAttribs(4, 3).withForwardCompatible(true).withProfileCore(true)
+					.withProfileCompatibility(false));
 			Mouse.create();
 			Keyboard.create();
 		} catch (LWJGLException e) {

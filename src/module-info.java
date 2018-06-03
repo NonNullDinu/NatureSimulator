@@ -6,8 +6,8 @@
 module GameModule {
 	// Dependencies
 	requires java.se;
-	requires transitive lwjgl;
-	requires transitive lwjgl.util;
+	requires lwjgl;
+	requires lwjgl.util;
 	
 	// src
 	exports ns.mainEngine;
@@ -44,7 +44,6 @@ module GameModule {
 	exports ns.shaders.uniformStructs;
 
 	// Shaders
-	opens ns.shaders.uniformStructs;
 	opens res.shaders.standard;
 	opens res.shaders.terrain;
 	opens res.shaders.water;
@@ -59,7 +58,4 @@ module GameModule {
 
 	// Models
 	opens res.models.others;
-	
-	//Game configuration
-	opens ns.configuration;
 }

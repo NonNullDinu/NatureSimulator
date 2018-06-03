@@ -15,7 +15,7 @@ public class GameConfig {
 	protected static final int TOTAL = 1;
 	
 	static {
-		ConfigInputStream inp = new ConfigInputStream(new Resource("gameEngine/ns/configuration/gameConfiguration.config").asInputStream());
+		ConfigInputStream inp = new ConfigInputStream(new Resource("config/gameConfiguration.config").asInputStream());
 		try {
 			inp.readTo(configuration);
 		} catch (IOException e) {
