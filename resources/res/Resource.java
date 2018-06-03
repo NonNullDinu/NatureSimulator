@@ -10,8 +10,7 @@ public class Resource {
 	private boolean exists;
 
 	public Resource(String location) {
-		this.location = // System.getProperty("user.dir") + "/" +
-				location;
+		this.location = location;
 		this.asInputStream = Resource.class.getResourceAsStream(location.replace("res/", ""));
 		if (this.asInputStream == null) {
 			this.asInputStream = ClassLoader.getSystemResourceAsStream("res/" + location);
