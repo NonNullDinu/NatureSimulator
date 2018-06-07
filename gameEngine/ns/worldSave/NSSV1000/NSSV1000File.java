@@ -1,4 +1,4 @@
-package ns.worldSave.NSV1000;
+package ns.worldSave.NSSV1000;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,9 +15,9 @@ import ns.worldSave.NSVFile;
 import ns.worldSave.TerrainData;
 import res.Resource;
 
-public class NSV1000File extends NSVFile {
+public class NSSV1000File extends NSVFile {
 
-	public NSV1000File(Resource resource) {
+	public NSSV1000File(Resource resource) {
 		super(resource);
 	}
 

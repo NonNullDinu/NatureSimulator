@@ -1,6 +1,12 @@
 package ns.mainEngine;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
@@ -53,7 +59,15 @@ public class MainGameLoop implements Runnable {
 				for (StackTraceElement elem : e.getStackTrace()) {
 					msg += elem.getFileName() + ": " + elem.getMethodName() + "(line " + elem.getLineNumber() + ")\n";
 				}
-				System.err.print(e.getClass().getName() + "\nStack trace: " + msg);
+				File f = new File("err" + new SimpleDateFormat("hh mm ss dd MM yyyy").format(new Date()) + ".log");
+				try {
+					f.createNewFile();
+					DataOutputStream dout = new DataOutputStream(new FileOutputStream(f));
+					dout.writeUTF(e.getClass().getName() + "\nStack trace: " + msg);
+					dout.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 				try {
 					SaveWorldMaster.save(WorldGenerator.generatedWorld,
 							new WritingResource("saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT));
