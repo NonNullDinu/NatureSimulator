@@ -7,9 +7,11 @@ import java.util.concurrent.Exchanger;
 public class Thread extends java.lang.Thread {
 	public List<Request> toCarryOutRequests = new ArrayList<>();
 	public List<CreateVAORequest> vaoCreateRequests = new ArrayList<>();
+	private Runnable runnable;
 
 	protected Thread(String name, Runnable runnable) {
 		super(runnable, name);
+		this.runnable = runnable;
 	}
 
 	public void setToCarryOutRequest(Request request) {
@@ -32,5 +34,9 @@ public class Thread extends java.lang.Thread {
 	public void clearRequests() {
 		this.toCarryOutRequests.clear();
 		this.vaoCreateRequests.clear();
+	}
+
+	public Runnable getRunnable() {
+		return runnable;
 	}
 }

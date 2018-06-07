@@ -16,13 +16,13 @@ import res.Resource;
 public class OBJLoader {
 
 	public static VAO loadObj(String file) {
-		Resource asResource = new Resource(file);
+		Resource asResource = new Resource().withLocation(file).withVersion(false).create();
 		if (!asResource.exists())
 			return null;
 		BufferedReader reader = GU.open(asResource);
 		Materials materials = null;
 		{
-			Resource materialsResource = new Resource(file.replace(".obj", ".mtl"));
+			Resource materialsResource = new Resource().withLocation(file.replace(".obj", ".mtl")).withVersion(false).create();
 			if (materialsResource.exists())
 				materials = new Materials(materialsResource);
 		}
@@ -47,7 +47,7 @@ public class OBJLoader {
 				if (line.startsWith("mtllib") && materials == null) {
 					String[] filepcs = file.split("/");
 					String mtlFile = file.replace(filepcs[filepcs.length - 1], currentLine[1]);
-					Resource materialsResource = new Resource(mtlFile);
+					Resource materialsResource = new Resource().withLocation(mtlFile).withVersion(false).create();
 					if (materialsResource.exists())
 						materials = new Materials(materialsResource);
 				}

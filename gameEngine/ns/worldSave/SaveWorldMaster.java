@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 import ns.entities.Entity;
+import ns.utils.GU;
 import ns.world.World;
 import res.WritingResource;
 
@@ -11,6 +12,7 @@ public class SaveWorldMaster {
 	public static void save(World world, WritingResource resource) {
 		ObjectOutputStream stream = null;
 		try {
+			resource.writeVersion(GU.CURRENT_WORLD_FILE_VERSION);
 			stream = new ObjectOutputStream(resource.asOutputStream());
 			for (Entity entity : world.getEntities())
 				stream.writeObject(entity.asData());

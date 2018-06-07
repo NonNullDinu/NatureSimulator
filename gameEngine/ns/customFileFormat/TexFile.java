@@ -22,7 +22,7 @@ public class TexFile implements File {
 
 	@Override
 	public Texture load() throws LoadingException {
-		BufferedReader reader = GU.open(new Resource(location));
+		BufferedReader reader = GU.open(new Resource().withLocation(location).withVersion(false).create());
 		int id = 0;
 		int width = 0;
 		int height = 0;

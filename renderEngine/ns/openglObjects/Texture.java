@@ -27,7 +27,7 @@ public class Texture implements IOpenGLObject {
 	private boolean created = false;
 
 	public Texture(String location) {
-		this(new Resource(location));
+		this(new Resource().withLocation(location).withVersion(false).create());
 	}
 
 	public Texture(Resource resource) {

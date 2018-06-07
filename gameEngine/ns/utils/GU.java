@@ -33,6 +33,8 @@ public class GU {
 	private static float[] mouseLengths = new float[20];
 	public static final List<Texture> textures = new ArrayList<>();
 	public static final int TOTAL_NUMBER_OF_ENTITIES = 5;
+	public static final int CURRENT_WORLD_FILE_VERSION = 1;
+	public static final String WORLD_SAVE_FILE_FORMAT = "nssv";
 
 	public static BufferedReader open(Resource resource) {
 		return new BufferedReader(new InputStreamReader(resource.asInputStream()));

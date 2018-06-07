@@ -14,15 +14,15 @@ import res.Resource;
 
 public class AudFile implements File {
 	private String location;
-	
+
 	public AudFile(String location) {
 		this.location = location;
 	}
-	
+
 	@Override
 	public Buffer load() throws LoadingException {
 		int id = AL10.alGenBuffers();
-		BufferedReader reader = GU.open(new Resource(location));
+		BufferedReader reader = GU.open(new Resource().withLocation(location).withVersion(false).create());
 		String line;
 		try {
 			line = reader.readLine();
@@ -33,7 +33,7 @@ public class AudFile implements File {
 			int freq = Integer.parseInt(pts[2]);
 			line = reader.readLine();
 			pts = line.split(" ");
-			for(int idx = 0; idx < size; idx++)
+			for (int idx = 0; idx < size; idx++)
 				data.put(Byte.parseByte(pts[idx]));
 			data.flip();
 			AL10.alBufferData(id, format, data, freq);

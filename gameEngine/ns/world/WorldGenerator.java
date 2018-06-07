@@ -19,7 +19,8 @@ public class WorldGenerator {
 	private static final float TS = Terrain.SIZE / 2f;
 
 	public static World generateWorld() {
-		Resource resource = new Resource("saveData/save0.sav");
+		Resource resource = new Resource().withLocation("saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT).withVersion(true)
+				.create();
 		if (resource.exists()) {
 			generatedWorld = LoadWorldMaster.loadWorld(resource);
 			generatedWorld.getTerrain().initColors(generatedWorld.getEntities());

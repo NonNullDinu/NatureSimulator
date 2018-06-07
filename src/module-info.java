@@ -1,3 +1,4 @@
+
 /**
  * The game module
  * 
@@ -5,7 +6,7 @@
  */
 module GameModule {
 	// Dependencies
-	requires java.se;
+	requires java.desktop;
 	requires lwjgl;
 	requires lwjgl.util;
 	

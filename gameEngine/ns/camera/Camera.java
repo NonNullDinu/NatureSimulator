@@ -77,10 +77,7 @@ public class Camera extends ICamera {
 		Vector2f pt = new Vector2f(point.x, point.z);
 		Vector2f ps = new Vector2f(position.x, position.z);
 		dist = Vector2f.sub(pt, ps, null).length();
-		recalcultePosition(world);
-	}
-
-	private void recalcultePosition(World world) {
+		// Recalculate position
 		if (dist < 200f) {
 			point.y = onTerrainPoint.y;
 			if ((flags & 1) == 0) {

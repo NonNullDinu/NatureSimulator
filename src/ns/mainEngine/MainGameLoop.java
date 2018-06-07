@@ -1,5 +1,7 @@
 package ns.mainEngine;
 
+import java.lang.Thread.UncaughtExceptionHandler;
+
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
@@ -31,11 +33,11 @@ import ns.water.WaterFBOs;
 import ns.water.WaterTile;
 import ns.world.World;
 import ns.world.WorldGenerator;
+import ns.worldSave.SaveWorldMaster;
+import res.WritingResource;
 
 /**
- * @version 1.1.6
- * @author Dinu B.
- * @since 1.0
+ * @version 1.1.7
  */
 public class MainGameLoop implements Runnable {
 	protected static boolean inLoop = true;
@@ -43,9 +45,36 @@ public class MainGameLoop implements Runnable {
 	public static GS state = GS.MENU;
 
 	public static void main(String[] args) {
-		ns.parallelComputing.Thread thread = ThreadMaster.createThread(new MainGameLoop(), "main thread");
+		UncaughtExceptionHandler handler = new UncaughtExceptionHandler() {
+			@Override
+			public void uncaughtException(Thread t, Throwable e) {
+				Thread.getDefaultUncaughtExceptionHandler().uncaughtException(t, e);
+				String msg = "";
+				for (StackTraceElement elem : e.getStackTrace()) {
+					msg += elem.getFileName() + ": " + elem.getMethodName() + "(line " + elem.getLineNumber() + ")\n";
+				}
+				System.err.print(e.getClass().getName() + "\nStack trace: " + msg);
+				try {
+					SaveWorldMaster.save(WorldGenerator.generatedWorld,
+							new WritingResource("saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT));
+				} catch (Throwable thr) {
+					msg = "";
+					for (StackTraceElement elem : thr.getStackTrace()) {
+						msg += elem.getFileName() + ": " + elem.getMethodName() + "(line " + elem.getLineNumber()
+								+ ")\n	";
+					}
+					System.err.println(thr.getClass().getName() + "\nError while saving world:\nAt:" + msg);
+				}
+			}
+		};
+		
+		ns.parallelComputing.Thread thread;
+		thread = ThreadMaster.createThread(new MainGameLoop(), "main thread");
+		thread.setUncaughtExceptionHandler(handler);
 		thread.start();
+
 		thread = ThreadMaster.createThread(new SecondaryThread(), "secondary thread");
+		thread.setUncaughtExceptionHandler(handler);
 		thread.start();
 	}
 

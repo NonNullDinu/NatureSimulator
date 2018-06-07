@@ -35,23 +35,21 @@ public class ShaderLib {
 	}
 
 	private static void addDeclarations(List<Resource> shaders) {
-		shaders.add(new Resource("res/shaders/standard/vertexShader.glsl"));
-		shaders.add(new Resource("res/shaders/standard/fragmentShader.glsl")); // Entity (standard)
-		shaders.add(new Resource("res/shaders/terrain/terrainVertex.glsl"));
-		shaders.add(new Resource("res/shaders/terrain/terrainFragment.glsl")); // Terrain
-		shaders.add(new Resource("res/shaders/water/vertex.glsl"));
-		shaders.add(new Resource("res/shaders/water/fragment.glsl")); // Water
-		shaders.add(new Resource("res/shaders/guis/guiVertex.glsl"));
-		shaders.add(new Resource("res/shaders/guis/guiFragment.glsl")); // GUI
-		shaders.add(new Resource("res/shaders/menuDNA/vertexShader.glsl"));
-		shaders.add(new Resource("res/shaders/menuDNA/fragmentShader.glsl")); // MenuDNA
-//		shaders.add(new Resource("res/shaders/depthFieldBlur/vertex.glsl"));
-//		shaders.add(new Resource("res/shaders/depthFieldBlur/fragment.glsl")); // Depth field blur(not using)
-		shaders.add(new Resource("res/shaders/colorQuad/quadVertex.glsl"));
-		shaders.add(new Resource("res/shaders/colorQuad/quadFragment.glsl")); // Color Quad
-		shaders.add(new Resource("res/shaders/blur/fshader.glsl"));
-		shaders.add(new Resource("res/shaders/blur/vvshader.glsl"));
-		shaders.add(new Resource("res/shaders/blur/vhshader.glsl")); // Gaussian blur
+		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/standard/vertexShader.glsl").create());
+		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/standard/fragmentShader.glsl").create()); // Entity (standard)
+		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/terrain/terrainVertex.glsl").create());
+		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/terrain/terrainFragment.glsl").create()); // Terrain
+		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/water/vertex.glsl").create());
+		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/water/fragment.glsl").create()); // Water
+		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/guis/guiVertex.glsl").create());
+		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/guis/guiFragment.glsl").create()); // GUI
+		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/menuDNA/vertexShader.glsl").create());
+		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/menuDNA/fragmentShader.glsl").create()); // MenuDNA
+		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/colorQuad/quadVertex.glsl").create());
+		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/colorQuad/quadFragment.glsl").create()); // Color Quad
+		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/blur/fshader.glsl").create());
+		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/blur/vvshader.glsl").create());
+		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/blur/vhshader.glsl").create()); // Gaussian blur
 	}
 
 	public static String getSource(String shaderName) {

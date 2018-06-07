@@ -11,6 +11,7 @@ import ns.renderers.MasterRenderer;
 import ns.shaders.ShaderLib;
 import ns.shaders.StructLib;
 import ns.ui.shop.ShopMaster;
+import ns.utils.GU;
 import ns.water.WaterTile;
 import ns.world.World;
 import ns.world.WorldGenerator;
@@ -23,7 +24,7 @@ public class SecondaryThread implements Runnable {
 	public void run() {
 		long timeb = System.nanoTime();
 		MasterRenderer.initStandardModels();
-		StructLib.load(new Resource("shaders/structlib.glsl"));
+		StructLib.load(new Resource().withLocation("shaders/structlib.glsl").withVersion(false).create());
 		ShaderLib.loadAll();
 		new Camera();
 		new Light(new Vector3f(0.5f, -0.5f, 0), new Vector3f(1, 1, 1), new Vector2f(0.5f, 0.5f));
@@ -44,6 +45,6 @@ public class SecondaryThread implements Runnable {
 			Thread.yield();
 		}
 
-		SaveWorldMaster.save(world, new WritingResource("saveData/save0.sav"));
+		SaveWorldMaster.save(world, new WritingResource("saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT));
 	}
 }

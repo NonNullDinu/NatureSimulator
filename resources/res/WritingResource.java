@@ -1,14 +1,14 @@
 package res;
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 public class WritingResource {
 	private String location;
-	private DataOutputStream outputStream;
+	private OutputStream outputStream;
 
 	public WritingResource(String location) {
 		this.location = location;
@@ -22,13 +22,17 @@ public class WritingResource {
 				throw new InstantiationError("Could not create non-existent file at " + location + ", " + e.getLocalizedMessage());
 			}
 		try {
-			this.outputStream = new DataOutputStream(new FileOutputStream(f));
+			this.outputStream = new FileOutputStream(f);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public DataOutputStream asOutputStream() {
+	public void writeVersion(int version) throws IOException {
+		this.outputStream.write(version);
+	}
+	
+	public OutputStream asOutputStream() {
 		return outputStream;
 	}
 	

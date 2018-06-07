@@ -2,15 +2,30 @@ package res;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
 public class Resource {
 	private String location;
 	private InputStream asInputStream;
 	private boolean exists;
+	private int ver;
+	private boolean hasVersion;
 
-	public Resource(String location) {
+	public Resource() {
+	}
+	
+	public Resource withLocation(String location) {
 		this.location = location;
+		return this;
+	}
+	
+	public Resource withVersion(boolean version) {
+		this.hasVersion = version;
+		return this;
+	}
+	
+	public Resource create() {
 		this.asInputStream = Resource.class.getResourceAsStream(location.replace("res/", ""));
 		if (this.asInputStream == null) {
 			this.asInputStream = ClassLoader.getSystemResourceAsStream("res/" + location);
@@ -22,6 +37,14 @@ public class Resource {
 			}
 		}
 		this.exists = this.asInputStream != null;
+		if(this.exists && this.hasVersion) {
+			try {
+				this.ver = asInputStream.read();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return this;
 	}
 
 	public String getLocation() {
@@ -37,5 +60,9 @@ public class Resource {
 
 	public boolean exists() {
 		return exists;
+	}
+
+	public int version() {
+		return ver;
 	}
 }

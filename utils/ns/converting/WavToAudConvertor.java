@@ -22,7 +22,7 @@ public class WavToAudConvertor {
 		System.out.println("resources/" + location.replace(".wav", ".aud"));
 		target.createNewFile();
 		BufferedWriter writer = new BufferedWriter(new FileWriter(target));
-		WaveData data = WaveData.create(new Resource(location).asInputStream());
+		WaveData data = WaveData.create(new Resource().withLocation(location).withVersion(false).create().asInputStream());
 		int format = data.format;
 		ByteBuffer bufferData = data.data;
 		int samplerate = data.samplerate;

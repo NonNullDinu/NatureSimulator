@@ -22,7 +22,7 @@ public class PngToTexConvertor {
 		target.createNewFile();
 		BufferedWriter writer = new BufferedWriter(
 				new FileWriter(target));
-		BufferedImage img = ImageIO.read(new Resource(location).asInputStream());
+		BufferedImage img = ImageIO.read(new Resource().withLocation(location).withVersion(false).create().asInputStream());
 		int width = img.getWidth();
 		int height = img.getHeight();
 		writer.write(width + " " + height + "\n");
