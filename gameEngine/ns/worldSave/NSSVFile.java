@@ -7,10 +7,10 @@ import ns.exceptions.LoadingException;
 import ns.world.World;
 import res.Resource;
 
-public abstract class NSVFile implements File {
+public abstract class NSSVFile implements File {
 	private Resource resource;
 	
-	public NSVFile(Resource resource) {
+	public NSSVFile(Resource resource) {
 		this.resource = resource;
 	}
 

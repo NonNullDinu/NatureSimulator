@@ -11,11 +11,11 @@ import ns.terrain.Terrain;
 import ns.world.World;
 import ns.worldSave.EndObject;
 import ns.worldSave.EntityData;
-import ns.worldSave.NSVFile;
+import ns.worldSave.NSSVFile;
 import ns.worldSave.TerrainData;
 import res.Resource;
 
-public class NSSV1000File extends NSVFile {
+public class NSSV1000File extends NSSVFile {
 
 	public NSSV1000File(Resource resource) {
 		super(resource);
