@@ -50,6 +50,8 @@ public class ShaderLib {
 		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/blur/fshader.glsl").create());
 		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/blur/vvshader.glsl").create());
 		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/blur/vhshader.glsl").create()); // Gaussian blur
+		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/font/fontVertex.glsl").create());
+		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/font/fontFragment.glsl").create()); // Font
 	}
 
 	public static String getSource(String shaderName) {

@@ -8,6 +8,7 @@ public class Thread extends java.lang.Thread {
 	public List<Request> toCarryOutRequests = new ArrayList<>();
 	public List<CreateVAORequest> vaoCreateRequests = new ArrayList<>();
 	private Runnable runnable;
+	public List<Request> renderingRequests = new ArrayList<>();
 
 	protected Thread(String name, Runnable runnable) {
 		super(runnable, name);
@@ -15,11 +16,12 @@ public class Thread extends java.lang.Thread {
 	}
 
 	public void setToCarryOutRequest(Request request) {
-		if(request instanceof CreateVAORequest) {
+		if (request instanceof CreateVAORequest)
 			vaoCreateRequests.add((CreateVAORequest) request);
-			return;
-		}
-		this.toCarryOutRequests.add(request);
+		else if (request instanceof GLClearRequest || request instanceof GLRenderRequest || request instanceof UpdateDisplayRequest) {
+			renderingRequests.add(request);
+		} else
+			this.toCarryOutRequests.add(request);
 	}
 
 	public <T> T exchange(T toExchange) {
@@ -32,8 +34,9 @@ public class Thread extends java.lang.Thread {
 	}
 
 	public void clearRequests() {
-		this.toCarryOutRequests.clear();
-		this.vaoCreateRequests.clear();
+		toCarryOutRequests.clear();
+		vaoCreateRequests.clear();
+		renderingRequests.clear();
 	}
 
 	public Runnable getRunnable() {

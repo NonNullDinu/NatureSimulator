@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.function.Predicate;
 
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
@@ -17,10 +18,12 @@ import ns.camera.ICamera;
 import ns.display.DisplayManager;
 import ns.entities.Entity;
 import ns.entities.Light;
+import ns.fontRendering.TextMaster;
 import ns.mainMenu.MainMenu;
 import ns.openglObjects.FBO;
 import ns.openglObjects.Texture;
 import ns.openglWorkers.VAOLoader;
+import ns.parallelComputing.Request;
 import ns.parallelComputing.ThreadMaster;
 import ns.renderers.Blurer;
 import ns.renderers.ColorQuadFiller;
@@ -43,22 +46,21 @@ import ns.worldSave.SaveWorldMaster;
 import res.WritingResource;
 
 /**
- * @version 1.1.7
+ * @version 1.1.8
  */
 public class MainGameLoop implements Runnable {
-	protected static boolean inLoop = true;
-	public static boolean loopStarted = false;
-	public static GS state = GS.MENU;
+	public static GS state = GS.LOADING;
 	public static int leaves = 10000;
 
 	public static void main(String[] args) {
 		UncaughtExceptionHandler handler = new UncaughtExceptionHandler() {
 			@Override
 			public void uncaughtException(Thread t, Throwable e) {
-//				Thread.getDefaultUncaughtExceptionHandler().uncaughtException(t, e);
 				String msg = "";
 				for (StackTraceElement elem : e.getStackTrace()) {
-					msg += elem.getModuleName() + "/" + elem.getClassName() + "." + elem.getMethodName() + "(" + elem.getFileName() + ":" + elem.getLineNumber() + ")\n";
+					// Formatting for use with eclipse
+					msg += elem.getModuleName() + "/" + elem.getClassName() + "." + elem.getMethodName() + "("
+							+ elem.getFileName() + ":" + elem.getLineNumber() + ")\n	";
 				}
 				File f = new File("err" + new SimpleDateFormat("hh mm ss dd MM yyyy").format(new Date()) + ".log");
 				System.err.println(e.getClass().getName() + "\nStack trace: " + msg);
@@ -79,8 +81,10 @@ public class MainGameLoop implements Runnable {
 						msg += elem.getFileName() + ": " + elem.getMethodName() + "(line " + elem.getLineNumber()
 								+ ")\n	";
 					}
-					System.err.println(thr.getClass().getName() + "\nError while saving world:\nAt:" + msg);
+					System.err.print(thr.getClass().getName() + "\nError while saving world:\nAt:" + msg);
+					new File("saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT).delete();
 				}
+				System.exit(-1);
 			}
 		};
 
@@ -90,6 +94,10 @@ public class MainGameLoop implements Runnable {
 		thread.start();
 
 		thread = ThreadMaster.createThread(new SecondaryThread(), "secondary thread");
+		thread.setUncaughtExceptionHandler(handler);
+		thread.start();
+
+		thread = ThreadMaster.createThread(new LoadingScreenThread(), "loading screen thread");
 		thread.setUncaughtExceptionHandler(handler);
 		thread.start();
 	}
@@ -114,10 +122,34 @@ public class MainGameLoop implements Runnable {
 
 	public void executeRequests() {
 		ns.parallelComputing.Thread thread = (ns.parallelComputing.Thread) java.lang.Thread.currentThread();
-		for (int i = 0; i < thread.vaoCreateRequests.size(); i++)
-			thread.vaoCreateRequests.get(i).execute();
-		for (int i = 0; i < thread.toCarryOutRequests.size(); i++)
-			thread.toCarryOutRequests.get(i).execute();
+		synchronized (thread.vaoCreateRequests) {
+			thread.vaoCreateRequests.removeIf(new Predicate<Request>() {
+				@Override
+				public boolean test(Request arg0) {
+					return arg0 == null;
+				}
+			});
+			for (int i = 0; i < thread.vaoCreateRequests.size(); i++)
+				thread.vaoCreateRequests.get(i).execute();
+		}
+		synchronized (thread.renderingRequests) {
+			for (int i = 0; i < thread.renderingRequests.size(); i++) {
+				Request r = thread.renderingRequests.get(i);
+				r.execute();
+			}
+		}
+		synchronized (thread.toCarryOutRequests) {
+			thread.toCarryOutRequests.removeIf(new Predicate<Request>() {
+				@Override
+				public boolean test(Request arg0) {
+					return arg0 == null;
+				}
+			});
+			for (int i = 0; i < thread.toCarryOutRequests.size(); i++) {
+				Request r = thread.toCarryOutRequests.get(i);
+				r.execute();
+			}
+		}
 		thread.clearRequests();
 	}
 
@@ -171,37 +203,43 @@ public class MainGameLoop implements Runnable {
 	public void run() {
 		long btime = System.nanoTime();
 		DisplayManager.createDisplay();
+		TextMaster.init();
 		renderer = new MasterRenderer();
+		executeRequests();
+		DisplayManager.updateDisplay();
 		shader = new WaterShader();
 		waterRenderer = new WaterRenderer(shader, renderer.getProjectionMatrix());
+		executeRequests();
 		fbos = new WaterFBOs();
 		camera = ICamera.createdCamera;
 		sun = Light.sun;
-		while (WorldGenerator.generatedWorld == null)
-			java.lang.Thread.yield();
-		world = WorldGenerator.generatedWorld;
-		while (WaterTile.tile == null)
-			java.lang.Thread.yield();
-		water = WaterTile.tile;
 		executeRequests();
 		sceneFBO = new FBO(1200, 800, (FBO.COLOR_TEXTURE | FBO.DEPTH_RENDERBUFFER)).create();
 		bluredSceneFBO = new FBO(Display.getWidth() / 3, Display.getHeight() / 3, FBO.COLOR_TEXTURE).create();
 		blurer = new Blurer(MasterRenderer.standardModels.get(0));
+		executeRequests();
 		GUIShader guiShader = new GUIShader();
 		GUIRenderer guiRenderer = new GUIRenderer(guiShader, MasterRenderer.standardModels.get(0));
 		menu = MenuMaster.createMainMenu();
+		executeRequests();
 		menuRenderer = new MainMenuRenderer(guiRenderer);
+		executeRequests();
 		shopRenderer = new ShopRenderer(guiRenderer);
+		executeRequests();
 		while (ShopMaster.shop == null)
 			Thread.yield();
 		shop = ShopMaster.shop;
-		MousePicker.init(camera, renderer.getProjectionMatrix(), world.getTerrain());
 		ColorQuadFiller.init();
 		renderer.render(camera, sun, new Vector4f(0, 0, 0, 0), false);
 		executeRequests();
 		GU.initMouseCursors(renderer);
+		executeRequests();
+		world = WorldGenerator.generatedWorld;
+		MousePicker.init(camera, renderer.getProjectionMatrix(), world.getTerrain());
+		water = WaterTile.tile;
+		executeRequests();
 		System.out.println("Primary thread finished in " + (System.nanoTime() - btime));
-		loopStarted = true;
+		state = GS.MENU;
 		while (!Display.isCloseRequested()) {
 			if (state == GS.EXIT)
 				break;
@@ -209,7 +247,7 @@ public class MainGameLoop implements Runnable {
 			DisplayManager.updateDisplay();
 			executeRequests();
 		}
-		inLoop = false;
+		state = GS.CLOSING;
 		VAOLoader.cleanUp();
 		renderer.cleanUp();
 		menuRenderer.cleanUp();
@@ -221,7 +259,9 @@ public class MainGameLoop implements Runnable {
 		guiShader.cleanUp();
 		ColorQuadFiller.cleanUp();
 		Texture.cleanUp();
+		TextMaster.cleanUp();
 		DisplayManager.closeDisplay();
+		System.out.println("Primary thread finished execution");
 	}
 
 	private void runLogicAndRender() {

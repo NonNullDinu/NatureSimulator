@@ -19,6 +19,7 @@ public class DisplayManager {
 	private static float delta;
 	
 	public static SharedDrawable drawable;
+	public static int frameId = 1;
 
 	public static void createDisplay() {
 		try {
@@ -43,6 +44,7 @@ public class DisplayManager {
 		long currentTime = getCurrentTime();
 		delta = (currentTime - lastFrameTime) / 1000f;
 		lastFrameTime = currentTime;
+		frameId++;
 //		System.out.println(1f / delta);
 	}
 

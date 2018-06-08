@@ -8,10 +8,10 @@ public class VAOUpdateRequest extends Request {
 	private VAO vao;
 	private VBOUpdateData data;
 
-	public VAOUpdateRequest(String request, VBOUpdateData arg, VAO vao) {
-		super(request, new Object[] { arg });
+	public VAOUpdateRequest(VAO vao, VBOUpdateData data) {
+		super("update vao", new Object[] {vao, data});
 		this.vao = vao;
-		this.data = arg;
+		this.data = data;
 	}
 
 	@Override

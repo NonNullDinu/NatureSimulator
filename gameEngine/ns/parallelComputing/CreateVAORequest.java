@@ -7,16 +7,17 @@ import ns.openglWorkers.VBOData;
 public class CreateVAORequest extends Request {
 
 	private VAO vao;
-	private VBOData[] args;
+	private VBOData[] data;
 
-	public CreateVAORequest(String request, VBOData[] args, VAO vao) {
-		super(request, args);
-		this.args = args;
+	public CreateVAORequest(VAO vao, VBOData[] args) {
+		super("create vao", args);
 		this.vao = vao;
+		this.data = args;
 	}
 
 	@Override
 	public void execute() {
-		VAOLoader.createVAOAndStore(vao, args);
+		VAOLoader.createVAOAndStore(vao, data);
 	}
+
 }

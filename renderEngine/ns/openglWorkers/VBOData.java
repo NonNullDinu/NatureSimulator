@@ -86,7 +86,7 @@ public class VBOData {
 		}
 		if (type == GL15.GL_ARRAY_BUFFER) {
 			GL20.glVertexAttribPointer(attNumber, dimensions, this.gl_type, false, 0, 0);
-			GL15.glBindBuffer(type, 0);
+			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 		}
 	}
 

@@ -45,14 +45,14 @@ public class VAOLoader {
 			return new VAO(vaoId, vertexCount, current, hasIndices);
 		} else {
 			VAO target = new VAO();
-			ThreadMaster.getThread("main thread")
-					.setToCarryOutRequest(new CreateVAORequest("create vao", data, target));
+			ThreadMaster.getThread("main thread").setToCarryOutRequest(new CreateVAORequest(target, data));
 			return target;
 		}
 	}
-	
+
 	/**
 	 * Not working like it must work
+	 * 
 	 * @param data
 	 * @return
 	 */
@@ -109,8 +109,8 @@ public class VAOLoader {
 			GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, dt);
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 		} else {
-			ThreadMaster.getThread("main thread").setToCarryOutRequest(
-					new VAOUpdateRequest("update vao", new VBOUpdateData(data).withAttToWriteTo(attn), model));
+			ThreadMaster.getThread("main thread")
+					.setToCarryOutRequest(new VAOUpdateRequest(model, new VBOUpdateData(data).withAttToWriteTo(attn)));
 		}
 	}
 
@@ -121,8 +121,8 @@ public class VAOLoader {
 			GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, dt);
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 		} else {
-			ThreadMaster.getThread("main thread").setToCarryOutRequest(
-					new VAOUpdateRequest("update vao", new VBOUpdateData(data).withAttToWriteTo(attn), model));
+			ThreadMaster.getThread("main thread")
+					.setToCarryOutRequest(new VAOUpdateRequest(model, new VBOUpdateData(data).withAttToWriteTo(attn)));
 		}
 	}
 
@@ -133,8 +133,8 @@ public class VAOLoader {
 			GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, dt);
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 		} else {
-			ThreadMaster.getThread("main thread").setToCarryOutRequest(
-					new VAOUpdateRequest("update vao", new VBOUpdateData(data).withAttToWriteTo(attn), model));
+			ThreadMaster.getThread("main thread")
+					.setToCarryOutRequest(new VAOUpdateRequest(model, new VBOUpdateData(data).withAttToWriteTo(attn)));
 		}
 	}
 
@@ -142,8 +142,8 @@ public class VAOLoader {
 		if (Thread.currentThread().getName().equals("main thread")) {
 			new VBOUpdateData(data).withAttToWriteTo(attn).withBegin(begin).updateWithin(model);
 		} else {
-			ThreadMaster.getThread("main thread").setToCarryOutRequest(new VAOUpdateRequest("update vao",
-					new VBOUpdateData(data).withBegin(begin).withAttToWriteTo(attn), model));
+			ThreadMaster.getThread("main thread").setToCarryOutRequest(
+					new VAOUpdateRequest(model, new VBOUpdateData(data).withBegin(begin).withAttToWriteTo(attn)));
 		}
 	}
 
@@ -151,8 +151,8 @@ public class VAOLoader {
 		if (Thread.currentThread().getName().equals("main thread")) {
 			new VBOUpdateData(data).withAttToWriteTo(attn).withBegin(begin).updateWithin(model);
 		} else {
-			ThreadMaster.getThread("main thread").setToCarryOutRequest(new VAOUpdateRequest("update vao",
-					new VBOUpdateData(data).withBegin(begin).withAttToWriteTo(attn), model));
+			ThreadMaster.getThread("main thread").setToCarryOutRequest(
+					new VAOUpdateRequest(model, new VBOUpdateData(data).withBegin(begin).withAttToWriteTo(attn)));
 		}
 	}
 
@@ -160,8 +160,8 @@ public class VAOLoader {
 		if (Thread.currentThread().getName().equals("main thread")) {
 			new VBOUpdateData(data).withAttToWriteTo(attn).withBegin(begin).updateWithin(model);
 		} else {
-			ThreadMaster.getThread("main thread").setToCarryOutRequest(new VAOUpdateRequest("update vao",
-					new VBOUpdateData(data).withBegin(begin).withAttToWriteTo(attn), model));
+			ThreadMaster.getThread("main thread").setToCarryOutRequest(
+					new VAOUpdateRequest(model, new VBOUpdateData(data).withBegin(begin).withAttToWriteTo(attn)));
 		}
 	}
 
@@ -189,9 +189,10 @@ public class VAOLoader {
 		vao.setVbos(current);
 		vao.setHasIndices(hasIndices);
 	}
-	
+
 	/**
 	 * Not working like it must work
+	 * 
 	 * @param vao
 	 * @param data
 	 */
