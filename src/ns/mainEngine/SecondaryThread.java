@@ -22,7 +22,6 @@ import res.WritingResource;
 public class SecondaryThread implements Runnable {
 	@Override
 	public void run() {
-		long timeb = System.nanoTime();
 		MasterRenderer.initStandardModels();
 		StructLib.load(new Resource().withLocation("shaders/structlib.glsl").withVersion(false).create());
 		ShaderLib.loadAll();
@@ -38,14 +37,14 @@ public class SecondaryThread implements Runnable {
 			Thread.yield();
 
 		ShopMaster.createShop(GUIRenderer.instance);
+		
+//		world.getTerrain().initColors(world.getEntities());
 
 		Runtime.getRuntime().gc();
-		System.out.println("Secondary thread finished in " + (System.nanoTime() - timeb));
 		while (MainGameLoop.state != GS.CLOSING) {
 			Thread.yield();
 		}
 
 		SaveWorldMaster.save(world, new WritingResource("saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT));
-		System.out.println("Secondary thread finished execution");
 	}
 }

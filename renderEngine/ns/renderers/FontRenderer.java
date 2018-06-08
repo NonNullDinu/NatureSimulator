@@ -43,7 +43,6 @@ public class FontRenderer {
 		text.getMesh().bind();
 		shader.color.load(text.getColour());
 		shader.translation.load(text.getPosition());
-		System.out.println(text + " rendered");
 		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, text.getVertexCount());
 		text.getMesh().unbind();
 	}

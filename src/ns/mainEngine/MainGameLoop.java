@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.function.Predicate;
 
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
@@ -123,12 +122,6 @@ public class MainGameLoop implements Runnable {
 	public void executeRequests() {
 		ns.parallelComputing.Thread thread = (ns.parallelComputing.Thread) java.lang.Thread.currentThread();
 		synchronized (thread.vaoCreateRequests) {
-			thread.vaoCreateRequests.removeIf(new Predicate<Request>() {
-				@Override
-				public boolean test(Request arg0) {
-					return arg0 == null;
-				}
-			});
 			for (int i = 0; i < thread.vaoCreateRequests.size(); i++)
 				thread.vaoCreateRequests.get(i).execute();
 		}
@@ -139,12 +132,6 @@ public class MainGameLoop implements Runnable {
 			}
 		}
 		synchronized (thread.toCarryOutRequests) {
-			thread.toCarryOutRequests.removeIf(new Predicate<Request>() {
-				@Override
-				public boolean test(Request arg0) {
-					return arg0 == null;
-				}
-			});
 			for (int i = 0; i < thread.toCarryOutRequests.size(); i++) {
 				Request r = thread.toCarryOutRequests.get(i);
 				r.execute();
@@ -201,7 +188,6 @@ public class MainGameLoop implements Runnable {
 	}
 
 	public void run() {
-		long btime = System.nanoTime();
 		DisplayManager.createDisplay();
 		TextMaster.init();
 		renderer = new MasterRenderer();
@@ -238,7 +224,6 @@ public class MainGameLoop implements Runnable {
 		MousePicker.init(camera, renderer.getProjectionMatrix(), world.getTerrain());
 		water = WaterTile.tile;
 		executeRequests();
-		System.out.println("Primary thread finished in " + (System.nanoTime() - btime));
 		state = GS.MENU;
 		while (!Display.isCloseRequested()) {
 			if (state == GS.EXIT)
@@ -261,7 +246,6 @@ public class MainGameLoop implements Runnable {
 		Texture.cleanUp();
 		TextMaster.cleanUp();
 		DisplayManager.closeDisplay();
-		System.out.println("Primary thread finished execution");
 	}
 
 	private void runLogicAndRender() {

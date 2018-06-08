@@ -37,7 +37,7 @@ public class WorldGenerator {
 	private static List<Entity> createEntities(Terrain terrain) {
 		List<Entity> entities = new ArrayList<>();
 		Random random = new Random();
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 1500; i++) {
 			float x = random.nextFloat() * 2f - 1f;
 			float z = random.nextFloat() * 2f - 1f;
 			x *= TS;

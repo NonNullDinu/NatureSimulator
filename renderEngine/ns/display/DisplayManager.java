@@ -40,11 +40,11 @@ public class DisplayManager {
 	}
 
 	public static void updateDisplay() {
+		frameId++;
 		Display.update();
 		long currentTime = getCurrentTime();
 		delta = (currentTime - lastFrameTime) / 1000f;
 		lastFrameTime = currentTime;
-		frameId++;
 //		System.out.println(1f / delta);
 	}
 

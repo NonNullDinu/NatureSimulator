@@ -26,7 +26,8 @@ public class LoadingScreenThread implements Runnable {
 		int prevFrame = DisplayManager.frameId - 1;
 		FontType font = new FontType(new Texture("res/fonts/Z003.png").create(),
 				GU.open(new Resource().withLocation("res/fonts/Z003.fnt").create()));
-		GUIText text = new GUIText("Loading screen", 2f, font, new Vector2f(0.0f, 0.0f), 0.2f, true);
+		GUIText text = new GUIText("Loading...", 2f, font, new Vector2f(0.0f, 0.0f), 0.2f, true);
+		TextMaster.loadText(text);
 		text.setColour(1f, 1f, 1f);
 		RenderMethod renderMethod = new RenderMethod() {
 			@Override
@@ -35,7 +36,7 @@ public class LoadingScreenThread implements Runnable {
 			}
 		};
 		Thread.yield();
-		TextMaster.loadText(text);
+//		TextMaster.loadText(text);
 		// Load loading screen resources
 		Thread t = ThreadMaster.getThread("main thread");
 		while (true) {
@@ -46,7 +47,11 @@ public class LoadingScreenThread implements Runnable {
 				t.setToCarryOutRequest(new GLRenderRequest(renderMethod));
 				t.setToCarryOutRequest(new UpdateDisplayRequest());
 			}
-			Thread.yield();
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			if (MainGameLoop.state != GS.LOADING)
 				break;
 		}
