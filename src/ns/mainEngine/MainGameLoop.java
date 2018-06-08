@@ -49,17 +49,19 @@ public class MainGameLoop implements Runnable {
 	protected static boolean inLoop = true;
 	public static boolean loopStarted = false;
 	public static GS state = GS.MENU;
+	public static int leaves = 10000;
 
 	public static void main(String[] args) {
 		UncaughtExceptionHandler handler = new UncaughtExceptionHandler() {
 			@Override
 			public void uncaughtException(Thread t, Throwable e) {
-				Thread.getDefaultUncaughtExceptionHandler().uncaughtException(t, e);
+//				Thread.getDefaultUncaughtExceptionHandler().uncaughtException(t, e);
 				String msg = "";
 				for (StackTraceElement elem : e.getStackTrace()) {
-					msg += elem.getFileName() + ": " + elem.getMethodName() + "(line " + elem.getLineNumber() + ")\n";
+					msg += elem.getModuleName() + "/" + elem.getClassName() + "." + elem.getMethodName() + "(" + elem.getFileName() + ":" + elem.getLineNumber() + ")\n";
 				}
 				File f = new File("err" + new SimpleDateFormat("hh mm ss dd MM yyyy").format(new Date()) + ".log");
+				System.err.println(e.getClass().getName() + "\nStack trace: " + msg);
 				try {
 					f.createNewFile();
 					DataOutputStream dout = new DataOutputStream(new FileOutputStream(f));
@@ -81,7 +83,7 @@ public class MainGameLoop implements Runnable {
 				}
 			}
 		};
-		
+
 		ns.parallelComputing.Thread thread;
 		thread = ThreadMaster.createThread(new MainGameLoop(), "main thread");
 		thread.setUncaughtExceptionHandler(handler);

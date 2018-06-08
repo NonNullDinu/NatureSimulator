@@ -1,9 +1,12 @@
 package ns.mainEngine;
 
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.GL15;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import ns.camera.Camera;
+import ns.display.DisplayManager;
 import ns.entities.Light;
 import ns.openglWorkers.ModelsLibrary;
 import ns.renderers.GUIRenderer;
@@ -23,6 +26,13 @@ public class SecondaryThread implements Runnable {
 	@Override
 	public void run() {
 		long timeb = System.nanoTime();
+		while(DisplayManager.drawable == null)
+			Thread.yield();
+		try {
+			DisplayManager.drawable.makeCurrent();
+		} catch (LWJGLException e) {
+			e.printStackTrace();
+		}
 		MasterRenderer.initStandardModels();
 		StructLib.load(new Resource().withLocation("shaders/structlib.glsl").withVersion(false).create());
 		ShaderLib.loadAll();
@@ -33,7 +43,6 @@ public class SecondaryThread implements Runnable {
 
 		// Read model files and create CreateVAORequests
 		ModelsLibrary.getModel("models/others/menu_DNA.obj");
-
 		while (GUIRenderer.instance == null)
 			Thread.yield();
 

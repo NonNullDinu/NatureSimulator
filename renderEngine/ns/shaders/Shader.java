@@ -13,7 +13,8 @@ public class Shader implements IOpenGLObject {
 	private int type;
 
 	public Shader(String name, int type) {
-		this.src = ShaderLib.getSource(name);
+		while (this.src == null)
+			this.src = ShaderLib.getSource(name);
 		this.name = name;
 		this.type = type;
 	}
@@ -32,7 +33,7 @@ public class Shader implements IOpenGLObject {
 		ID = GL20.glCreateShader(type);
 		GL20.glShaderSource(ID, src);
 		GL20.glCompileShader(ID);
-		if(GL20.glGetShaderi(ID, GL20.GL_COMPILE_STATUS) != GL11.GL_TRUE) {
+		if (GL20.glGetShaderi(ID, GL20.GL_COMPILE_STATUS) != GL11.GL_TRUE) {
 			System.err.println("Could not compile shader " + name + ", log:" + GL20.glGetShaderInfoLog(ID, 200));
 			System.exit(-1);
 		}
