@@ -19,8 +19,6 @@ import ns.utils.GU;
 import res.Resource;
 
 public class LoadingScreenThread implements Runnable {
-	public static boolean REQUESTED_TEXT_CREATION;
-
 	@Override
 	public void run() {
 		int prevFrame = DisplayManager.frameId - 1;
