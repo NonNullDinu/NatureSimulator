@@ -14,7 +14,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
 import ns.parallelComputing.TextureCreateRequest;
-import ns.parallelComputing.ThreadMaster;
+import ns.utils.GU;
 import res.Resource;
 
 public class Texture implements IOpenGLObject {
@@ -64,7 +64,7 @@ public class Texture implements IOpenGLObject {
 					pixels.put((byte) ((pixel >> 24) & 0xFF));
 				}
 			pixels.flip();
-			if (Thread.currentThread().getName().equals("main thread")) {
+			if (Thread.currentThread().getName().equals(GU.MAIN_THREAD_NAME)) {
 				id = GL11.glGenTextures();
 				GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
 				GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
@@ -77,7 +77,7 @@ public class Texture implements IOpenGLObject {
 				created = true;
 				textures.add(this);
 			} else {
-				ThreadMaster.getThread("main thread").setToCarryOutRequest(new TextureCreateRequest(this, pixels));
+				GU.sendRequestToMainThread(new TextureCreateRequest(this, pixels));
 			}
 			return this;
 		} else

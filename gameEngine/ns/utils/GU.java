@@ -37,6 +37,7 @@ public class GU {
 	public static final int TOTAL_NUMBER_OF_ENTITIES = 5;
 	public static final int CURRENT_WORLD_FILE_VERSION = 1;
 	public static final String WORLD_SAVE_FILE_FORMAT = "nssv";
+	public static final String MAIN_THREAD_NAME = "main thread";
 
 	public static BufferedReader open(Resource resource) {
 		return new BufferedReader(new InputStreamReader(resource.asInputStream()));
@@ -70,7 +71,7 @@ public class GU {
 	}
 	
 	public static void sendRequestToMainThread(Request r) {
-		ThreadMaster.getThread("main thread").setToCarryOutRequest(r);
+		ThreadMaster.getThread(MAIN_THREAD_NAME).setToCarryOutRequest(r);
 	}
 	
 	public static ns.parallelComputing.Thread currentThread() {

@@ -11,7 +11,6 @@ import ns.exceptions.CorruptException;
 import ns.exceptions.LoadingException;
 import ns.openglObjects.Texture;
 import ns.parallelComputing.TextureCreateRequest;
-import ns.parallelComputing.ThreadMaster;
 import ns.utils.GU;
 import res.Resource;
 
@@ -52,7 +51,7 @@ public class TexFile implements File {
 			}
 			pixels.flip();
 
-			if (Thread.currentThread().getName().equals("main thread")) {
+			if (Thread.currentThread().getName().equals(GU.MAIN_THREAD_NAME)) {
 				id = GL11.glGenTextures();
 				GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
 				GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
@@ -64,8 +63,7 @@ public class TexFile implements File {
 				GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
 			} else {
 				Texture target = new Texture(0, width, height);
-				ThreadMaster.getThread("main thread")
-						.setToCarryOutRequest(new TextureCreateRequest(target, pixels));
+				GU.sendRequestToMainThread(new TextureCreateRequest(target, pixels));
 				return target;
 			}
 		} catch (IOException e) {

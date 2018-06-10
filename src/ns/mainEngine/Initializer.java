@@ -55,7 +55,7 @@ public class Initializer {
 		};
 
 		ns.parallelComputing.Thread thread;
-		thread = ThreadMaster.createThread(new MainGameLoop(), "main thread");
+		thread = ThreadMaster.createThread(new MainGameLoop(), GU.MAIN_THREAD_NAME);
 		thread.setUncaughtExceptionHandler(handler);
 		thread.start();
 

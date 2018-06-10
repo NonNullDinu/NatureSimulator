@@ -15,15 +15,15 @@ import org.lwjgl.opengl.GL30;
 import ns.openglObjects.VAO;
 import ns.openglObjects.VBO;
 import ns.parallelComputing.CreateVAORequest;
-import ns.parallelComputing.ThreadMaster;
 import ns.parallelComputing.VAOUpdateRequest;
+import ns.utils.GU;
 
 public class VAOLoader {
 	private static final Map<Integer, Map<Integer, Integer>> vaos = new HashMap<>();
 	private static final List<Integer> vbos = new ArrayList<>();
 
 	public static VAO storeDataInVAO(VBOData... data) {
-		if (Thread.currentThread().getName().equals("main thread")) {
+		if (Thread.currentThread().getName().equals(GU.MAIN_THREAD_NAME)) {
 			int vaoId = GL30.glGenVertexArrays(), vertexCount = -1;
 			boolean hasIndices = false;
 			Map<Integer, Integer> current = new HashMap<>();
@@ -45,7 +45,7 @@ public class VAOLoader {
 			return new VAO(vaoId, vertexCount, current, hasIndices);
 		} else {
 			VAO target = new VAO();
-			ThreadMaster.getThread("main thread").setToCarryOutRequest(new CreateVAORequest(target, data));
+			GU.sendRequestToMainThread(new CreateVAORequest(target, data));
 			return target;
 		}
 	}
@@ -58,7 +58,7 @@ public class VAOLoader {
 	 */
 	@Deprecated
 	public static VAO storeAndPackDataInVAO(VBOData... data) {
-		if (Thread.currentThread().getName().equals("main thread")) {
+		if (Thread.currentThread().getName().equals(GU.MAIN_THREAD_NAME)) {
 			int vaoId = GL30.glGenVertexArrays(), vertexCount = -1;
 			boolean hasIndices = false;
 			Map<Integer, Integer> current = new HashMap<>();
@@ -86,8 +86,7 @@ public class VAOLoader {
 			return new VAO(vaoId, vertexCount, current, hasIndices);
 		} else {
 			VAO target = new VAO();
-			ThreadMaster.getThread("main thread")
-					.setToCarryOutRequest(new CreateAndPackVAORequest("create and pack vao", data, target));
+			GU.sendRequestToMainThread(new CreateAndPackVAORequest("create and pack vao", data, target));
 			return target;
 		}
 	}
@@ -103,64 +102,61 @@ public class VAOLoader {
 	}
 
 	public static void replace(VAO model, int attn, float[] data) {
-		if (Thread.currentThread().getName().equals("main thread")) {
+		if (Thread.currentThread().getName().equals(GU.MAIN_THREAD_NAME)) {
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vaos.get(model.getId()).get(attn));
 			FloatBuffer dt = storeDataInFloatBuffer(data);
 			GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, dt);
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 		} else {
-			ThreadMaster.getThread("main thread")
-					.setToCarryOutRequest(new VAOUpdateRequest(model, new VBOUpdateData(data).withAttToWriteTo(attn)));
+			GU.sendRequestToMainThread(new VAOUpdateRequest(model, new VBOUpdateData(data).withAttToWriteTo(attn)));
 		}
 	}
 
 	public static void replace(VAO model, int attn, int[] data) {
-		if (Thread.currentThread().getName().equals("main thread")) {
+		if (Thread.currentThread().getName().equals(GU.MAIN_THREAD_NAME)) {
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vaos.get(model.getId()).get(attn));
 			IntBuffer dt = storeDataInIntBuffer(data);
 			GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, dt);
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 		} else {
-			ThreadMaster.getThread("main thread")
-					.setToCarryOutRequest(new VAOUpdateRequest(model, new VBOUpdateData(data).withAttToWriteTo(attn)));
+			GU.sendRequestToMainThread(new VAOUpdateRequest(model, new VBOUpdateData(data).withAttToWriteTo(attn)));
 		}
 	}
 
 	public static void replace(VAO model, int attn, byte[] data) {
-		if (Thread.currentThread().getName().equals("main thread")) {
+		if (Thread.currentThread().getName().equals(GU.MAIN_THREAD_NAME)) {
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vaos.get(model.getId()).get(attn));
 			ByteBuffer dt = storeDataInByteBuffer(data);
 			GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, dt);
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 		} else {
-			ThreadMaster.getThread("main thread")
-					.setToCarryOutRequest(new VAOUpdateRequest(model, new VBOUpdateData(data).withAttToWriteTo(attn)));
+			GU.sendRequestToMainThread(new VAOUpdateRequest(model, new VBOUpdateData(data).withAttToWriteTo(attn)));
 		}
 	}
 
 	public static void replace(VAO model, int attn, float[] data, long begin) {
-		if (Thread.currentThread().getName().equals("main thread")) {
+		if (Thread.currentThread().getName().equals(GU.MAIN_THREAD_NAME)) {
 			new VBOUpdateData(data).withAttToWriteTo(attn).withBegin(begin).updateWithin(model);
 		} else {
-			ThreadMaster.getThread("main thread").setToCarryOutRequest(
+			GU.sendRequestToMainThread(
 					new VAOUpdateRequest(model, new VBOUpdateData(data).withBegin(begin).withAttToWriteTo(attn)));
 		}
 	}
 
 	public static void replace(VAO model, int attn, int[] data, long begin) {
-		if (Thread.currentThread().getName().equals("main thread")) {
+		if (Thread.currentThread().getName().equals(GU.MAIN_THREAD_NAME)) {
 			new VBOUpdateData(data).withAttToWriteTo(attn).withBegin(begin).updateWithin(model);
 		} else {
-			ThreadMaster.getThread("main thread").setToCarryOutRequest(
+			GU.sendRequestToMainThread(
 					new VAOUpdateRequest(model, new VBOUpdateData(data).withBegin(begin).withAttToWriteTo(attn)));
 		}
 	}
 
 	public static void replace(VAO model, int attn, byte[] data, long begin) {
-		if (Thread.currentThread().getName().equals("main thread")) {
+		if (Thread.currentThread().getName().equals(GU.MAIN_THREAD_NAME)) {
 			new VBOUpdateData(data).withAttToWriteTo(attn).withBegin(begin).updateWithin(model);
 		} else {
-			ThreadMaster.getThread("main thread").setToCarryOutRequest(
+			GU.sendRequestToMainThread(
 					new VAOUpdateRequest(model, new VBOUpdateData(data).withBegin(begin).withAttToWriteTo(attn)));
 		}
 	}

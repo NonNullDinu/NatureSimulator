@@ -53,7 +53,8 @@ public class Terrain implements SerializableWorldObject {
 			BiomeSpreadComponent comp = e.getBiomeSpreadComponent();
 			if (comp != null) {
 				Vector3f pos = posRelToTerrain(e.getPosition());
-				for (TerrainVertex vertex : getVertices(pos)) {
+				List<TerrainVertex> vertx = getVertices(pos);
+				for (TerrainVertex vertex : vertx) {
 					float len = Vector3f.sub(pos, vertex.position, null).length();
 					Vector2f minMax = comp.getMinMax();
 					Vector3f cl = new Vector3f();
@@ -98,8 +99,8 @@ public class Terrain implements SerializableWorldObject {
 		List<Integer> changes = new ArrayList<>();
 		Vector3f pos = posRelToTerrain(e.getPosition());
 		BiomeSpreadComponent comp = e.getBiomeSpreadComponent();
-		if (comp != null)
-			for (TerrainVertex vertex : getVertices(pos)) {
+		if (comp != null) {
+			for (TerrainVertex vertex : vertices) {
 				float len = Vector3f.sub(pos, vertex.position, null).length();
 				Vector2f minMax = comp.getMinMax();
 				Vector3f cl = new Vector3f();
@@ -113,20 +114,15 @@ public class Terrain implements SerializableWorldObject {
 					prevC.scale(fac);
 					cl = new Vector3f(Vector3f.add(bcl, prevC, null));
 				}
-				if (cl.length() > 0f)
-					if (cls[ptr * 3] == 1.0f && cls[ptr * 3 + 1] == 0.766f && cls[ptr * 3 + 2] == 0.061f) {
-						cls[ptr * 3] = cl.x;
-						cls[ptr * 3 + 1] = cl.y;
-						cls[ptr * 3 + 2] = cl.z;
-					} else {
-						cls[ptr * 3] = (cls[ptr * 3] + cl.x) / 2f;
-						cls[ptr * 3 + 1] = (cls[ptr * 3 + 1] + cl.y) / 2f;
-						cls[ptr * 3 + 2] = (cls[ptr * 3 + 2] + cl.z) / 2f;
-					}
+				if (cl.length() > 0f) {
+					cls[ptr * 3] = cl.x;
+					cls[ptr * 3 + 1] = cl.y;
+					cls[ptr * 3 + 2] = cl.z;
+				}
 				changes.add(ptr);
 				ptr++;
 			}
-
+		}
 		List<Integer> ch = new ArrayList<>();
 		for (int c : changes) {
 			ptr = c;
@@ -265,10 +261,6 @@ public class Terrain implements SerializableWorldObject {
 		float left = getHeight(x - 1, z);
 		float right = getHeight(x + 1, z);
 		Vector3f normal = new Vector3f(left - right, 2f, down - up);
-//		Vector3f v0 = new Vector3f(x, getHeight(x, z), z);
-//		Vector3f v1 = new Vector3f(x, getHeight(x, z + 1), z + 1);
-//		Vector3f v2 = new Vector3f(x - 1, getHeight(x - 1, z), z);
-//		Vector3f normal = Vector3f.cross(Vector3f.sub(v1, v0, null), Vector3f.sub(v2, v0, null), null);
 		normal.normalise();
 		return normal;
 	}
@@ -298,7 +290,6 @@ public class Terrain implements SerializableWorldObject {
 		int index = (z * GRID_SCL + x);
 		List<TerrainVertex> ret = new ArrayList<>();
 		ret.addAll(gridVertices.get(index));
-		System.out.println(x + " " + z + " " + index);
 		if (x == 0)
 			ret.addAll(gridVertices.get(index + 1));
 		else if (x == GRID_SCL - 1)
