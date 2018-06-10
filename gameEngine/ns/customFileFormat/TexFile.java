@@ -10,6 +10,8 @@ import org.lwjgl.opengl.GL11;
 import ns.exceptions.CorruptException;
 import ns.exceptions.LoadingException;
 import ns.openglObjects.Texture;
+import ns.parallelComputing.TextureCreateRequest;
+import ns.parallelComputing.ThreadMaster;
 import ns.utils.GU;
 import res.Resource;
 
@@ -43,22 +45,29 @@ public class TexFile implements File {
 						pixels.put((byte) (pixel & 0xFF));
 						pixels.put((byte) ((pixel >> 24) & 0xFF));
 					} catch (NumberFormatException e) {
-						throw new CorruptException(
-								"File at " + location + " is corrupt(found: \"" + pts[x] + "\" while expecting an int)");
+						throw new CorruptException("File at " + location + " is corrupt(found: \"" + pts[x]
+								+ "\" while expecting an int)");
 					}
 				}
 			}
 			pixels.flip();
 
-			id = GL11.glGenTextures();
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
-			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+			if (Thread.currentThread().getName().equals("main thread")) {
+				id = GL11.glGenTextures();
+				GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
+				GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+				GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
 
-			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0, GL11.GL_RGBA,
-					GL11.GL_UNSIGNED_BYTE, pixels);
+				GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0, GL11.GL_RGBA,
+						GL11.GL_UNSIGNED_BYTE, pixels);
 
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+				GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+			} else {
+				Texture target = new Texture(0, width, height);
+				ThreadMaster.getThread("main thread")
+						.setToCarryOutRequest(new TextureCreateRequest(target, pixels));
+				return target;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

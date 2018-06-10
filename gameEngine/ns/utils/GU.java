@@ -21,6 +21,8 @@ import org.lwjgl.util.vector.Vector3f;
 import ns.components.BlueprintCreator;
 import ns.openglObjects.FBO;
 import ns.openglObjects.Texture;
+import ns.parallelComputing.Request;
+import ns.parallelComputing.ThreadMaster;
 import ns.renderers.MasterRenderer;
 import res.Resource;
 import res.WritingResource;
@@ -65,6 +67,14 @@ public class GU {
 																											// keyboard
 																											// for
 																											// wire-frame
+	}
+	
+	public static void sendRequestToMainThread(Request r) {
+		ThreadMaster.getThread("main thread").setToCarryOutRequest(r);
+	}
+	
+	public static ns.parallelComputing.Thread currentThread() {
+		return (ns.parallelComputing.Thread) Thread.currentThread();
 	}
 
 	public static void setMouseCursor(Cursor cursor) {

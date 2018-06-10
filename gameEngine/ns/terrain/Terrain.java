@@ -1,7 +1,9 @@
 package ns.terrain;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.util.vector.Vector2f;
@@ -19,17 +21,21 @@ import ns.worldSave.TerrainData;
 public class Terrain implements SerializableWorldObject {
 	public static final float SIZE = 4800;
 	public static final int VERTEX_COUNT = (int) (256f * (SIZE / 2400f));
+	private static final int GRID_SCL = 7;
+	public static final int GRID_VERTEX_COUNT = VERTEX_COUNT / GRID_SCL;
 	private VAO model;
 	private float x, z;
 	private HeightsGenerator generator;
 	private float[][] heights;
 	private List<TerrainVertex> vertices;
+	private Map<Integer, List<TerrainVertex>> gridVertices;
 
 	public Terrain() {
 		x = -(SIZE / 2f);
 		z = -(SIZE / 2f);
 		vertices = new ArrayList<>();
 		generator = new HeightsGenerator();
+		gridVertices = new HashMap<>();
 		model = initModel();
 	}
 
@@ -38,15 +44,16 @@ public class Terrain implements SerializableWorldObject {
 		z = -(SIZE / 2f);
 		vertices = new ArrayList<>();
 		generator = new HeightsGenerator(seed);
+		gridVertices = new HashMap<>();
 		model = initModel();
 	}
 
 	public void initColors(List<Entity> entities) {
-		for (TerrainVertex vertex : vertices) {
-			for (Entity e : entities) {
-				BiomeSpreadComponent comp = e.getBiomeSpreadComponent();
-				if (comp != null) {
-					Vector3f pos = posRelToTerrain(e.getPosition());
+		for (Entity e : entities) {
+			BiomeSpreadComponent comp = e.getBiomeSpreadComponent();
+			if (comp != null) {
+				Vector3f pos = posRelToTerrain(e.getPosition());
+				for (TerrainVertex vertex : getVertices(pos)) {
 					float len = Vector3f.sub(pos, vertex.position, null).length();
 					Vector2f minMax = comp.getMinMax();
 					Vector3f cl = new Vector3f();
@@ -89,10 +96,10 @@ public class Terrain implements SerializableWorldObject {
 		}
 		ptr = 0;
 		List<Integer> changes = new ArrayList<>();
-		for (TerrainVertex vertex : vertices) {
-			BiomeSpreadComponent comp = e.getBiomeSpreadComponent();
-			if (comp != null) {
-				Vector3f pos = posRelToTerrain(e.getPosition());
+		Vector3f pos = posRelToTerrain(e.getPosition());
+		BiomeSpreadComponent comp = e.getBiomeSpreadComponent();
+		if (comp != null)
+			for (TerrainVertex vertex : getVertices(pos)) {
 				float len = Vector3f.sub(pos, vertex.position, null).length();
 				Vector2f minMax = comp.getMinMax();
 				Vector3f cl = new Vector3f();
@@ -117,9 +124,9 @@ public class Terrain implements SerializableWorldObject {
 						cls[ptr * 3 + 2] = (cls[ptr * 3 + 2] + cl.z) / 2f;
 					}
 				changes.add(ptr);
+				ptr++;
 			}
-			ptr++;
-		}
+
 		List<Integer> ch = new ArrayList<>();
 		for (int c : changes) {
 			ptr = c;
@@ -149,6 +156,8 @@ public class Terrain implements SerializableWorldObject {
 		float[] vao_normals = new float[3 * count];
 		float[] vao_colors = new float[3 * count];
 		int vertexPointer = 0;
+		List<TerrainVertex> currentList = new ArrayList<>();
+		int prevIndex = 0;
 		for (int z = 0; z < VERTEX_COUNT; z++) {
 			for (int x = 0; x < VERTEX_COUNT; x++) {
 				vao_vertices[3 * vertexPointer] = ((float) x / ((float) VERTEX_COUNT - 1)) * SIZE;
@@ -164,12 +173,22 @@ public class Terrain implements SerializableWorldObject {
 				vao_colors[3 * vertexPointer + 1] = 0.766f;
 				vao_colors[3 * vertexPointer + 2] = 0.061f;
 
-				vertices.add(new TerrainVertex(
+				TerrainVertex vertex = new TerrainVertex(
 						new Vector3f(vao_vertices[3 * vertexPointer], vao_vertices[3 * vertexPointer + 1],
 								vao_vertices[3 * vertexPointer + 2]),
 						new Vector3f(vao_colors[3 * vertexPointer], vao_colors[3 * vertexPointer + 1],
-								vao_colors[3 * vertexPointer + 2])));
-
+								vao_colors[3 * vertexPointer + 2]));
+				vertices.add(vertex);
+				int index = (z / GRID_VERTEX_COUNT * GRID_SCL + x / GRID_VERTEX_COUNT);
+				if (index != prevIndex) {
+					currentList = gridVertices.get(index);
+					if (currentList == null) {
+						currentList = new ArrayList<>();
+						gridVertices.put(index, currentList);
+					}
+					prevIndex = index;
+				}
+				currentList.add(vertex);
 				vertexPointer++;
 			}
 		}
@@ -271,5 +290,31 @@ public class Terrain implements SerializableWorldObject {
 		TerrainData data = new TerrainData();
 		data.setSeed(generator.getSeed());
 		return data;
+	}
+
+	private List<TerrainVertex> getVertices(Vector3f locRelToTerrain) {
+		int x = (int) (locRelToTerrain.x / SIZE * (float) VERTEX_COUNT / (float) GRID_VERTEX_COUNT);
+		int z = (int) (locRelToTerrain.z / SIZE * (float) VERTEX_COUNT / (float) GRID_VERTEX_COUNT);
+		int index = (z * GRID_SCL + x);
+		List<TerrainVertex> ret = new ArrayList<>();
+		ret.addAll(gridVertices.get(index));
+		System.out.println(x + " " + z + " " + index);
+		if (x == 0)
+			ret.addAll(gridVertices.get(index + 1));
+		else if (x == GRID_SCL - 1)
+			ret.addAll(gridVertices.get(index - 1));
+		else {
+			ret.addAll(gridVertices.get(index + 1));
+			ret.addAll(gridVertices.get(index - 1));
+		}
+		if (z == 0)
+			ret.addAll(gridVertices.get(index + GRID_SCL));
+		else if (z == GRID_SCL)
+			ret.addAll(gridVertices.get(index - GRID_SCL));
+		else {
+			ret.addAll(gridVertices.get(index + GRID_SCL));
+			ret.addAll(gridVertices.get(index - GRID_SCL));
+		}
+		return ret;
 	}
 }

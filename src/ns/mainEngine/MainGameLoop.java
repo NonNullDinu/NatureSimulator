@@ -34,7 +34,6 @@ import ns.renderers.WaterRenderer;
 import ns.shaders.GUIShader;
 import ns.shaders.WaterShader;
 import ns.ui.shop.Shop;
-import ns.ui.shop.ShopMaster;
 import ns.utils.GU;
 import ns.utils.MousePicker;
 import ns.water.WaterFBOs;
@@ -96,6 +95,10 @@ public class MainGameLoop implements Runnable {
 		thread.setUncaughtExceptionHandler(handler);
 		thread.start();
 
+		thread = ThreadMaster.createThread(new ThirdThread(), "third thread");
+		thread.setUncaughtExceptionHandler(handler);
+		thread.start();
+
 		thread = ThreadMaster.createThread(new LoadingScreenThread(), "loading screen thread");
 		thread.setUncaughtExceptionHandler(handler);
 		thread.start();
@@ -120,24 +123,20 @@ public class MainGameLoop implements Runnable {
 	private World world;
 
 	public void executeRequests() {
-		ns.parallelComputing.Thread thread = (ns.parallelComputing.Thread) java.lang.Thread.currentThread();
-		synchronized (thread.vaoCreateRequests) {
+		ns.parallelComputing.Thread thread = GU.currentThread();
+		synchronized (thread) {
 			for (int i = 0; i < thread.vaoCreateRequests.size(); i++)
 				thread.vaoCreateRequests.get(i).execute();
-		}
-		synchronized (thread.renderingRequests) {
 			for (int i = 0; i < thread.renderingRequests.size(); i++) {
 				Request r = thread.renderingRequests.get(i);
 				r.execute();
 			}
-		}
-		synchronized (thread.toCarryOutRequests) {
 			for (int i = 0; i < thread.toCarryOutRequests.size(); i++) {
 				Request r = thread.toCarryOutRequests.get(i);
 				r.execute();
 			}
+			thread.clearRequests();
 		}
-		thread.clearRequests();
 	}
 
 	public void logic() {
@@ -197,8 +196,6 @@ public class MainGameLoop implements Runnable {
 		waterRenderer = new WaterRenderer(shader, renderer.getProjectionMatrix());
 		executeRequests();
 		fbos = new WaterFBOs();
-		camera = ICamera.createdCamera;
-		sun = Light.sun;
 		executeRequests();
 		sceneFBO = new FBO(1200, 800, (FBO.COLOR_TEXTURE | FBO.DEPTH_RENDERBUFFER)).create();
 		bluredSceneFBO = new FBO(Display.getWidth() / 3, Display.getHeight() / 3, FBO.COLOR_TEXTURE).create();
@@ -206,25 +203,22 @@ public class MainGameLoop implements Runnable {
 		executeRequests();
 		GUIShader guiShader = new GUIShader();
 		GUIRenderer guiRenderer = new GUIRenderer(guiShader, MasterRenderer.standardModels.get(0));
-		menu = MenuMaster.createMainMenu();
 		executeRequests();
 		menuRenderer = new MainMenuRenderer(guiRenderer);
 		executeRequests();
 		shopRenderer = new ShopRenderer(guiRenderer);
 		executeRequests();
-		while (ShopMaster.shop == null)
-			Thread.yield();
-		shop = ShopMaster.shop;
 		ColorQuadFiller.init();
 		renderer.render(camera, sun, new Vector4f(0, 0, 0, 0), false);
 		executeRequests();
 		GU.initMouseCursors(renderer);
 		executeRequests();
-		world = WorldGenerator.generatedWorld;
-		MousePicker.init(camera, renderer.getProjectionMatrix(), world.getTerrain());
-		water = WaterTile.tile;
-		executeRequests();
 		state = GS.MENU;
+		GU.currentThread().finishLoading();
+		while(!SecondaryThread.READY || !ThirdThread.READY) {
+			executeRequests();
+			Thread.yield();
+		}
 		while (!Display.isCloseRequested()) {
 			if (state == GS.EXIT)
 				break;
@@ -251,5 +245,20 @@ public class MainGameLoop implements Runnable {
 	private void runLogicAndRender() {
 		logic();
 		render();
+	}
+
+	public void set(Object o) {
+		if (o instanceof Shop)
+			this.shop = (Shop) o;
+		if (o instanceof World)
+			this.world = (World) o;
+		if (o instanceof ICamera)
+			this.camera = (ICamera) o;
+		if (o instanceof Light)
+			this.sun = (Light) o;
+		if (o instanceof WaterTile)
+			this.water = (WaterTile) o;
+		if (o instanceof MainMenu)
+			this.menu = (MainMenu) o;
 	}
 }

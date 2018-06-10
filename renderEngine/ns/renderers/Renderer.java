@@ -43,7 +43,7 @@ public class Renderer {
 
 	public void render(Blueprint blueprint, Vector3f position) {
 		shader.start();
-		shader.time.load(0); // Comment this line if you want to have dynamic shop item model movement (like
+//		shader.time.load(0); // Comment this line if you want to have dynamic shop item model movement (like
 								// the leaves of the trees in the world)
 		shader.viewMatrix.load(new Matrix4f());
 		shader.transformationMatrix.load(Maths.createTransformationMatrix(position, 0, 0, 0, 1));

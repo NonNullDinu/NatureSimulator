@@ -34,8 +34,8 @@ public class LoadingScreenThread implements Runnable {
 			}
 		};
 		Thread.yield();
+		GU.currentThread().finishLoading();
 //		TextMaster.loadText(text);
-		// Load loading screen resources
 		Thread t = ThreadMaster.getThread("main thread");
 		while (true) {
 			if (prevFrame < DisplayManager.frameId) {

@@ -19,6 +19,7 @@ public class MenuMaster {
 
 	public static MainMenu createMainMenu() {
 		List<MainMenuButton> buttons = new ArrayList<>();
+		Blueprint dnaBlueprint = BlueprintCreator.createModelBlueprintFor("menuDNA");
 		buttons.add(new MainMenuButton(new Vector2f(0f, 0.5f), new Vector2f(0.1f, 0.05f), new Action() {
 			@Override
 			public void execute() {
@@ -31,7 +32,6 @@ public class MenuMaster {
 				MainGameLoop.state = GS.EXIT;
 			}
 		}, new TexFile("textures/buttonTextures/mainMenu_Exit.tex").load()));
-		Blueprint dnaBlueprint = BlueprintCreator.createModelBlueprintFor("menuDNA");
 		menu = new MainMenu(buttons, new Entity(dnaBlueprint, new Vector3f(1f, -5f, -8.1f)));
 		return menu;
 	}
