@@ -63,8 +63,7 @@ public class MainGameLoop implements Runnable {
 				r.execute();
 			}
 			for (int i = 0; i < thread.toCarryOutRequests.size(); i++) {
-				Request r = thread.toCarryOutRequests.get(i);
-				r.execute();
+				thread.toCarryOutRequests.get(i).execute();
 			}
 			thread.clearRequests();
 		}
