@@ -1,4 +1,3 @@
-
 /**
  * The game module
  * 
@@ -55,6 +54,7 @@ module GameModule {
 	opens res.shaders.colorQuad;
 
 	// Textures
+	opens res.textures;
 	opens res.textures.buttonTextures;
 
 	// Models

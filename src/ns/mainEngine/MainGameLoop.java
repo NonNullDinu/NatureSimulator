@@ -14,7 +14,7 @@ import ns.mainMenu.MainMenu;
 import ns.openglObjects.FBO;
 import ns.openglObjects.Texture;
 import ns.openglWorkers.VAOLoader;
-import ns.parallelComputing.Request;
+import ns.options.Options;
 import ns.renderers.Blurer;
 import ns.renderers.ColorQuadFiller;
 import ns.renderers.GUIRenderer;
@@ -52,21 +52,20 @@ public class MainGameLoop implements Runnable {
 	private WaterRenderer waterRenderer;
 
 	private World world;
+	private Options options;
 
 	public void executeRequests() {
 		ns.parallelComputing.Thread thread = GU.currentThread();
 		synchronized (thread) {
+			thread.isExecutingRequests = true;
 			for (int i = 0; i < thread.vaoCreateRequests.size(); i++)
 				thread.vaoCreateRequests.get(i).execute();
-			for (int i = 0; i < thread.renderingRequests.size(); i++) {
-				Request r = thread.renderingRequests.get(i);
-				r.execute();
-			}
-			for (int i = 0; i < thread.toCarryOutRequests.size(); i++) {
+			for (int i = 0; i < thread.toCarryOutRequests.size(); i++)
 				thread.toCarryOutRequests.get(i).execute();
-				System.out.println(thread.toCarryOutRequests.get(i));
-			}
+			for (int i = 0; i < thread.renderingRequests.size(); i++)
+				thread.renderingRequests.get(i).execute();
 			thread.clearRequests();
+			thread.isExecutingRequests = false;
 		}
 	}
 
@@ -78,15 +77,21 @@ public class MainGameLoop implements Runnable {
 				world.add(e);
 			camera.update(world);
 			world.update();
+			if(GU.Key.KEY_ESC.isPressed() && !GU.Key.KEY_ESC.pressedPreviousFrame())
+				state = GS.MENU;
 		} else if (state == GS.MENU) {
 			menu.update();
+			if(GU.Key.KEY_ESC.isPressed() && !GU.Key.KEY_ESC.pressedPreviousFrame())
+				state = GS.GAME;
+		} else if (state == GS.OPTIONS) {
+			options.update();
 		}
 		GU.update();
 		GU.updateWireFrame();
 	}
 
 	public void render() {
-		if (state == GS.GAME || state == GS.MENU) {
+		if (state == GS.GAME || state == GS.MENU || state == GS.OPTIONS) {
 			GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 			fbos.bindReflexion();
 			float distance = 2 * camera.getPosition().y;
@@ -104,7 +109,7 @@ public class MainGameLoop implements Runnable {
 				renderer.renderScene(world, camera, sun, new Vector4f(0, 0, 0, 0), false);
 				waterRenderer.render(water, camera, fbos, sun);
 				shopRenderer.render(shop);
-			} else if (state == GS.MENU) {
+			} else if (state == GS.MENU || state == GS.OPTIONS) {
 				sceneFBO.bind();
 				renderer.renderScene(world, camera, sun, new Vector4f(0, 0, 0, 0), false);
 				waterRenderer.render(water, camera, fbos, sun);
@@ -112,7 +117,11 @@ public class MainGameLoop implements Runnable {
 				MasterRenderer.prepare();
 				blurer.apply(sceneFBO, bluredSceneFBO);
 				bluredSceneFBO.blitToScreen();
-				menuRenderer.render(menu);
+				if (state == GS.MENU) {
+					menuRenderer.render(menu);
+				} else if (state == GS.OPTIONS) {
+					options.render();
+				}
 			}
 		}
 	}
@@ -122,14 +131,13 @@ public class MainGameLoop implements Runnable {
 		TextMaster.init();
 		renderer = new MasterRenderer();
 		executeRequests();
-		DisplayManager.updateDisplay();
 		shader = new WaterShader();
 		waterRenderer = new WaterRenderer(shader, renderer.getProjectionMatrix());
 		executeRequests();
 		fbos = new WaterFBOs();
 		executeRequests();
 		sceneFBO = new FBO(1200, 800, (FBO.COLOR_TEXTURE | FBO.DEPTH_RENDERBUFFER)).create();
-		bluredSceneFBO = new FBO(Display.getWidth() / 3, Display.getHeight() / 3, FBO.COLOR_TEXTURE).create();
+		bluredSceneFBO = new FBO(Display.getWidth() / 4, Display.getHeight() / 4, FBO.COLOR_TEXTURE).create();
 		blurer = new Blurer(MasterRenderer.standardModels.get(0));
 		executeRequests();
 		GUIShader guiShader = new GUIShader();
@@ -146,7 +154,7 @@ public class MainGameLoop implements Runnable {
 		executeRequests();
 		state = GS.MENU;
 		GU.currentThread().finishLoading();
-		while(!SecondaryThread.READY || !ThirdThread.READY) {
+		while (!SecondaryThread.READY || !ThirdThread.READY) {
 			executeRequests();
 			Thread.yield();
 		}
@@ -191,5 +199,7 @@ public class MainGameLoop implements Runnable {
 			this.water = (WaterTile) o;
 		if (o instanceof MainMenu)
 			this.menu = (MainMenu) o;
+		if (o instanceof Options)
+			this.options = (Options) o;
 	}
 }

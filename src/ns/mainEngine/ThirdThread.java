@@ -20,6 +20,8 @@ public class ThirdThread implements Runnable {
 		GU.sendRequestToMainThread(new SetRequest(camera));
 		World world = WorldGenerator.generateWorld();
 		GU.sendRequestToMainThread(new SetRequest(world));
+		while(MasterRenderer.instance == null)
+			Thread.yield();
 		MousePicker.init(camera, MasterRenderer.instance.getProjectionMatrix(), world.getTerrain());
 		
 		GU.currentThread().finishLoading();

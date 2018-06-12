@@ -23,7 +23,8 @@ public class TexFile implements File {
 
 	@Override
 	public Texture load() throws LoadingException {
-		BufferedReader reader = GU.open(new Resource().withLocation(location).withVersion(false).create());
+		Resource resource = new Resource().withLocation(location).withVersion(true).create();
+		BufferedReader reader = GU.open(resource);
 		int id = 0;
 		int width = 0;
 		int height = 0;
@@ -33,20 +34,30 @@ public class TexFile implements File {
 			width = Integer.parseInt(pts[0]);
 			height = Integer.parseInt(pts[1]);
 			ByteBuffer pixels = BufferUtils.createByteBuffer(width * height * 4);
-			for (int y = height - 1; y >= 0; y--) {
-				line = reader.readLine();
-				pts = line.split(" ");
-				for (int x = 0; x < width; x++) {
-					try {
-						int pixel = Integer.parseInt(pts[x]);
-						pixels.put((byte) ((pixel >> 16) & 0xFF));
-						pixels.put((byte) ((pixel >> 8) & 0xFF));
-						pixels.put((byte) (pixel & 0xFF));
-						pixels.put((byte) ((pixel >> 24) & 0xFF));
-					} catch (NumberFormatException e) {
-						throw new CorruptException("File at " + location + " is corrupt(found: \"" + pts[x]
-								+ "\" while expecting an int)");
+			if (resource.version() == 1) {
+				for (int y = height - 1; y >= 0; y--) {
+					line = reader.readLine();
+					pts = line.split(" ");
+					for (int x = 0; x < width; x++) {
+						try {
+							int pixel = Integer.parseInt(pts[x]);
+							pixels.put((byte) ((pixel >> 16) & 0xFF));
+							pixels.put((byte) ((pixel >> 8) & 0xFF));
+							pixels.put((byte) (pixel & 0xFF));
+							pixels.put((byte) ((pixel >> 24) & 0xFF));
+						} catch (NumberFormatException e) {
+							throw new CorruptException("File at " + location + " is corrupt(found: \"" + pts[x]
+									+ "\" while expecting an int)");
+						}
 					}
+				}
+			} else if (resource.version() == 2) {
+				byte[] data = resource.asInputStream().readAllBytes();
+				System.out.println(data.length);
+				System.out.println(width * height * 4);
+				for (int i = width * height * 4; i > 0; i--) {
+					pixels.put(data[data.length - i]);
+//					System.out.println(i);
 				}
 			}
 			pixels.flip();

@@ -9,6 +9,7 @@ import org.lwjgl.util.vector.Vector3f;
 import ns.openglObjects.Texture;
 import ns.openglObjects.VAO;
 import ns.shaders.GUIShader;
+import ns.ui.GUIButton;
 import ns.ui.GUITexture;
 import ns.utils.Maths;
 
@@ -58,6 +59,12 @@ public class GUIRenderer {
 		bind();
 		for(GUITexture gui : guis)
 			batchRenderCall(gui);
+		unbind();
+	}
+
+	public void render(GUIButton button) {
+		bind();
+		batchRenderCall(button.getCenter(), button.getScale(), button.getTexture());
 		unbind();
 	}
 }

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="gameEngine"/>
-	<classpathentry kind="src" path="renderEngine"/>
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="src" path="audioEngine"/>
 	<classpathentry kind="src" path="utils"/>
-	
+	<classpathentry kind="src" path="renderEngine"/>
+	<classpathentry kind="src" path="gameEngine"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="NatureSimulator/lib/native"/>

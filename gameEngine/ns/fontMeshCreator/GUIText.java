@@ -62,13 +62,14 @@ public class GUIText {
 		this.position = position;
 		this.lineMaxSize = maxLineLength;
 		this.centerText = centered;
+		setColour(0, 0, 0);
 	}
 
 	/**
 	 * Remove the text from the screen.
 	 */
 	public void remove() {
-		TextMaster.removeText(this);
+		TextMaster.remove(this);
 	}
 
 	/**
@@ -180,8 +181,11 @@ public class GUIText {
 	/**
 	 * @return The string of text.
 	 */
-	protected String getTextString() {
+	public String getTextString() {
 		return textString;
 	}
 
+	public void setText(String text) {
+		this.textString = text;
+	}
 }

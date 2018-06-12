@@ -1,4 +1,4 @@
-package ns.mainEngine;
+package ns.mainMenu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +10,8 @@ import ns.components.Blueprint;
 import ns.components.BlueprintCreator;
 import ns.customFileFormat.TexFile;
 import ns.entities.Entity;
-import ns.mainMenu.MainMenu;
-import ns.mainMenu.MainMenuButton;
+import ns.mainEngine.GS;
+import ns.mainEngine.MainGameLoop;
 import ns.ui.Action;
 
 public class MenuMaster {
@@ -26,6 +26,14 @@ public class MenuMaster {
 				MainGameLoop.state = GS.GAME;
 			}
 		}, new TexFile("textures/buttonTextures/mainMenu_Start.tex").load()));
+
+		buttons.add(new MainMenuButton(new Vector2f(0f, 0.2f), new Vector2f(0.1f, 0.05f), new Action() {
+			@Override
+			public void execute() {
+				MainGameLoop.state = GS.OPTIONS;
+			}
+		}, new TexFile("textures/buttonTextures/mainMenu_Options.tex").load()));
+
 		buttons.add(new MainMenuButton(new Vector2f(0f, -0.7f), new Vector2f(0.1f, 0.05f), new Action() {
 			@Override
 			public void execute() {

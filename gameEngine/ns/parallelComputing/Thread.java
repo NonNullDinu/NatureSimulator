@@ -10,6 +10,7 @@ public class Thread extends java.lang.Thread {
 	private Runnable runnable;
 	public List<Request> renderingRequests = new ArrayList<>();
 	private long timeb;
+	public boolean isExecutingRequests;
 
 	protected Thread(String name, Runnable runnable) {
 		super(runnable, name);

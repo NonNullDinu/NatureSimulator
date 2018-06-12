@@ -8,7 +8,6 @@ import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.PixelFormat;
-import org.lwjgl.opengl.SharedDrawable;
 
 import ns.configuration.Config;
 import ns.configuration.GameConfig;
@@ -18,7 +17,6 @@ public class DisplayManager {
 	private static long lastFrameTime;
 	private static float delta;
 	
-	public static SharedDrawable drawable;
 	public static int frameId = 1;
 
 	public static void createDisplay() {
@@ -30,7 +28,6 @@ public class DisplayManager {
 			Display.setVSyncEnabled(true);
 			Display.create(new PixelFormat(), new ContextAttribs(4, 3).withForwardCompatible(true).withProfileCore(true)
 					.withProfileCompatibility(false));
-			drawable = new SharedDrawable(Display.getDrawable());
 			Mouse.create();
 			Keyboard.create();
 		} catch (LWJGLException e) {

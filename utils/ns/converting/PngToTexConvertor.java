@@ -1,14 +1,15 @@
 package ns.converting;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.imageio.ImageIO;
 
+import ns.utils.GU;
 import res.Resource;
+import res.WritingResource;
 
 public class PngToTexConvertor {
 	public static void main(String[] args) throws IOException {
@@ -17,20 +18,33 @@ public class PngToTexConvertor {
 		String location = "";
 		for (int i = 0; i < len - 1; i++)
 			location += (char) buf[i];
-		File target = new File("resources/" + location.replace(".png", ".tex"));
-		System.out.println("resources/" + location.replace(".png", ".tex"));
+		File target = new File("resources/res/" + location.replace(".png", ".tex"));
 		target.createNewFile();
-		BufferedWriter writer = new BufferedWriter(
-				new FileWriter(target));
-		BufferedImage img = ImageIO.read(new Resource().withLocation(location).withVersion(false).create().asInputStream());
+		PrintWriter writer = GU.open(new WritingResource(target.getPath()));
+		BufferedImage img = ImageIO
+				.read(new Resource().withLocation(location).withVersion(false).create().asInputStream());
 		int width = img.getWidth();
 		int height = img.getHeight();
+		int version = 1; // version 2 is deprecated 
+		writer.write(version);
 		writer.write(width + " " + height + "\n");
-		for(int y = height - 1; y >= 0; y--) {
-			for(int x = 0; x < width; x++) {
-				writer.write((x == 0 ? "" : " ") + img.getRGB(x, y));
+		if (version == 1) {
+			for (int y = height - 1; y >= 0; y--) {
+				for (int x = 0; x < width; x++) {
+					writer.write((x == 0 ? "" : " ") + img.getRGB(x, y));
+				}
+				writer.write((int) '\n');
 			}
-			writer.write((int) '\n');
+		} else if (version == 2) {
+			for (int y = height - 1; y >= 0; y--) {
+				for (int x = 0; x < width; x++) {
+					int pixel = img.getRGB(x, y);
+					writer.write((pixel >> 16) & 0xFF);
+					writer.write((pixel >> 8) & 0xFF);
+					writer.write(pixel & 0xFF);
+					writer.write((pixel >> 24) & 0xFF);
+				}
+			}
 		}
 		writer.close();
 	}

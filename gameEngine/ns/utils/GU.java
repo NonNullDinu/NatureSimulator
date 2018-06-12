@@ -14,15 +14,18 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import ns.components.BlueprintCreator;
+import ns.fontMeshCreator.FontType;
 import ns.openglObjects.FBO;
 import ns.openglObjects.Texture;
 import ns.parallelComputing.Request;
 import ns.parallelComputing.ThreadMaster;
+import ns.parallelComputing.Thread;
 import ns.renderers.MasterRenderer;
 import res.Resource;
 import res.WritingResource;
@@ -38,6 +41,7 @@ public class GU {
 	public static final int CURRENT_WORLD_FILE_VERSION = 1;
 	public static final String WORLD_SAVE_FILE_FORMAT = "nssv";
 	public static final String MAIN_THREAD_NAME = "main thread";
+	public static FontType Z003;
 
 	public static BufferedReader open(Resource resource) {
 		return new BufferedReader(new InputStreamReader(resource.asInputStream()));
@@ -69,11 +73,14 @@ public class GU {
 																											// for
 																											// wire-frame
 	}
-	
+
 	public static void sendRequestToMainThread(Request r) {
-		ThreadMaster.getThread(MAIN_THREAD_NAME).setToCarryOutRequest(r);
+		Thread th = ThreadMaster.getThread(MAIN_THREAD_NAME);
+		while(th.isExecutingRequests)
+			Thread.yield();
+		th.setToCarryOutRequest(r);
 	}
-	
+
 	public static ns.parallelComputing.Thread currentThread() {
 		return (ns.parallelComputing.Thread) Thread.currentThread();
 	}
@@ -116,7 +123,7 @@ public class GU {
 	}
 
 	public enum Key {
-		KEY_S(Keyboard.KEY_S), KEY_W(Keyboard.KEY_W);
+		KEY_S(Keyboard.KEY_S), KEY_W(Keyboard.KEY_W), KEY_ESC(Keyboard.KEY_ESCAPE);
 
 		private int id;
 		private boolean pressedPrevFrame;
@@ -188,5 +195,15 @@ public class GU {
 
 	public static ByteBuffer storeDataInByteBuffer(byte[] data) {
 		return (ByteBuffer) BufferUtils.createByteBuffer(data.length).put(data).flip();
+	}
+
+	public static Vector2f normalizedMousePos() {
+		double normalizedX = -1.0 + 2.0 * (double) Mouse.getX() / Display.getWidth();
+		double normalizedY = -(1.0 - 2.0 * (double) Mouse.getY() / Display.getHeight());
+		return new Vector2f((float) normalizedX, (float) normalizedY);
+	}
+	
+	public static void setZ003(FontType font) {
+		Z003 = font;
 	}
 }
