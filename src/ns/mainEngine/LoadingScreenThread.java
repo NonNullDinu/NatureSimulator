@@ -23,27 +23,27 @@ public class LoadingScreenThread implements Runnable {
 		int prevFrame = DisplayManager.frameId - 1;
 		FontType font = new FontType(new Texture("res/fonts/Caladea.png").create(),
 				GU.open(new Resource().withLocation("res/fonts/Caladea.fnt").create()));
-		while(font.getTextureAtlas().getID() == 0)
+		while (font.getTextureAtlas().getID() == 0)
 			Thread.yield();
 		GU.setZ003(font);
 		GUIText text = new GUIText("Loading...", 2f, font, new Vector2f(0.0f, 0.0f), 0.2f, true);
 		TextMaster.loadText(text);
 		text.setColour(1f, 1f, 1f);
+		TextMaster.add(text);
 		RenderMethod renderMethod = new RenderMethod() {
 			@Override
 			public void render() {
-				TextMaster.add(text);
 				TextMaster.render();
-				TextMaster.remove(text);
 			}
 		};
-		Thread.yield();
 		GU.currentThread().finishLoading();
+		Thread.yield();
+		TextMaster.loadText(text);
 		while (true) {
 			if (prevFrame < DisplayManager.frameId) {
 				prevFrame = DisplayManager.frameId;
 				GU.sendRequestToMainThread(
-						new GLClearRequest(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, new Vector3f(0, 0, 0)));
+						new GLClearRequest(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, new Vector3f(1, 1, 0)));
 				GU.sendRequestToMainThread(new GLRenderRequest(renderMethod));
 				GU.sendRequestToMainThread(new UpdateDisplayRequest());
 			}
@@ -55,5 +55,6 @@ public class LoadingScreenThread implements Runnable {
 			if (MainGameLoop.state != GS.LOADING)
 				break;
 		}
+		TextMaster.remove(text);
 	}
 }

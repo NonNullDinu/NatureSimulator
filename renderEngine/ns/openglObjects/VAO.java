@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL30;
 
 public class VAO implements IOpenGLObject, IRenderable {
 	private static int nextId = 1;
-	
+
 	private int id;
 	private int vertexCount;
 	private Map<Integer, Integer> vbos;
@@ -48,7 +48,7 @@ public class VAO implements IOpenGLObject, IRenderable {
 	public void setVbos(Map<Integer, Integer> vbos) {
 		this.vbos = vbos;
 	}
-	
+
 	public void setHasIndices(boolean hasIndices) {
 		this.hasIndices = hasIndices;
 	}
@@ -66,12 +66,14 @@ public class VAO implements IOpenGLObject, IRenderable {
 	public void bind() {
 		GL30.glBindVertexArray(id);
 		for (int attn : vbos.keySet())
-			GL20.glEnableVertexAttribArray(attn);
+			if (attn != -1)
+				GL20.glEnableVertexAttribArray(attn);
 	}
 
 	public void unbind() {
 		for (int attn : vbos.keySet())
-			GL20.glDisableVertexAttribArray(attn);
+			if (attn != -1)
+				GL20.glDisableVertexAttribArray(attn);
 		GL30.glBindVertexArray(0);
 	}
 
@@ -110,7 +112,7 @@ public class VAO implements IOpenGLObject, IRenderable {
 
 	@Override
 	public void batchRenderCall() {
-		if(hasIndices)
+		if (hasIndices)
 			GL11.glDrawElements(GL11.GL_TRIANGLES, vertexCount, GL11.GL_UNSIGNED_INT, 0);
 		else
 			GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, vertexCount);

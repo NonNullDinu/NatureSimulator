@@ -20,6 +20,7 @@ public class FontRenderer {
 	public void render(Map<FontType, List<GUIText>> texts) {
 		prepare();
 		for (FontType font : texts.keySet()) {
+			System.out.println(font.getTextureAtlas().getID());
 			font.getTextureAtlas().bindToTextureUnit(0);
 			for (GUIText text : texts.get(font)) {
 				renderText(text);
@@ -37,6 +38,7 @@ public class FontRenderer {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glDisable(GL11.GL_CULL_FACE);
 	}
 
 	private void renderText(GUIText text) {

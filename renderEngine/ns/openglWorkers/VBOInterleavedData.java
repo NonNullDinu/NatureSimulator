@@ -31,14 +31,7 @@ public class VBOInterleavedData {
 			stride += dt.getStride();
 		for (VBOData dt : dataArray) {
 			int size = dt.getStride();
-			int gl_type = 0;
-			if(dt.getDataf() != null)
-				gl_type = GL11.GL_FLOAT;
-			else if(dt.getDatai() != null)
-				gl_type = GL11.GL_INT;
-			else if(dt.getDatab() != null)
-				gl_type = GL11.GL_BYTE;
-			GL20.glVertexAttribPointer(dt.getAttributeNumber(), dt.getDimensions(), gl_type, false, stride,
+			GL20.glVertexAttribPointer(dt.getAttributeNumber(), dt.getDimensions(), GL11.GL_FLOAT, false, stride,
 					offset);
 			offset += size;
 			vbos.put(dt.getAttributeNumber(), vbo.getID());

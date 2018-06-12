@@ -12,22 +12,22 @@ import ns.openglObjects.VBO;
 
 public class DataPacking {
 	public static VBO packVertexDataf(int vertexCount, Map<Integer, Integer> current, VBOData... data) {
-		List<Number[]> dataList = new ArrayList<>();
+		List<float[]> dataList = new ArrayList<>();
 		for (VBOData d : data) {
-			Number[] asArray = d.getData();
+			float[] asArray = d.getDataf();
 			if (asArray != null) {
 				dataList.add(asArray);
 			}
 		}
 		VBOInterleavedData interleavedData = new VBOInterleavedData(
-				interleaveData(vertexCount, (Number[][]) dataList.toArray(new Number[dataList.size()][])), data, current);
+				interleaveData(vertexCount, (float[][]) dataList.toArray(new float[dataList.size()][])), data, current);
 		int vboId = GL15.glGenBuffers();
 		VBO vbo = new VBO(vboId);
 		interleavedData.store(vbo);
-		return null;
+		return vbo;
 	}
 
-	public static ByteBuffer interleaveData(int vertexCount, Number[]... data) {
+	public static ByteBuffer interleaveData(int vertexCount, float[]... data) {
 		int totalSize = 0;
 		int[] lengths = new int[data.length];
 		for (int i = 0; i < data.length; i++) {
@@ -35,7 +35,7 @@ public class DataPacking {
 			lengths[i] = elementLength;
 			totalSize += data[i].length;
 		}
-		Number[] interleavedBuffer = new Number[totalSize];
+		float[] interleavedBuffer = new float[totalSize];
 		int pointer = 0;
 		for (int i = 0; i < vertexCount; i++) {
 			for (int j = 0; j < data.length; j++) {
@@ -45,24 +45,10 @@ public class DataPacking {
 				}
 			}
 		}
-		totalSize = 0;
-		for(Number n : interleavedBuffer) {
-			if(n instanceof Float)
-				totalSize += 4;
-			if(n instanceof Integer)
-				totalSize += 4;
-			if(n instanceof Byte)
-				totalSize++;
-		}
-		ByteBuffer buffer = BufferUtils.createByteBuffer(totalSize);
-		for(Number n : interleavedBuffer) {
-			if(n instanceof Float)
-				buffer.putFloat((Float) n);
-			if(n instanceof Integer)
-				buffer.putInt((Integer) n);
-			if(n instanceof Byte)
-				buffer.put((Byte) n);
-		}
+		ByteBuffer buffer = BufferUtils.createByteBuffer(totalSize * 4);
+		for(float f : interleavedBuffer)
+			buffer.putFloat(f);
+		buffer.flip();
 		return buffer;
 	}
 }

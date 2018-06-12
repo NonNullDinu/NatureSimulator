@@ -81,7 +81,7 @@ public class VAOLoader {
 			}
 			if (vertexCount == -1)
 				vertexCount = data[0].getLength() / data[0].getDimensions();
-			DataPacking.packVertexDataf(vertexCount, current, data);
+			VBO vbo = DataPacking.packVertexDataf(vertexCount, current, data);
 			GL30.glBindVertexArray(0);
 			return new VAO(vaoId, vertexCount, current, hasIndices);
 		} else {

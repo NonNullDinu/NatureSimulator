@@ -38,18 +38,19 @@ public class Initializer {
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-				try {
-					SaveWorldMaster.save(WorldGenerator.generatedWorld,
-							new WritingResource("saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT));
-				} catch (Throwable thr) {
-					msg = "";
-					for (StackTraceElement elem : thr.getStackTrace()) {
-						msg += elem.getFileName() + ": " + elem.getMethodName() + "(line " + elem.getLineNumber()
-								+ ")\n	";
+				if (WorldGenerator.generatedWorld != null)
+					try {
+						SaveWorldMaster.save(WorldGenerator.generatedWorld,
+								new WritingResource("saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT));
+					} catch (Throwable thr) {
+						msg = "";
+						for (StackTraceElement elem : thr.getStackTrace()) {
+							msg += elem.getFileName() + ": " + elem.getMethodName() + "(line " + elem.getLineNumber()
+									+ ")\n	";
+						}
+						System.err.print(thr.getClass().getName() + "\nError while saving world:\nAt:" + msg);
+						new File("saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT).delete();
 					}
-					System.err.print(thr.getClass().getName() + "\nError while saving world:\nAt:" + msg);
-					new File("saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT).delete();
-				}
 				System.exit(-1);
 			}
 		};

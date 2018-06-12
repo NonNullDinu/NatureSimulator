@@ -97,31 +97,31 @@ public class TextMeshCreator {
 
 	private static void addVertices(List<Float> vertices, double x, double y, double maxX, double maxY) {
 		vertices.add((float) x);
-		vertices.add((float) y);
+		vertices.add((float) maxY);
 		vertices.add((float) x);
-		vertices.add((float) maxY);
-		vertices.add((float) maxX);
-		vertices.add((float) maxY);
-		vertices.add((float) maxX);
-		vertices.add((float) maxY);
-		vertices.add((float) maxX);
 		vertices.add((float) y);
+		vertices.add((float) maxX);
+		vertices.add((float) maxY);
+		vertices.add((float) maxX);
+		vertices.add((float) maxY);
 		vertices.add((float) x);
+		vertices.add((float) y);
+		vertices.add((float) maxX);
 		vertices.add((float) y);
 	}
 
 	private static void addTexCoords(List<Float> texCoords, double x, double y, double maxX, double maxY) {
 		texCoords.add((float) x);
-		texCoords.add((float) y);
+		texCoords.add((float) maxY);
 		texCoords.add((float) x);
-		texCoords.add((float) maxY);
-		texCoords.add((float) maxX);
-		texCoords.add((float) maxY);
-		texCoords.add((float) maxX);
-		texCoords.add((float) maxY);
-		texCoords.add((float) maxX);
 		texCoords.add((float) y);
+		texCoords.add((float) maxX);
+		texCoords.add((float) maxY);
+		texCoords.add((float) maxX);
+		texCoords.add((float) maxY);
 		texCoords.add((float) x);
+		texCoords.add((float) y);
+		texCoords.add((float) maxX);
 		texCoords.add((float) y);
 	}
 
