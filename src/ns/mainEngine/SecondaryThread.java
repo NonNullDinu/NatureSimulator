@@ -15,6 +15,7 @@ import ns.shaders.StructLib;
 import ns.ui.shop.ShopMaster;
 import ns.utils.GU;
 import ns.water.WaterTile;
+import ns.world.WorldGenerator;
 import res.Resource;
 
 public class SecondaryThread implements Runnable {
@@ -32,7 +33,6 @@ public class SecondaryThread implements Runnable {
 		ModelsLibrary.getModel("models/1004/tree.obj");
 		GU.sendRequestToMainThread(new SetRequest(
 				new Light(new Vector3f(0.5f, -0.5f, 0), new Vector3f(1, 1, 1), new Vector2f(0.5f, 0.5f))));
-		GU.sendRequestToMainThread(new SetRequest(new WaterTile(0, 0)));
 		GU.sendRequestToMainThread(new SetRequest(OptionsMaster.createOptions()));
 
 		// Read model files and create CreateVAORequests
@@ -44,7 +44,9 @@ public class SecondaryThread implements Runnable {
 
 		GU.sendRequestToMainThread(new SetRequest(ShopMaster.createShop(GUIRenderer.instance)));
 
-//		world.getTerrain().initColors(world.getEntities());
+		while (WorldGenerator.generatedWorld == null)
+			Thread.yield();
+		GU.sendRequestToMainThread(new SetRequest(new WaterTile(0, 0, WorldGenerator.generatedWorld.getTerrain())));
 
 		Runtime.getRuntime().gc();
 		READY = true;
