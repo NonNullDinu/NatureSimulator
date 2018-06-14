@@ -27,13 +27,14 @@ public class Initializer {
 					// Formatting for use with eclipse
 					msg += elem.getModuleName() + "/" + elem.getClassName() + "." + elem.getMethodName() + "("
 							+ elem.getFileName() + ":" + elem.getLineNumber() + ")\n	";
+					
 				}
 				File f = new File("err" + new SimpleDateFormat("hh mm ss dd MM yyyy").format(new Date()) + ".log");
-				System.err.println(e.getClass().getName() + "\nStack trace: " + msg);
+				System.err.println(e.getClass().getName() + " in  thread \"" + t.getName() + "\"\nStack trace: " + msg);
 				try {
 					f.createNewFile();
 					DataOutputStream dout = new DataOutputStream(new FileOutputStream(f));
-					dout.writeUTF(e.getClass().getName() + "\nStack trace: " + msg);
+					dout.writeUTF(e.getClass().getName() + " in  thread \"" + t.getName() + "\"\nStack trace: " + msg);
 					dout.close();
 				} catch (IOException e1) {
 					e1.printStackTrace();

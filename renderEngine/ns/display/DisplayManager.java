@@ -42,7 +42,7 @@ public class DisplayManager {
 		long currentTime = getCurrentTime();
 		delta = (currentTime - lastFrameTime) / 1000f;
 		lastFrameTime = currentTime;
-//		System.out.println(1f / delta);
+//		System.out.println(1f / delta); // Display FPS in console
 	}
 
 	public static void closeDisplay() {
