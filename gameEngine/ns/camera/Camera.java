@@ -76,7 +76,6 @@ public class Camera extends ICamera {
 		toTerrainDistance = Vector3f.sub(onTerrainPoint, position, null).length();
 		Vector3f onPointPt = new Vector3f(point.x, GU.clamp(position.y, 0f, onTerrainPoint.y), point.z);
 		dist = Math.min(toTerrainDistance, Vector3f.sub(onPointPt, position, null).length());
-		System.out.println(dist);
 		
 		// Recalculate position
 		if (dist < 200f) {
