@@ -78,7 +78,8 @@ public class TextMeshCreator {
 			cursorX = 0;
 			cursorY += LINE_HEIGHT * text.getFontSize();
 		}
-		return new TextMeshData(listToArray(vertices), listToArray(textureCoords));
+		float[] pos = listToArray(vertices), tex = listToArray(textureCoords);
+		return new TextMeshData(pos, tex);
 	}
 
 	private void addVerticesForCharacter(double cursorX, double cursorY, Character character, double fontSize,

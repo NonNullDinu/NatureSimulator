@@ -107,7 +107,16 @@ public class VBOData {
 	}
 
 	public int getLength() {
-		return (dataf != null ? dataf.length : (datab != null ? datab.length : datai.length));
+		switch(type) {
+		case 0:
+			return dataf.length;
+		case 1:
+			return datai.length;
+		case 2:
+			return datab.length;
+		}
+		System.out.println("Type " + type + " not found");
+		return 0;
 	}
 
 	public int getDimensions() {
@@ -163,7 +172,9 @@ public class VBOData {
 	}
 
 	public Number[] getData() {
-		return (dataf != null ? cast(dataf) : (datai != null ? cast(datai) : cast(datab)));
+		Number[] arr = (dataf != null ? cast(dataf) : (datai != null ? cast(datai) : cast(datab)));
+		System.out.println(arr.length);
+		return arr;
 	}
 
 	private Number[] cast(float[] data) {

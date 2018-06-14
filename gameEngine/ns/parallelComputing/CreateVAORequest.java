@@ -8,7 +8,6 @@ public class CreateVAORequest extends Request {
 
 	private VAO vao;
 	private VBOData[] data;
-
 	public CreateVAORequest(VAO vao, VBOData[] args) {
 		super("create vao", args);
 		this.vao = vao;

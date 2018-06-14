@@ -140,8 +140,8 @@ public class MainGameLoop implements Runnable {
 
 	public void run() {
 		DisplayManager.createDisplay();
-		TextMaster.init();
 		renderer = new MasterRenderer();
+		TextMaster.init();
 		executeRequests();
 		shader = new WaterShader();
 		waterRenderer = new WaterRenderer(shader, renderer.getProjectionMatrix());

@@ -45,7 +45,8 @@ public class VAOLoader {
 			return new VAO(vaoId, vertexCount, current, hasIndices);
 		} else {
 			VAO target = new VAO();
-			GU.sendRequestToMainThread(new CreateVAORequest(target, data));
+			CreateVAORequest req = new CreateVAORequest(target, data);
+			GU.sendRequestToMainThread(req);
 			return target;
 		}
 	}
@@ -81,7 +82,7 @@ public class VAOLoader {
 			}
 			if (vertexCount == -1)
 				vertexCount = data[0].getLength() / data[0].getDimensions();
-			VBO vbo = DataPacking.packVertexDataf(vertexCount, current, data);
+			DataPacking.packVertexDataf(vertexCount, current, data);
 			GL30.glBindVertexArray(0);
 			return new VAO(vaoId, vertexCount, current, hasIndices);
 		} else {
@@ -162,7 +163,7 @@ public class VAOLoader {
 	}
 
 	public static void createVAOAndStore(VAO vao, VBOData... data) {
-		int vaoId = GL30.glGenVertexArrays(), vertexCount = -1;
+		int vaoId = GL30.glGenVertexArrays(), vertexCount = 0;
 		boolean hasIndices = false;
 		Map<Integer, Integer> current = new HashMap<>();
 		vaos.put(vaoId, current);
@@ -177,7 +178,7 @@ public class VAOLoader {
 				hasIndices = true;
 			}
 		}
-		if (vertexCount == -1)
+		if (!hasIndices)
 			vertexCount = data[0].getLength() / data[0].getDimensions();
 		GL30.glBindVertexArray(0);
 		vao.setId(vaoId);
