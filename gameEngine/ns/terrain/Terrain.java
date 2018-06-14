@@ -20,6 +20,7 @@ import ns.worldSave.TerrainData;
 
 public class Terrain implements SerializableWorldObject {
 	public static final float SIZE = 4800;
+	public static final float SIZE_DIV_2 = SIZE / 2;
 	public static final int VERTEX_COUNT = (int) (256f * (SIZE / 2400f));
 	private static final int GRID_SCL = 7;
 	public static final int GRID_VERTEX_COUNT = VERTEX_COUNT / GRID_SCL;
@@ -40,8 +41,8 @@ public class Terrain implements SerializableWorldObject {
 	}
 
 	public Terrain(int seed) {
-		x = -(SIZE / 2f);
-		z = -(SIZE / 2f);
+		x = -SIZE_DIV_2;
+		z = -SIZE_DIV_2;
 		vertices = new ArrayList<>();
 		generator = new HeightsGenerator(seed);
 		gridVertices = new HashMap<>();

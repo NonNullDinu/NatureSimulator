@@ -143,6 +143,10 @@ public class GU {
 		private void setKeyPressedPrevFrame(boolean pressed) {
 			pressedPrevFrame = pressed;
 		}
+		
+		public boolean pressedThisFrame() {
+			return isPressed() && !pressedPrevFrame;
+		}
 	}
 
 	public static Cursor createCursor(int xHotspot, int yHotspot, int nrOfFrames, IntBuffer textures,
@@ -205,5 +209,16 @@ public class GU {
 	
 	public static void setZ003(FontType font) {
 		Z003 = font;
+	}
+
+	public static float clamp(float val, float min, float max) {
+		if(min > max)
+			return clamp(val, max, min);
+		
+		if(val < min)
+			return min;
+		else if(val > max)
+			return max;
+		return val;
 	}
 }

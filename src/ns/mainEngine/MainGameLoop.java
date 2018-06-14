@@ -1,5 +1,7 @@
 package ns.mainEngine;
 
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
@@ -77,12 +79,22 @@ public class MainGameLoop implements Runnable {
 				world.add(e);
 			camera.update(world);
 			world.update();
-			if(GU.Key.KEY_ESC.isPressed() && !GU.Key.KEY_ESC.pressedPreviousFrame())
+			if (GU.Key.KEY_ESC.pressedThisFrame()) {
 				state = GS.MENU;
+				if (shop.open())
+					try {
+						Mouse.setNativeCursor(null);
+					} catch (LWJGLException e1) {
+						e1.printStackTrace();
+					}
+			}
 		} else if (state == GS.MENU) {
 			menu.update();
-			if(GU.Key.KEY_ESC.isPressed() && !GU.Key.KEY_ESC.pressedPreviousFrame())
+			if (GU.Key.KEY_ESC.pressedThisFrame()) {
 				state = GS.GAME;
+				if (shop.open())
+					shop.refreshCursor();
+			}
 		} else if (state == GS.OPTIONS) {
 			options.update();
 		}
@@ -169,7 +181,7 @@ public class MainGameLoop implements Runnable {
 			runLogicAndRender();
 			DisplayManager.updateDisplay();
 			executeRequests();
-			assert(GL11.glGetError() == GL11.GL_NO_ERROR);
+			assert (GL11.glGetError() == GL11.GL_NO_ERROR);
 		}
 		state = GS.CLOSING;
 		VAOLoader.cleanUp();

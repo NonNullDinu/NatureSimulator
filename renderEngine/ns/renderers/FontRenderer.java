@@ -20,7 +20,6 @@ public class FontRenderer {
 	public void render(Map<FontType, List<GUIText>> texts) {
 		prepare();
 		for (FontType font : texts.keySet()) {
-			System.out.println(font.getTextureAtlas().getID());
 			font.getTextureAtlas().bindToTextureUnit(0);
 			for (GUIText text : texts.get(font)) {
 				renderText(text);

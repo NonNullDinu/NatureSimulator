@@ -18,11 +18,11 @@ public class PngToTexConvertor {
 		String location = "";
 		for (int i = 0; i < len - 1; i++)
 			location += (char) buf[i];
-		File target = new File("resources/res/" + location.replace(".png", ".tex"));
+		File target = new File("resources/res/textures/" + location.replace(".png", ".tex"));
 		target.createNewFile();
 		PrintWriter writer = GU.open(new WritingResource(target.getPath()));
 		BufferedImage img = ImageIO
-				.read(new Resource().withLocation(location).withVersion(false).create().asInputStream());
+				.read(new Resource().withLocation("textures/" + location).withVersion(false).create().asInputStream());
 		int width = img.getWidth();
 		int height = img.getHeight();
 		int version = 1; // version 2 is deprecated 
@@ -36,7 +36,7 @@ public class PngToTexConvertor {
 				writer.write((int) '\n');
 			}
 		} else if (version == 2) {
-			for (int y = height - 1; y >= 0; y--) {
+			for (int y =height - 1; y >= 0; y--) {
 				for (int x = 0; x < width; x++) {
 					int pixel = img.getRGB(x, y);
 					writer.write((pixel >> 16) & 0xFF);

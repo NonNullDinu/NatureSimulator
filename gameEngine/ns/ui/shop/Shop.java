@@ -35,7 +35,7 @@ public class Shop {
 			GU.setMouseCursor(GU.createCursor(0, 63, 1,
 					GU.getMouseTexture(currentlySelected.getEntityBlueprint().getFolder(), d), null, d));
 		}
-		if (GU.Key.KEY_S.isPressed() && !GU.Key.KEY_S.pressedPreviousFrame()) {
+		if (GU.Key.KEY_S.pressedThisFrame()) {
 			if (state != SS.OPEN) {
 				if (state == SS.BUYING)
 					complex.getCenter().x += SLIDE_OFFSET;
@@ -95,5 +95,11 @@ public class Shop {
 
 	public ComplexGUI getComplex() {
 		return complex;
+	}
+
+	public void refreshCursor() {
+		if (state == SS.BUYING)
+			GU.setMouseCursor(
+					GU.createCursor(0, 63, 1, GU.getMouseTexture(currentlySelected.getEntityBlueprint().getFolder(), 0), null));
 	}
 }

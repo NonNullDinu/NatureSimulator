@@ -2,6 +2,7 @@ package ns.customFileFormat;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import org.lwjgl.BufferUtils;
@@ -52,12 +53,11 @@ public class TexFile implements File {
 					}
 				}
 			} else if (resource.version() == 2) {
-				byte[] data = resource.asInputStream().readAllBytes();
-				System.out.println(data.length);
-				System.out.println(width * height * 4);
-				for (int i = width * height * 4; i > 0; i--) {
-					pixels.put(data[data.length - i]);
-//					System.out.println(i);
+				InputStream is = resource.asInputStream();
+				for (int i = 0; i < width * height * 4; i++) {
+					int val = is.read();
+					pixels.put((byte) val);
+					System.out.println((char) val);
 				}
 			}
 			pixels.flip();

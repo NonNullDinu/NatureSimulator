@@ -20,7 +20,7 @@ uniform Light light;
 #Struct_Lib.FogValues
 uniform FogValues fogValues;
 
-const float COLOR_CHANGE_SPEED = 0.001;
+#define COLOR_CHANGE_SPEED 0.001
 
 layout(std430, binding = 0) buffer colors
 {

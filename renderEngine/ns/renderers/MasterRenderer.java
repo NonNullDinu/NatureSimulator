@@ -29,9 +29,9 @@ import ns.world.World;
 
 public class MasterRenderer {
 	private static final float FOV = 70;
-	protected static final float NEAR_PLANE = 0.1f, FAR_PLANE = 1000f;
+	protected static final float NEAR_PLANE = 0.1f, FAR_PLANE = 750f;
 	protected static final float RED = 0.435f, GREEN = 0.812f, BLUE = 1.0f;
-	protected static final Vector2f FOG_VALUES = new Vector2f(0.0015f, 5.0f);
+	protected static final Vector2f FOG_VALUES = new Vector2f(0.0016f, 10.0f);
 
 	private static final float TIME_SPEED = 0.15f;
 
