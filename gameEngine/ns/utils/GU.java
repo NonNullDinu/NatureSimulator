@@ -42,6 +42,7 @@ public class GU {
 	public static final String WORLD_SAVE_FILE_FORMAT = "nssv";
 	public static final String MAIN_THREAD_NAME = "main thread";
 	public static FontType Z003;
+	public static FontType caladea;
 
 	public static BufferedReader open(Resource resource) {
 		return new BufferedReader(new InputStreamReader(resource.asInputStream()));
@@ -220,5 +221,9 @@ public class GU {
 		else if(val > max)
 			return max;
 		return val;
+	}
+
+	public static void setCaladea(FontType caladea) {
+		GU.caladea = caladea;
 	}
 }

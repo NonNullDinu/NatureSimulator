@@ -24,13 +24,19 @@ public class LoadingScreenThread implements Runnable {
 		int prevFrame = DisplayManager.frameId - 1;
 		while(!Display.isCreated())
 			Thread.yield();
-		FontType font = new FontType(new Texture("res/fonts/Caladea.png").create(),
+		FontType z003 = new FontType(new Texture("res/fonts/Z003.png").create(),
+				GU.open(new Resource().withLocation("res/fonts/Z003.fnt").create()));
+		GU.setZ003(z003);
+		FontType caladea = new FontType(new Texture("res/fonts/Caladea.png").create(),
 				GU.open(new Resource().withLocation("res/fonts/Caladea.fnt").create()));
-		GU.setZ003(font);
-		GUIText text = new GUIText("Loading...", 2f, font, new Vector2f(0.0f, 0.0f), 0.2f, true);
+		GU.setCaladea(caladea);
+		GUIText text = new GUIText("Loading...", 2f, z003, new Vector2f(0.0f, 0.0f), 0.2f, true);
+		GUIText textCopyright = new GUIText("Copyright (c) 2018, NonNullDinu, Mahou-sama666", 1f, caladea, new Vector2f(0.4f, -0.7f), 0.4f, true);
 		TextMaster.loadText(text);
+		TextMaster.loadText(textCopyright);
 		text.setColour(0f, 0f, 0f);
 		TextMaster.add(text);
+		TextMaster.add(textCopyright);
 		RenderMethod renderMethod = new RenderMethod() {
 			@Override
 			public void render() {
@@ -56,5 +62,6 @@ public class LoadingScreenThread implements Runnable {
 				break;
 		}
 		TextMaster.remove(text);
+		TextMaster.remove(textCopyright);
 	}
 }
