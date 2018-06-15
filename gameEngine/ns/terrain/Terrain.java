@@ -22,7 +22,7 @@ public class Terrain implements SerializableWorldObject {
 	public static final float SIZE = 4800;
 	public static final float SIZE_DIV_2 = SIZE / 2;
 	public static final int VERTEX_COUNT = (int) (256f * (SIZE / 2400f));
-	private static final int GRID_SCL = 7;
+	private static final int GRID_SCL = (int) (SIZE / 200f);
 	public static final int GRID_VERTEX_COUNT = VERTEX_COUNT / GRID_SCL;
 	private VAO model;
 	private float x, z;
