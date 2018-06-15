@@ -60,10 +60,10 @@ public class MasterRenderer {
 	private boolean inc;
 
 	public MasterRenderer() {
-		instance = this;
 		createProjectionMatrix();
 		renderer = new Renderer(shader, projectionMatrix);
 		terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
+		instance = this;
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 	}
 

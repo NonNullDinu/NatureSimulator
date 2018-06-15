@@ -175,6 +175,7 @@ public class MainGameLoop implements Runnable {
 			executeRequests();
 			Thread.yield();
 		}
+		executeRequests();
 		while (!Display.isCloseRequested()) {
 			if (state == GS.EXIT)
 				break;
