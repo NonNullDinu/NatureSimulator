@@ -1,3 +1,16 @@
-Please put you system-specific executable in a folder, since the game will create
-new folders in the directory where the executable is for save data(the folder's name where the save data is located is saveData)
-NOTE: In some circumstances it may fail, but it is mostly stable
+Please run the following commands in the command line
+
+cd to/the/location/of/NS_Installer.jar
+java -jar NS_Installer.jar
+
+This will run the installer, witch will look for the executable.
+If it does not find the executable, it asks the user to give the path to the executable.
+After the executable is found, the program will ask for a directory where to put the necessary
+executable and everything else the game needs.
+If want the source code, it can be found here: 
+https://github.com/NonNullDinu/NatureSimulator
+
+NOTE: In some circumstances it may crash. If it crashes, if the world was loaded, it saves the
+world and writes a .log file. Please create a new issue labeled bug in the github repostory and I will try my best to
+get it fixed in the next update, and send the contents of the .log file to, since they are essential
+to fixing the issue. The .log file does not contain any information about the user, just information to help me track down the issue/bug.
