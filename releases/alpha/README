@@ -7,7 +7,7 @@ This will run the installer, witch will look for the executable.
 If it does not find the executable, it asks the user to give the path to the executable.
 After the executable is found, the program will ask for a directory where to put the necessary
 executable and everything else the game needs.
-If want the source code, it can be found here: 
+If you want the source code, it can be found here: 
 https://github.com/NonNullDinu/NatureSimulator
 
 NOTE: In some circumstances it may crash. If it crashes, if the world was loaded, it saves the
