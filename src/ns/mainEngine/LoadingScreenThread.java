@@ -31,7 +31,7 @@ public class LoadingScreenThread implements Runnable {
 				GU.open(new Resource().withLocation("res/fonts/Caladea.fnt").create()));
 		GU.setCaladea(caladea);
 		GUIText text = new GUIText("Loading...", 2f, z003, new Vector2f(0.0f, 0.0f), 0.2f, true);
-		GUIText textCopyright = new GUIText("Copyright (c) 2018, NonNullDinu, Mahou-sama666", 1f, caladea, new Vector2f(0.4f, -0.7f), 0.4f, true);
+		GUIText textCopyright = new GUIText("Copyright (c) 2018, NonNullDinu", 1f, caladea, new Vector2f(0.4f, -0.7f), 0.4f, true);
 		TextMaster.loadText(text);
 		TextMaster.loadText(textCopyright);
 		text.setColour(0f, 0f, 0f);
