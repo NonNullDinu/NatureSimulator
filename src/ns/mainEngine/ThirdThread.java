@@ -30,6 +30,6 @@ public class ThirdThread implements Runnable {
 			Thread.yield();
 		}
 
-		SaveWorldMaster.save(world, new WritingResource("saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT));
+		SaveWorldMaster.save(world, new WritingResource(GU.path + "saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT));
 	}
 }

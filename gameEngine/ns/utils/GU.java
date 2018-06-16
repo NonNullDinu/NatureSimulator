@@ -43,6 +43,7 @@ public class GU {
 	public static final String MAIN_THREAD_NAME = "main thread";
 	public static FontType Z003;
 	public static FontType caladea;
+	public static String path;
 
 	public static BufferedReader open(Resource resource) {
 		return new BufferedReader(new InputStreamReader(resource.asInputStream()));

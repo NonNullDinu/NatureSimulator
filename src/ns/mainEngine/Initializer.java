@@ -20,6 +20,8 @@ import res.WritingResource;
  */
 public class Initializer {
 	public static void main(String[] args) {
+		GU.path = (args.length == 0 ? System.getProperty("user.dir") : args[0]) + "/";
+		System.setProperty("org.lwjgl.librarypath", new File(GU.path + "lib/natives").getAbsolutePath());
 		UncaughtExceptionHandler handler = new UncaughtExceptionHandler() {
 			@Override
 			public void uncaughtException(Thread t, Throwable e) {
@@ -28,16 +30,15 @@ public class Initializer {
 					// Formatting for use with eclipse
 					msg += elem.getModuleName() + "/" + elem.getClassName() + "." + elem.getMethodName() + "("
 							+ elem.getFileName() + ":" + elem.getLineNumber() + ")\n	";
-
 				}
-				String props = "sun.desktop:" + getProperty("sun.desktop") + "\n" + "java.specification.version"
-						+ getProperty("java.specification.version") + "\n" + "os.name" + getProperty("os.name") + "\n"
-						+ "java.vm.specification.version" + getProperty("java.vm.specification.version") + "\n"
-						+ "java.runtime.version" + getProperty("java.runtime.version") + "\n" + "os.version"
-						+ getProperty("os.version") + "\n" + "java.runtime.name" + getProperty("java.runtime.name")
-						+ "\n" + "java.vm.name" + getProperty("java.vm.name") + "\n" + "java.version"
-						+ getProperty("java.version") + "\n" + "os.arch" + getProperty("os.arch") + "\n"
-						+ "java.vm.version" + getProperty("java.vm.version") + "\n" + "java.class.version"
+				String props = "sun.desktop:" + getProperty("sun.desktop") + "\n" + "java.specification.version:"
+						+ getProperty("java.specification.version") + "\n" + "os.name:" + getProperty("os.name") + "\n"
+						+ "java.vm.specification.version:" + getProperty("java.vm.specification.version") + "\n"
+						+ "java.runtime.version:" + getProperty("java.runtime.version") + "\n" + "os.version:"
+						+ getProperty("os.version") + "\n" + "java.runtime.name:" + getProperty("java.runtime.name")
+						+ "\n" + "java.vm.name:" + getProperty("java.vm.name") + "\n" + "java.version:"
+						+ getProperty("java.version") + "\n" + "os.arch:" + getProperty("os.arch") + "\n"
+						+ "java.vm.version:" + getProperty("java.vm.version") + "\n" + "java.class.version:"
 						+ getProperty("java.class.version") + "\n";
 				File f = new File("err" + new SimpleDateFormat("hh mm ss dd MM yyyy").format(new Date()) + ".log");
 				System.err.println(e.getClass().getName() + " in  thread \"" + t.getName() + "\"\nStack trace: " + msg
@@ -54,7 +55,7 @@ public class Initializer {
 				if (WorldGenerator.generatedWorld != null)
 					try {
 						SaveWorldMaster.save(WorldGenerator.generatedWorld,
-								new WritingResource("saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT));
+								new WritingResource(GU.path + "saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT));
 					} catch (Throwable thr) {
 						msg = "";
 						for (StackTraceElement elem : thr.getStackTrace()) {
@@ -62,7 +63,7 @@ public class Initializer {
 									+ ")\n	";
 						}
 						System.err.print(thr.getClass().getName() + "\nError while saving world:\nAt:" + msg);
-						new File("saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT).delete();
+						new File(GU.path + "saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT).delete();
 					}
 				System.exit(-1);
 			}
