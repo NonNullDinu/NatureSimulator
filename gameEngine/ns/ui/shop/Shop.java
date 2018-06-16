@@ -33,7 +33,9 @@ public class Shop {
 			} else
 				d -= 2;
 			GU.setMouseCursor(GU.createCursor(0, 63, 1,
-					GU.getMouseTexture(currentlySelected.getEntityBlueprint().getFolder(), d), null, d));
+					GU.getMouseTexture(
+							currentlySelected.getEntityBlueprint().getFolder()
+							, d), null, d));
 		}
 		if (GU.Key.KEY_S.pressedThisFrame()) {
 			if (state != SS.OPEN) {

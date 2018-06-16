@@ -20,7 +20,7 @@ uniform Light light;
 #Struct_Lib.FogValues
 uniform FogValues fogValues;
 
-#define COLOR_CHANGE_SPEED 0.001
+#define COLOR_CHANGE_SPEED 0.0004
 
 layout(std430, binding = 0) buffer colors
 {
@@ -44,7 +44,7 @@ void main(void) {
 	gl_ClipDistance[0] = dot(worldPosition, clipPlane);
 	vec4 posRelativeToCamera = viewMatrix * worldPosition;
 	gl_Position = projectionMatrix * posRelativeToCamera;
-	int vertId = gl_VertexID;
+	int vertId = gl_VertexID / 3;
 	vec3 color = mix(
 			vec3(cls[vertId * 3], cls[vertId * 3 + 1], cls[vertId * 3 + 2]),
 			in_final_color, COLOR_CHANGE_SPEED);

@@ -24,6 +24,7 @@ public class Terrain implements SerializableWorldObject {
 	public static final int VERTEX_COUNT = (int) (256f * (SIZE / 2400f));
 	private static final int GRID_SCL = (int) (SIZE / 200f);
 	public static final int GRID_VERTEX_COUNT = VERTEX_COUNT / GRID_SCL;
+	private static final Vector3f DEFAULT_COLOR = new Vector3f(0.71f, 0.478f, 0.0f);
 	private VAO model;
 	private float x, z;
 	private HeightsGenerator generator;
@@ -70,7 +71,7 @@ public class Terrain implements SerializableWorldObject {
 						cl = new Vector3f(Vector3f.add(bcl, prevC, null));
 					}
 					if (!(cl.x == 0 && cl.y == 0 && cl.z == 0)) {
-						if (vertex.color.x == 1.0f && vertex.color.y == 0.766f && vertex.color.z == 0.061f)
+						if (vertex.color.x == DEFAULT_COLOR.x && vertex.color.y == DEFAULT_COLOR.x && vertex.color.z == DEFAULT_COLOR.x)
 							vertex.color = cl;
 						else
 							Vector3f.add(vertex.color, cl, vertex.color).scale(0.5f); // Average colors
@@ -166,9 +167,9 @@ public class Terrain implements SerializableWorldObject {
 				vao_normals[3 * vertexPointer + 1] = normal.y;
 				vao_normals[3 * vertexPointer + 2] = normal.z;
 
-				vao_colors[3 * vertexPointer] = 1.0f;
-				vao_colors[3 * vertexPointer + 1] = 0.766f;
-				vao_colors[3 * vertexPointer + 2] = 0.061f;
+				vao_colors[3 * vertexPointer] = DEFAULT_COLOR.x;
+				vao_colors[3 * vertexPointer + 1] = DEFAULT_COLOR.y;
+				vao_colors[3 * vertexPointer + 2] = DEFAULT_COLOR.z;
 
 				TerrainVertex vertex = new TerrainVertex(
 						new Vector3f(vao_vertices[3 * vertexPointer], vao_vertices[3 * vertexPointer + 1],
@@ -201,16 +202,18 @@ public class Terrain implements SerializableWorldObject {
 					indices[pointer++] = topLeft;
 					indices[pointer++] = bottomLeft;
 					indices[pointer++] = bottomRight;
+
+					indices[pointer++] = bottomRight;
 					indices[pointer++] = topRight;
 					indices[pointer++] = topLeft;
-					indices[pointer++] = bottomRight;
 				} else {
 					indices[pointer++] = topLeft;
 					indices[pointer++] = bottomLeft;
 					indices[pointer++] = topRight;
-					indices[pointer++] = topRight;
+
 					indices[pointer++] = bottomLeft;
 					indices[pointer++] = bottomRight;
+					indices[pointer++] = topRight;
 				}
 			}
 		}
@@ -257,11 +260,16 @@ public class Terrain implements SerializableWorldObject {
 	}
 
 	private Vector3f getNormal(int x, int z) {
-		float up = getHeight(x, z + 1);
-		float down = getHeight(x, z - 1);
-		float left = getHeight(x - 1, z);
-		float right = getHeight(x + 1, z);
-		Vector3f normal = new Vector3f(left - right, 2f, down - up);
+//		float up = getHeight(x, z + 1);
+//		float down = getHeight(x, z - 1);
+//		float left = getHeight(x - 1, z);
+//		float right = getHeight(x + 1, z);
+//		Vector3f normal = new Vector3f(left - right, 2f, down - up);
+//		normal.normalise();
+		Vector3f normal = Vector3f.cross(
+				Vector3f.sub(new Vector3f(x + 1, getHeight(x + 1, z), z), new Vector3f(x, getHeight(x, z), z), null),
+				Vector3f.sub(new Vector3f(x, getHeight(x, z - 1), z - 1), new Vector3f(x, getHeight(x, z), z), null),
+				null);
 		normal.normalise();
 		return normal;
 	}
@@ -293,7 +301,7 @@ public class Terrain implements SerializableWorldObject {
 		ret.addAll(gridVertices.get(index));
 		if (x == 0)
 			ret.addAll(gridVertices.get(index + 1));
-		else if (x == GRID_SCL - 1)
+		else if (x >= GRID_SCL - 1)
 			ret.addAll(gridVertices.get(index - 1));
 		else {
 			ret.addAll(gridVertices.get(index + 1));
@@ -301,7 +309,7 @@ public class Terrain implements SerializableWorldObject {
 		}
 		if (z == 0)
 			ret.addAll(gridVertices.get(index + GRID_SCL));
-		else if (z == GRID_SCL)
+		else if (z >= GRID_SCL - 1)
 			ret.addAll(gridVertices.get(index - GRID_SCL));
 		else {
 			ret.addAll(gridVertices.get(index + GRID_SCL));

@@ -36,7 +36,7 @@ public class TerrainShader extends ShaderProgram {
 	protected void postLink() {
 		colors_buffer = GL15.glGenBuffers();
 		GL15.glBindBuffer(GL43.GL_SHADER_STORAGE_BUFFER, colors_buffer);
-		GL15.glBufferData(GL43.GL_SHADER_STORAGE_BUFFER, Terrain.VERTEX_COUNT * Terrain.VERTEX_COUNT * 12, GL15.GL_STATIC_DRAW);
+		GL15.glBufferData(GL43.GL_SHADER_STORAGE_BUFFER, Terrain.VERTEX_COUNT * Terrain.VERTEX_COUNT * 4, GL15.GL_STATIC_DRAW);
 		GL30.glBindBufferBase(GL43.GL_SHADER_STORAGE_BUFFER, 0, colors_buffer);
 		GL15.glBindBuffer(GL43.GL_SHADER_STORAGE_BUFFER, 0);
 	}
