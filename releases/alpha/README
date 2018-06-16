@@ -5,10 +5,15 @@ java -jar NS_Installer.jar
 
 This will run the installer. The program will ask for a directory 
 where to put the necessary executable and everything else the game needs.
-If you want the source code, it can be found here: 
-https://github.com/NonNullDinu/NatureSimulator
 
 NOTE: In some circumstances it may crash. If it crashes, if the world was loaded, it saves the
 world and writes a .log file. Please create a new issue labeled bug in the github repostory and I will try my best to
 get it fixed in the next update, and send the contents of the .log file to, since they are essential
 to fixing the issue. The .log file does not contain any information about the user, just information to help me track down the issue/bug.
+
+IMPORTANT: THE LAST WINDOWS VERSION IS 1.1.9. IT HAS BEEN MOVED TO ANOTHER BRANCH, AND IS DEVELOPED BY SOMEONE ELSE, SO IT MAY NOT HAVE
+ALL THE FEAUTURES IMPLEMENTED YET. IF YOU WANT TO MAKE YOURSELF A VERSION FROM THE LATEST CODE, THEN THIS IS OPEN-SOURCE AND THERE IS NS*.*.*.jar,
+WHICH CONTAINS THE COMPILED CODE, BUT KEEP IN MIND THAT IT MAY OR MAY NOT WORK.
+
+If you want the source code, it can be found here: 
+https://github.com/NonNullDinu/NatureSimulator
