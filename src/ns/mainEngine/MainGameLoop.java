@@ -161,11 +161,6 @@ public class MainGameLoop implements Runnable {
 		executeRequests();
 		ColorQuadFiller.init();
 		renderer.render(camera, sun, new Vector4f(0, 0, 0, 0), false);
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 		executeRequests();
 		GU.initMouseCursors(renderer);
 		executeRequests();
