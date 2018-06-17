@@ -177,7 +177,8 @@ public class MainGameLoop implements Runnable {
 			runLogicAndRender();
 			DisplayManager.updateDisplay();
 			executeRequests();
-			assert (GL11.glGetError() == GL11.GL_NO_ERROR);
+			if (GL11.glGetError() != GL11.GL_NO_ERROR)
+				System.err.println("GL error " + GL11.glGetError());
 		}
 		state = GS.CLOSING;
 		VAOLoader.cleanUp();
