@@ -45,8 +45,8 @@ public class ShaderLib {
 		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/guis/guiFragment.glsl").create()); // GUI
 		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/menuDNA/vertexShader.glsl").create());
 		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/menuDNA/fragmentShader.glsl").create()); // MenuDNA
-		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/colorQuad/quadVertex.glsl").create());
-		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/colorQuad/quadFragment.glsl").create()); // Color Quad
+		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/quad/quadVertex.glsl").create());
+		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/quad/quadFragment.glsl").create()); // Color Quad
 		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/blur/fshader.glsl").create());
 		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/blur/vvshader.glsl").create());
 		shaders.add(new Resource().withVersion(false).withLocation("res/shaders/blur/vhshader.glsl").create()); // Gaussian blur

@@ -40,7 +40,8 @@ public class Initializer {
 						+ getProperty("java.version") + "\n" + "os.arch:" + getProperty("os.arch") + "\n"
 						+ "java.vm.version:" + getProperty("java.vm.version") + "\n" + "java.class.version:"
 						+ getProperty("java.class.version") + "\n";
-				File f = new File("err" + new SimpleDateFormat("hh mm ss dd MM yyyy").format(new Date()) + ".log");
+				File f = new File(
+						GU.path + "err" + new SimpleDateFormat("hh mm ss dd MM yyyy").format(new Date()) + ".log");
 				System.err.println(e.getClass().getName() + " in  thread \"" + t.getName() + "\"\nStack trace: " + msg
 						+ "\n Proprieties:\n" + props);
 				try {
@@ -54,8 +55,8 @@ public class Initializer {
 				}
 				if (WorldGenerator.generatedWorld != null)
 					try {
-						SaveWorldMaster.save(WorldGenerator.generatedWorld,
-								new WritingResource(GU.path + "saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT));
+						SaveWorldMaster.save(WorldGenerator.generatedWorld, new WritingResource()
+								.withLocation(GU.path + "saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT).create());
 					} catch (Throwable thr) {
 						msg = "";
 						for (StackTraceElement elem : thr.getStackTrace()) {

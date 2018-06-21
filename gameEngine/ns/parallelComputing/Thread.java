@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Exchanger;
 
+import org.lwjgl.opengl.Display;
+
 public class Thread extends java.lang.Thread {
 	public List<Request> toCarryOutRequests = new ArrayList<>();
 	public List<CreateVAORequest> vaoCreateRequests = new ArrayList<>();
@@ -49,6 +51,11 @@ public class Thread extends java.lang.Thread {
 	public void start() {
 		super.start();
 		this.timeb = System.nanoTime();
+	}
+	
+	public void waitForDisplayInit() {
+		while(!Display.isCreated())
+			Thread.yield();
 	}
 	
 	public void finishLoading() {

@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -30,12 +32,13 @@ public class TexFile implements File {
 		int width = 0;
 		int height = 0;
 		try {
-			String line = reader.readLine();
-			String[] pts = line.split(" ");
-			width = Integer.parseInt(pts[0]);
-			height = Integer.parseInt(pts[1]);
-			ByteBuffer pixels = BufferUtils.createByteBuffer(width * height * 4);
+			ByteBuffer pixels = null;
 			if (resource.version() == 1) {
+				String line = reader.readLine();
+				String[] pts = line.split(" ");
+				width = Integer.parseInt(pts[0]);
+				height = Integer.parseInt(pts[1]);
+				pixels = BufferUtils.createByteBuffer(width * height * 4);
 				for (int y = height - 1; y >= 0; y--) {
 					line = reader.readLine();
 					pts = line.split(" ");
@@ -54,10 +57,25 @@ public class TexFile implements File {
 				}
 			} else if (resource.version() == 2) {
 				InputStream is = resource.asInputStream();
+				List<Byte> bytes = new ArrayList<>();
+				while (true) {
+					int in = is.read();
+					if (in == 126)
+						break;
+					bytes.add((byte) in);
+				}
+				String line = "";
+				for(int i = 0; i < bytes.size(); i++)
+					line += (char) (byte) bytes.get(i);
+				
+				String[] pts = line.split(" ");
+				width = Integer.parseInt(pts[0]);
+				height = Integer.parseInt(pts[1]);
+				
+				pixels = BufferUtils.createByteBuffer(width * height * 4);
 				for (int i = 0; i < width * height * 4; i++) {
 					int val = is.read();
 					pixels.put((byte) val);
-					System.out.println((char) val);
 				}
 			}
 			pixels.flip();

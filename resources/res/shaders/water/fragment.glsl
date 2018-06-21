@@ -1,9 +1,10 @@
 #version 430 core
 
-const vec3 waterColour = vec3(0.604, 0.867, 0.851);
-const float fresnelReflective = 2.5;
+//const vec3 waterColour = vec3(0.604, 0.867, 0.851);
+const vec3 waterColour = vec3(0.6, 0.9, 0.9);
+const float fresnelReflective = 2.0;
 const float minBlueness = 0.2;
-const float maxBlueness = 0.6;
+const float maxBlueness = 0.7;
 const float murkyDepth = 14;
 
 out vec4 frag_Color;

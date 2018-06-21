@@ -8,18 +8,18 @@ module GameModule {
 	requires java.desktop;
 	requires lwjgl;
 	requires lwjgl.util;
-	
+
 	// src
 	exports ns.mainEngine;
 
 	// audioEngine
 	exports ns.openALObjects;
-	
+
 	// resources
 	exports obj;
 	exports res;
-	
-	//gameEngine
+
+	// gameEngine
 	exports ns.camera;
 	exports ns.components;
 	exports ns.configuration;
@@ -34,7 +34,7 @@ module GameModule {
 	exports ns.water;
 	exports ns.world;
 	exports ns.worldSave;
-	
+
 	// renderEngine
 	exports ns.display;
 	exports ns.openglObjects;
@@ -51,11 +51,12 @@ module GameModule {
 	opens res.shaders.blur;
 	opens res.shaders.guis;
 	opens res.shaders.menuDNA;
-	opens res.shaders.colorQuad;
+	opens res.shaders.quad;
 
 	// Textures
 	opens res.textures;
 	opens res.textures.buttonTextures;
+	opens res.textures.lensFlare;
 
 	// Models
 	opens res.models.others;

@@ -1,5 +1,6 @@
 package ns.camera;
 
+import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
@@ -14,9 +15,12 @@ public abstract class ICamera implements CameraImplementation {
 	protected float rotY;
 	protected float rotZ;
 
-	public ICamera() {
+	private Matrix4f projectionMatrix;
+
+	public ICamera(Matrix4f projectionMatrix) {
 		createdCamera = this;
 		position = new Vector3f(0, 100, 300);
+		this.projectionMatrix = projectionMatrix;
 	}
 
 	public Vector3f getPosition() {
@@ -37,5 +41,9 @@ public abstract class ICamera implements CameraImplementation {
 
 	public void invertPitch() {
 		rotX = -rotX;
+	}
+
+	public Matrix4f getProjectionMatrix() {
+		return projectionMatrix;
 	}
 }

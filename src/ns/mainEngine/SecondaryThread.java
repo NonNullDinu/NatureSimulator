@@ -32,7 +32,7 @@ public class SecondaryThread implements Runnable {
 		ModelsLibrary.getModel("models/1003/mushroom.obj");
 		ModelsLibrary.getModel("models/1004/tree.obj");
 		GU.sendRequestToMainThread(new SetRequest(
-				new Light(new Vector3f(0.5f, -0.5f, 0), new Vector3f(1, 1, 1), new Vector2f(0.5f, 0.5f))));
+				new Light(new Vector3f(0.5f, -0.15f, 0), new Vector3f(1, 1, 1), new Vector2f(0.5f, 0.5f))));
 		GU.sendRequestToMainThread(new SetRequest(OptionsMaster.createOptions()));
 
 		// Read model files and create CreateVAORequests

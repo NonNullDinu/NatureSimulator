@@ -1,6 +1,5 @@
 package ns.mainEngine;
 
-import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -22,8 +21,7 @@ public class LoadingScreenThread implements Runnable {
 	@Override
 	public void run() {
 		int prevFrame = DisplayManager.frameId - 1;
-		while(!Display.isCreated())
-			Thread.yield();
+		GU.currentThread().waitForDisplayInit();
 		FontType z003 = new FontType(new Texture("res/fonts/Z003.png").create(),
 				GU.open(new Resource().withLocation("res/fonts/Z003.fnt").create()));
 		GU.setZ003(z003);

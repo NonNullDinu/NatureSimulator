@@ -10,8 +10,15 @@ public class WritingResource {
 	private String location;
 	private OutputStream outputStream;
 
-	public WritingResource(String location) {
+	public WritingResource() {
+	}
+	
+	public WritingResource withLocation(String location) {
 		this.location = location;
+		return this;
+	}
+	
+	public WritingResource create() {
 		File f = new File(location);
 		if(!f.exists())
 			try {
@@ -26,6 +33,7 @@ public class WritingResource {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+		return this;
 	}
 	
 	public void writeVersion(int version) throws IOException {

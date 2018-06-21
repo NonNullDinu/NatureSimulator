@@ -1,0 +1,40 @@
+package ns.derrivedOpenGLObjects;
+
+import org.lwjgl.util.vector.Vector2f;
+
+import ns.openglObjects.Texture;
+
+public class FlareTexture {
+	private Vector2f position;
+	private float scale;
+	private Texture texture;
+
+	public FlareTexture(Texture texture, float scale) {
+		this.texture = texture;
+		this.scale = scale;
+	}
+
+	public Vector2f getPosition() {
+		return position;
+	}
+
+	public void setPosition(Vector2f position) {
+		this.position = position;
+	}
+
+	public float getScale() {
+		return scale;
+	}
+
+	public void setScale(float scale) {
+		this.scale = scale;
+	}
+
+	public Texture getTexture() {
+		return texture;
+	}
+
+	public void setTexture(Texture texture) {
+		this.texture = texture;
+	}
+}

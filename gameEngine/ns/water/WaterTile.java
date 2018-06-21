@@ -35,8 +35,8 @@ public class WaterTile {
 				float zm = ((float) z / ((float) VERTEX_COUNT - 1) - 0.5f) * 2 * TILE_SIZE;
 				float xM = (((float) x + 1) / ((float) VERTEX_COUNT - 1) - 0.5f) * 2 * TILE_SIZE;
 				float zM = (((float) z + 1) / ((float) VERTEX_COUNT - 1) - 0.5f) * 2 * TILE_SIZE;
-				if (t.getHeight(xm, zm) < 2f || t.getHeight(xm, zM) < 2f || t.getHeight(xM, zm) < 2f
-						|| t.getHeight(xM, zM) < 2f) {
+				if (t.getHeight(xm, zm) < 10f || t.getHeight(xm, zM) < 10f || t.getHeight(xM, zm) < 10f
+						|| t.getHeight(xM, zM) < 10f) {
 					vao_pos[quadPointer * 12] = xm;
 					vao_pos[quadPointer * 12 + 1] = zm;
 

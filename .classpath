@@ -12,12 +12,12 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/jar/lwjgl_util.jar" sourcepath="/sysroot/home/dinu/Downloads/lwjgl-source-2.9.3.zip">
+	<classpathentry kind="lib" path="lib/jar/lwjgl_util.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/jar/lwjgl.jar" sourcepath="/sysroot/home/dinu/Downloads/lwjgl-source-2.9.3.zip">
+	<classpathentry kind="lib" path="lib/jar/lwjgl.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>

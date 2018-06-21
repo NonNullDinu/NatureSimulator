@@ -19,13 +19,21 @@ public class WorldGenerator {
 	private static final float TS = Terrain.SIZE / 2f;
 
 	public static World generateWorld() {
-		Resource resource = new Resource().withLocation(GU.path + "saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT).withVersion(true)
-				.create();
+		Resource resource = new Resource().withLocation(GU.path + "saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT)
+				.withVersion(true).create();
 		if (resource.exists()) {
 			generatedWorld = LoadWorldMaster.loadWorld(resource);
 			generatedWorld.getTerrain().initColors(generatedWorld.getEntities());
-		} else {
+		}
+		else {
 			System.out.println("Save not found, generating new");
+			Terrain terrain = new Terrain();
+			List<Entity> entities = createEntities(terrain);
+			terrain.initColors(entities);
+			generatedWorld = new World(entities, terrain);
+		}
+		if (generatedWorld == null || generatedWorld.getEntities() == null || generatedWorld.getTerrain() == null) {
+			System.out.println("Something went wrong while loading world, generating new");
 			Terrain terrain = new Terrain();
 			List<Entity> entities = createEntities(terrain);
 			terrain.initColors(entities);

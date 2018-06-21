@@ -9,8 +9,8 @@ import res.WritingResource;
 public class ConfigWriter {
 
 	public static void main(String[] args) throws IOException {
-		OutputStream stream = new WritingResource("gameEngine/ns/configuration/gameConfiguration.config")
-				.asOutputStream();
+		OutputStream stream = new WritingResource().withLocation("gameEngine/ns/configuration/gameConfiguration.config")
+				.create().asOutputStream();
 		while (true) {
 			System.out.println("Full screen?Y/N");
 			int in = System.in.read();

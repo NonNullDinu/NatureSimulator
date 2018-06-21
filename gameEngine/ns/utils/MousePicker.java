@@ -17,9 +17,9 @@ public class MousePicker {
 	private static Terrain terrain;
 	private static Matrix4f viewMatrix;
 
-	public static void init(ICamera cam, Matrix4f projection, Terrain terrain) {
+	public static void init(ICamera cam, Terrain terrain) {
 		camera = cam;
-		projectionMatrix = projection;
+		projectionMatrix = cam.getProjectionMatrix();
 		viewMatrix = Maths.createViewMatrix(camera);
 		MousePicker.terrain = terrain;
 	}

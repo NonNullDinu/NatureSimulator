@@ -25,8 +25,8 @@ public class Camera extends ICamera {
 
 	private int flags = 0;
 
-	public Camera() {
-		super();
+	public Camera(Matrix4f projectionMatrix) {
+		super(projectionMatrix);
 		point = new Vector3f();
 		onTerrainPoint = new Vector3f();
 		distance = position.length();
@@ -58,8 +58,8 @@ public class Camera extends ICamera {
 			if (mouseDelta.lengthSquared() != 0f) {
 				angle -= mouseDelta.x;
 				rotX -= mouseDelta.y;
-				if (rotX < 1f)
-					rotX = 1f;
+				if (rotX < -90f)
+					rotX = -90f;
 				if (rotX > 90f)
 					rotX = 90f;
 				if(angle < 0f)

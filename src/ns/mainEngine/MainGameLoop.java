@@ -11,6 +11,7 @@ import ns.camera.ICamera;
 import ns.display.DisplayManager;
 import ns.entities.Entity;
 import ns.entities.Light;
+import ns.flares.FlareManager;
 import ns.fontRendering.TextMaster;
 import ns.mainMenu.MainMenu;
 import ns.openglObjects.FBO;
@@ -18,10 +19,10 @@ import ns.openglObjects.Texture;
 import ns.openglWorkers.VAOLoader;
 import ns.options.Options;
 import ns.renderers.Blurer;
-import ns.renderers.ColorQuadFiller;
 import ns.renderers.GUIRenderer;
 import ns.renderers.MainMenuRenderer;
 import ns.renderers.MasterRenderer;
+import ns.renderers.QuadRenderer;
 import ns.renderers.ShopRenderer;
 import ns.renderers.WaterRenderer;
 import ns.shaders.GUIShader;
@@ -55,6 +56,7 @@ public class MainGameLoop implements Runnable {
 
 	private World world;
 	private Options options;
+	private FlareManager flareManager;
 
 	public void executeRequests() {
 		ns.parallelComputing.Thread thread = GU.currentThread();
@@ -88,6 +90,7 @@ public class MainGameLoop implements Runnable {
 						e1.printStackTrace();
 					}
 			}
+			flareManager.updateFlares(sun, camera);
 		} else if (state == GS.MENU) {
 			menu.update();
 			if (GU.Key.KEY_ESC.pressedThisFrame()) {
@@ -120,11 +123,13 @@ public class MainGameLoop implements Runnable {
 				MasterRenderer.prepare();
 				renderer.renderScene(world, camera, sun, new Vector4f(0, 0, 0, 0), false);
 				waterRenderer.render(water, camera, fbos, sun);
+				flareManager.render();
 				shopRenderer.render(shop);
 			} else if (state == GS.MENU || state == GS.OPTIONS) {
 				sceneFBO.bind();
 				renderer.renderScene(world, camera, sun, new Vector4f(0, 0, 0, 0), false);
 				waterRenderer.render(water, camera, fbos, sun);
+				flareManager.render();
 				FBO.unbind();
 				MasterRenderer.prepare();
 				blurer.apply(sceneFBO, bluredSceneFBO);
@@ -144,7 +149,6 @@ public class MainGameLoop implements Runnable {
 		TextMaster.init();
 		executeRequests();
 		shader = new WaterShader();
-		waterRenderer = new WaterRenderer(shader, renderer.getProjectionMatrix());
 		executeRequests();
 		fbos = new WaterFBOs();
 		executeRequests();
@@ -155,12 +159,18 @@ public class MainGameLoop implements Runnable {
 		GUIShader guiShader = new GUIShader();
 		GUIRenderer guiRenderer = new GUIRenderer(guiShader, MasterRenderer.standardModels.get(0));
 		executeRequests();
-		menuRenderer = new MainMenuRenderer(guiRenderer);
+		waterRenderer = new WaterRenderer(shader, camera.getProjectionMatrix());
+		menuRenderer = new MainMenuRenderer(guiRenderer, camera);
 		executeRequests();
 		shopRenderer = new ShopRenderer(guiRenderer);
 		executeRequests();
-		ColorQuadFiller.init();
+		QuadRenderer.init();
 		renderer.render(camera, sun, new Vector4f(0, 0, 0, 0), false);
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		executeRequests();
 		GU.initMouseCursors(renderer);
 		executeRequests();
@@ -171,14 +181,17 @@ public class MainGameLoop implements Runnable {
 			Thread.yield();
 		}
 		executeRequests();
+		flareManager.updateFlares(sun, camera);
+		executeRequests();
 		while (!Display.isCloseRequested()) {
 			if (state == GS.EXIT)
 				break;
 			runLogicAndRender();
 			DisplayManager.updateDisplay();
 			executeRequests();
-			if (GL11.glGetError() != GL11.GL_NO_ERROR)
-				System.err.println("GL error " + GL11.glGetError());
+			int err = GL11.glGetError();
+			if (err != GL11.GL_NO_ERROR)
+				System.err.println("GL error " + err);
 		}
 		state = GS.CLOSING;
 		VAOLoader.cleanUp();
@@ -190,7 +203,7 @@ public class MainGameLoop implements Runnable {
 		sceneFBO.cleanUp();
 		bluredSceneFBO.cleanUp();
 		guiShader.cleanUp();
-		ColorQuadFiller.cleanUp();
+		QuadRenderer.cleanUp();
 		Texture.cleanUp();
 		TextMaster.cleanUp();
 		DisplayManager.closeDisplay();
@@ -216,5 +229,8 @@ public class MainGameLoop implements Runnable {
 			this.menu = (MainMenu) o;
 		if (o instanceof Options)
 			this.options = (Options) o;
+		if (o instanceof FlareManager) {
+			this.flareManager = (FlareManager) o;
+		}
 	}
 }

@@ -145,9 +145,9 @@ public class MasterRenderer {
 		terrainShader.cleanUp();
 	}
 
-	public Matrix4f getProjectionMatrix() {
-		return projectionMatrix;
-	}
+//	public Matrix4f getProjectionMatrix() {
+//		return projectionMatrix;
+//	}
 
 	public void prepareAndProcess(World world) {
 		prepare();

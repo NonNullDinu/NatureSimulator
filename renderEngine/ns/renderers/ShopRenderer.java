@@ -20,7 +20,7 @@ public class ShopRenderer {
 	public void render(Shop s) {
 		if (!s.open())
 			return;
-		ColorQuadFiller.render(s.getComplex().getCenter(), s.getComplex().getScale(), new Vector3f(0.5f, 0.5f, 0.5f));
+		QuadRenderer.render(s.getComplex().getCenter(), s.getComplex().getScale(), new Vector3f(0.5f, 0.5f, 0.5f));
 		for (ShopItem item : s.getItems()) {
 			fbo.bind();
 			GL11.glClearColor(0.5f, 0.5f, 0.5f, 1f);

@@ -3,6 +3,7 @@ package ns.renderers;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 
+import ns.camera.ICamera;
 import ns.entities.Entity;
 import ns.mainMenu.MainMenu;
 import ns.mainMenu.MainMenuButton;
@@ -15,12 +16,12 @@ public class MainMenuRenderer {
 	private FBO DNAFBO;
 	private MenuDNAShader shader;
 
-	public MainMenuRenderer(GUIRenderer guiRenderer) {
+	public MainMenuRenderer(GUIRenderer guiRenderer, ICamera camera) {
 		this.guiRenderer = guiRenderer;
 		DNAFBO = new FBO(600, 800, FBO.COLOR_TEXTURE | FBO.DEPTH_RENDERBUFFER).create();
 		shader = new MenuDNAShader();
 		shader.start();
-		shader.projectionMatrix.load(MasterRenderer.instance.getProjectionMatrix());
+		shader.projectionMatrix.load(camera.getProjectionMatrix());
 		shader.stop();
 	}
 

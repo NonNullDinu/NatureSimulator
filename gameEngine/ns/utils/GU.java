@@ -16,6 +16,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -78,7 +79,7 @@ public class GU {
 
 	public static void sendRequestToMainThread(Request r) {
 		Thread th = ThreadMaster.getThread(MAIN_THREAD_NAME);
-		while(th.isExecutingRequests)
+		while (th.isExecutingRequests)
 			Thread.yield();
 		th.setToCarryOutRequest(r);
 	}
@@ -145,7 +146,7 @@ public class GU {
 		private void setKeyPressedPrevFrame(boolean pressed) {
 			pressedPrevFrame = pressed;
 		}
-		
+
 		public boolean pressedThisFrame() {
 			return isPressed() && !pressedPrevFrame;
 		}
@@ -208,23 +209,50 @@ public class GU {
 		double normalizedY = -(1.0 - 2.0 * (double) Mouse.getY() / Display.getHeight());
 		return new Vector2f((float) normalizedX, (float) normalizedY);
 	}
-	
+
 	public static void setZ003(FontType font) {
 		Z003 = font;
 	}
 
 	public static float clamp(float val, float min, float max) {
-		if(min > max)
+		if (min > max)
 			return clamp(val, max, min);
-		
-		if(val < min)
+
+		if (val < min)
 			return min;
-		else if(val > max)
+		else if (val > max)
 			return max;
 		return val;
 	}
 
 	public static void setCaladea(FontType caladea) {
 		GU.caladea = caladea;
+	}
+
+	public static Matrix4f creteProjection(float FOV, float NEAR_PLANE, float FAR_PLANE) {
+		Matrix4f projectionMatrix = new Matrix4f();
+		float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
+
+		float y_scale = 1f / (float) Math.tan(FOV / 2f);
+		float x_scale = y_scale / aspectRatio;
+		float frustum_length = FAR_PLANE - NEAR_PLANE;
+
+		projectionMatrix.m00 = x_scale;
+		projectionMatrix.m11 = y_scale;
+		projectionMatrix.m22 = -((FAR_PLANE + NEAR_PLANE) / frustum_length);
+		projectionMatrix.m23 = -1;
+		projectionMatrix.m32 = -((2 * NEAR_PLANE * FAR_PLANE) / frustum_length);
+		projectionMatrix.m33 = 0;
+
+		return projectionMatrix;
+	}
+
+	public <T> T[] toArray(List<T> list) {
+		@SuppressWarnings("unchecked")
+		T[] arr = (T[]) new Object[list.size()];
+		for (int i = 0; i < arr.length; i++)
+			arr[i] = list.get(i);
+		return arr;
+
 	}
 }

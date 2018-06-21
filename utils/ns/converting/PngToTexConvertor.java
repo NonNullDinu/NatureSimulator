@@ -3,6 +3,7 @@ package ns.converting;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import javax.imageio.ImageIO;
@@ -20,32 +21,36 @@ public class PngToTexConvertor {
 			location += (char) buf[i];
 		File target = new File("resources/res/textures/" + location.replace(".png", ".tex"));
 		target.createNewFile();
-		PrintWriter writer = GU.open(new WritingResource(target.getPath()));
+		WritingResource output = new WritingResource().withLocation(target.getPath()).create();
+		OutputStream outStr = output.asOutputStream();
 		BufferedImage img = ImageIO
 				.read(new Resource().withLocation("textures/" + location).withVersion(false).create().asInputStream());
 		int width = img.getWidth();
 		int height = img.getHeight();
-		int version = 1; // version 2 is deprecated 
-		writer.write(version);
-		writer.write(width + " " + height + "\n");
+		int version = 2; // version 2 is functional (and recommended)
+		output.writeVersion(version);
 		if (version == 1) {
+			PrintWriter writer = GU.open(output);
+			writer.write(width + " " + height + "\n");
 			for (int y = height - 1; y >= 0; y--) {
 				for (int x = 0; x < width; x++) {
 					writer.write((x == 0 ? "" : " ") + img.getRGB(x, y));
 				}
 				writer.write((int) '\n');
 			}
+			writer.close();
 		} else if (version == 2) {
-			for (int y =height - 1; y >= 0; y--) {
+			outStr.write((width + " " + height + "~").getBytes());
+			for (int y = height - 1; y >= 0; y--) {
 				for (int x = 0; x < width; x++) {
 					int pixel = img.getRGB(x, y);
-					writer.write((pixel >> 16) & 0xFF);
-					writer.write((pixel >> 8) & 0xFF);
-					writer.write(pixel & 0xFF);
-					writer.write((pixel >> 24) & 0xFF);
+					outStr.write((pixel >> 16) & 0xFF);
+					outStr.write((pixel >> 8) & 0xFF);
+					outStr.write(pixel & 0xFF);
+					outStr.write((pixel >> 24) & 0xFF);
 				}
 			}
+			outStr.close();
 		}
-		writer.close();
 	}
 }

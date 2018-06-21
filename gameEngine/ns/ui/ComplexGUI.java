@@ -6,7 +6,7 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import ns.openglObjects.IRenderable;
-import ns.renderers.ColorQuadFiller;
+import ns.renderers.QuadRenderer;
 import ns.renderers.GUIRenderer;
 
 public class ComplexGUI implements IRenderable{
@@ -36,7 +36,7 @@ public class ComplexGUI implements IRenderable{
 
 	@Override
 	public void render() {
-		ColorQuadFiller.render(center, scale, new Vector3f(0.5f, 0.5f, 0.5f));
+		QuadRenderer.render(center, scale, new Vector3f(0.5f, 0.5f, 0.5f));
 		guiRenderer.render(others);
 	}
 
