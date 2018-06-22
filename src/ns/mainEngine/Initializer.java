@@ -42,12 +42,12 @@ public class Initializer {
 						+ getProperty("java.class.version") + "\n";
 				File f = new File(
 						GU.path + "err" + new SimpleDateFormat("hh mm ss dd MM yyyy").format(new Date()) + ".log");
-				System.err.println(e.getClass().getName() + " in  thread \"" + t.getName() + "\"\nStack trace: " + msg
+				System.err.println(e.getClass().getName() + ":\"" + e.getMessage() + "\" in  thread \"" + t.getName() + "\"\nStack trace: " + msg
 						+ "\n Proprieties:\n" + props);
 				try {
 					f.createNewFile();
 					DataOutputStream dout = new DataOutputStream(new FileOutputStream(f));
-					dout.writeUTF(e.getClass().getName() + " in  thread \"" + t.getName() + "\"\nStack trace: " + msg
+					dout.writeUTF(e.getClass().getName() + ":\"" + e.getMessage() + "\" in  thread \"" + t.getName() + "\"\nStack trace: " + msg
 							+ "\n Proprieties:\n" + props);
 					dout.close();
 				} catch (IOException e1) {
