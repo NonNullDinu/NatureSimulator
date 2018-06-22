@@ -11,6 +11,7 @@ public class QuadShader extends ShaderProgram {
 	public UniformVec3 color = locator.locateUniformVec3("color");
 	public UniformInt config = locator.locateUniformInt("config");
 	public UniformFloat multFactor = locator.locateUniformFloat("multFactor", false);
+	public UniformFloat z = locator.locateUniformFloat("z", false);
 	
 	public int COLOR_FILL = 1;
 	public int TEXTURE_FILL = 2;

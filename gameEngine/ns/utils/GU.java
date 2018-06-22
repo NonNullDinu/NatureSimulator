@@ -3,6 +3,7 @@ package ns.utils;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -25,8 +26,8 @@ import ns.fontMeshCreator.FontType;
 import ns.openglObjects.FBO;
 import ns.openglObjects.Texture;
 import ns.parallelComputing.Request;
-import ns.parallelComputing.ThreadMaster;
 import ns.parallelComputing.Thread;
+import ns.parallelComputing.ThreadMaster;
 import ns.renderers.MasterRenderer;
 import res.Resource;
 import res.WritingResource;
@@ -42,6 +43,7 @@ public class GU {
 	public static final int CURRENT_WORLD_FILE_VERSION = 1;
 	public static final String WORLD_SAVE_FILE_FORMAT = "nssv";
 	public static final String MAIN_THREAD_NAME = "main thread";
+	public static final IntBuffer tempibuffer = BufferUtils.createIntBuffer(1);
 	public static FontType Z003;
 	public static FontType caladea;
 	public static String path;
@@ -254,5 +256,21 @@ public class GU {
 			arr[i] = list.get(i);
 		return arr;
 
+	}
+
+	public static String getGLErrorType(int err) {
+		Field[] fields = GL11.class.getFields();
+		for (Field field : fields) {
+			if (field.getType() == int.class) {
+				try {
+					int i = (int) field.get(null);
+					if(i == err)
+						return field.getName();
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
 	}
 }

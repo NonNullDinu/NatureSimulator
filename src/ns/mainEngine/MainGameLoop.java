@@ -191,7 +191,7 @@ public class MainGameLoop implements Runnable {
 			executeRequests();
 			int err = GL11.glGetError();
 			if (err != GL11.GL_NO_ERROR)
-				System.err.println("GL error " + err);
+				System.err.println("GL error " + err + "(" + GU.getGLErrorType(err) + ")");
 		}
 		state = GS.CLOSING;
 		VAOLoader.cleanUp();
@@ -206,6 +206,7 @@ public class MainGameLoop implements Runnable {
 		QuadRenderer.cleanUp();
 		Texture.cleanUp();
 		TextMaster.cleanUp();
+		flareManager.cleanUp();
 		DisplayManager.closeDisplay();
 	}
 
