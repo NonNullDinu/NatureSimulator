@@ -18,7 +18,7 @@ public class DepthFieldBlurRenderer extends EffectRenderer {
 		this.shader = shader;
 		shader.start();
 		shader.connectTextureUnits();
-		shader.nearFarPlanes.load(new Vector2f(MasterRenderer.NEAR_PLANE, MasterRenderer.FAR_PLANE));
+		shader.nearFarPlanes.load(new Vector2f(0.1f, MasterRenderer.FAR_PLANE));
 		shader.stop();
 	}
 

@@ -145,12 +145,12 @@ public class MainGameLoop implements Runnable {
 
 	public void run() {
 		DisplayManager.createDisplay();
-		renderer = new MasterRenderer();
 		TextMaster.init();
 		executeRequests();
 		shader = new WaterShader();
 		executeRequests();
 		fbos = new WaterFBOs();
+		renderer = new MasterRenderer(camera);
 		executeRequests();
 		sceneFBO = new FBO(1200, 800, (FBO.COLOR_TEXTURE | FBO.DEPTH_RENDERBUFFER)).create();
 		bluredSceneFBO = new FBO(Display.getWidth() / 4, Display.getHeight() / 4, FBO.COLOR_TEXTURE).create();

@@ -80,20 +80,21 @@ public class FlareManager {
 	public void render() {
 		if (sunToCenter == null)
 			return;
-		if (sunSamplePassed.isResultAvailable()) {
+		if (sunSamplePassed.wasBeginCalled() && sunSamplePassed.isResultAvailable()) {
 			int result = sunSamplePassed.getResult();
 			lastResult = result;
 			coverage = Math.min((float) result / (float) TOTAL_SAMPLES, 1f);
 		}
-		if (!sunSamplePassed.isInUse()) {
+		boolean isNotInUse = !sunSamplePassed.isInUse();
+		if (isNotInUse)
 			sunSamplePassed.beginQuery();
-			GL11.glEnable(GL11.GL_BLEND);
-			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-			QuadRenderer.renderMaxDepth(new Vector2f(-sunToCenter.x, sunToCenter.y), new Vector2f(0.3f, 0.3f), sunTex,
-					true);
-			GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+		QuadRenderer.renderMaxDepth(new Vector2f(-sunToCenter.x, sunToCenter.y), new Vector2f(0.3f, 0.3f), sunTex,
+				true);
+		GL11.glDisable(GL11.GL_BLEND);
+		if (isNotInUse)
 			sunSamplePassed.endQuery();
-		}
 		if (lastResult > 0)
 			for (FlareTexture tex : textures) {
 				if (tex.hasRotation())

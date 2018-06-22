@@ -11,6 +11,7 @@ public class Query implements IOpenGLObject {
 	private int type;
 	private boolean created;
 	private boolean isInUse;
+	private boolean beginCalled;
 
 	public Query(int type) {
 		this.type = type;
@@ -29,6 +30,7 @@ public class Query implements IOpenGLObject {
 	public void beginQuery() {
 		GL15.glBeginQuery(type, id);
 		isInUse = true;
+		beginCalled = true;
 	}
 
 	public void endQuery() {
@@ -67,5 +69,9 @@ public class Query implements IOpenGLObject {
 	@Override
 	public boolean isCreated() {
 		return created;
+	}
+
+	public boolean wasBeginCalled() {
+		return beginCalled;
 	}
 }

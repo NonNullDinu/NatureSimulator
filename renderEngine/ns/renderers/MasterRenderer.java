@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL32;
 import org.lwjgl.util.vector.Matrix4f;
@@ -28,8 +27,6 @@ import ns.utils.Maths;
 import ns.world.World;
 
 public class MasterRenderer {
-	private static final float FOV = 70;
-	protected static final float NEAR_PLANE = 0.1f;
 	public static final float FAR_PLANE = 1000f;
 	protected static final float RED = 0.435f, GREEN = 0.812f, BLUE = 1.0f;
 	protected static final Vector2f FOG_VALUES = new Vector2f(0.0018f, 5.0f);
@@ -51,8 +48,6 @@ public class MasterRenderer {
 	private TerrainShader terrainShader = new TerrainShader();
 	private TerrainRenderer terrainRenderer;
 
-	private Matrix4f projectionMatrix;
-
 	private Map<VAO, List<Entity>> entities = new HashMap<>();
 
 	private Terrain terrain;
@@ -60,10 +55,9 @@ public class MasterRenderer {
 	private float time;
 	private boolean inc;
 
-	public MasterRenderer() {
-		createProjectionMatrix();
-		renderer = new Renderer(shader, projectionMatrix);
-		terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
+	public MasterRenderer(ICamera camera) {
+		renderer = new Renderer(shader, camera.getProjectionMatrix());
+		terrainRenderer = new TerrainRenderer(terrainShader, camera.getProjectionMatrix());
 		instance = this;
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 	}
@@ -125,30 +119,10 @@ public class MasterRenderer {
 		}
 	}
 
-	private void createProjectionMatrix() {
-		projectionMatrix = new Matrix4f();
-		float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
-
-		float y_scale = 1f / (float) Math.tan(FOV / 2f);
-		float x_scale = y_scale / aspectRatio;
-		float frustum_length = FAR_PLANE - NEAR_PLANE;
-
-		projectionMatrix.m00 = x_scale;
-		projectionMatrix.m11 = y_scale;
-		projectionMatrix.m22 = -((FAR_PLANE + NEAR_PLANE) / frustum_length);
-		projectionMatrix.m23 = -1;
-		projectionMatrix.m32 = -((2 * NEAR_PLANE * FAR_PLANE) / frustum_length);
-		projectionMatrix.m33 = 0;
-	}
-
 	public void cleanUp() {
 		shader.cleanUp();
 		terrainShader.cleanUp();
 	}
-
-//	public Matrix4f getProjectionMatrix() {
-//		return projectionMatrix;
-//	}
 
 	public void prepareAndProcess(World world) {
 		prepare();

@@ -25,7 +25,7 @@ public class WaterRenderer {
 		shader.projectionMatrix.load(projectionMatrix);
 		shader.connectTextureUnits();
 		shader.one.load(WaterTile.getTileSize() / (float) WaterTile.getVertexCount());
-		shader.nearFarPlanes.load(new Vector2f(MasterRenderer.NEAR_PLANE, MasterRenderer.FAR_PLANE));
+		shader.nearFarPlanes.load(new Vector2f(0.1f, MasterRenderer.FAR_PLANE));
 		shader.stop();
 	}
 
