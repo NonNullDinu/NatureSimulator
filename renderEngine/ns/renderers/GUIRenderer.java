@@ -46,7 +46,7 @@ public class GUIRenderer {
 	protected void bind() {
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		shader.start();
-		quad.bind();
+		quad.bind(0);
 	}
 	
 	protected void unbind() {

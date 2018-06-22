@@ -18,6 +18,7 @@ import ns.openglObjects.FBO;
 import ns.openglObjects.Texture;
 import ns.openglWorkers.VAOLoader;
 import ns.options.Options;
+import ns.parallelComputing.ThreadMaster;
 import ns.renderers.Blurer;
 import ns.renderers.GUIRenderer;
 import ns.renderers.MainMenuRenderer;
@@ -166,11 +167,6 @@ public class MainGameLoop implements Runnable {
 		executeRequests();
 		QuadRenderer.init();
 		renderer.render(camera, sun, new Vector4f(0, 0, 0, 0), false);
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 		executeRequests();
 		GU.initMouseCursors(renderer);
 		executeRequests();
@@ -233,5 +229,9 @@ public class MainGameLoop implements Runnable {
 		if (o instanceof FlareManager) {
 			this.flareManager = (FlareManager) o;
 		}
+	}
+
+	public static void requestExecuteRequests() {
+		((MainGameLoop) ThreadMaster.getThread(GU.MAIN_THREAD_NAME).getRunnable()).executeRequests();
 	}
 }

@@ -31,7 +31,7 @@ public class MainMenuRenderer {
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		shader.start();
 		Entity DNA = menu.getDNA();
-		DNA.getModel().bind();
+		DNA.getModel().bind(0);
 		shader.transformationMatrix.load(Maths.createTreansformationMatrix(DNA));
 		DNA.getModel().batchRenderCall();
 		DNA.getModel().unbind();

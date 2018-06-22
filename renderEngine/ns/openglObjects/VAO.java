@@ -1,5 +1,7 @@
 package ns.openglObjects;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
@@ -7,12 +9,15 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import ns.mainEngine.MainGameLoop;
+
 public class VAO implements IOpenGLObject, IRenderable {
 	private static int nextId = 1;
 
 	private int id;
 	private int vertexCount;
 	private Map<Integer, Integer> vbos;
+	private List<Integer> currentlyBound;
 
 	private boolean hasIndices;
 
@@ -24,13 +29,11 @@ public class VAO implements IOpenGLObject, IRenderable {
 		this.vbos = current;
 		this.hasIndices = hasIndices;
 		this.created = true;
+		currentlyBound = new ArrayList<>();
 	}
 
 	public VAO() {
-	}
-
-	public int getId() {
-		return id;
+		currentlyBound = new ArrayList<>();
 	}
 
 	public int getVertexCount() {
@@ -63,17 +66,32 @@ public class VAO implements IOpenGLObject, IRenderable {
 		return vbos;
 	}
 
-	public void bind() {
+	public void bind(int... attributes) {
+		if (vbos == null)
+			MainGameLoop.requestExecuteRequests();
+		GL30.glBindVertexArray(id);
+		for (int attn : attributes) {
+			GL20.glEnableVertexAttribArray(attn);
+			currentlyBound.add(attn);
+		}
+	}
+
+	public void bindAll() {
+		if (vbos == null)
+			MainGameLoop.requestExecuteRequests();
 		GL30.glBindVertexArray(id);
 		for (int attn : vbos.keySet())
-			if (attn != -1)
+			if (attn != -1) {
 				GL20.glEnableVertexAttribArray(attn);
+				currentlyBound.add(attn);
+			}
 	}
 
 	public void unbind() {
-		for (int attn : vbos.keySet())
+		for (int attn : currentlyBound)
 			if (attn != -1)
 				GL20.glDisableVertexAttribArray(attn);
+		currentlyBound.clear();
 		GL30.glBindVertexArray(0);
 	}
 
@@ -105,9 +123,17 @@ public class VAO implements IOpenGLObject, IRenderable {
 
 	@Override
 	public void render() {
-		bind();
+		bind((Integer[]) vbos.keySet().toArray());
 		batchRenderCall();
 		unbind();
+	}
+
+	protected void bind(Integer[] array) {
+		GL30.glBindVertexArray(id);
+		for (int attn : array) {
+			GL20.glEnableVertexAttribArray(attn);
+			currentlyBound.add(attn);
+		}
 	}
 
 	@Override

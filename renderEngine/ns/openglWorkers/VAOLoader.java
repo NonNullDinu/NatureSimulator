@@ -104,7 +104,7 @@ public class VAOLoader {
 
 	public static void replace(VAO model, int attn, float[] data) {
 		if (Thread.currentThread().getName().equals(GU.MAIN_THREAD_NAME)) {
-			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vaos.get(model.getId()).get(attn));
+			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vaos.get(model.getID()).get(attn));
 			FloatBuffer dt = storeDataInFloatBuffer(data);
 			GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, dt);
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
@@ -115,7 +115,7 @@ public class VAOLoader {
 
 	public static void replace(VAO model, int attn, int[] data) {
 		if (Thread.currentThread().getName().equals(GU.MAIN_THREAD_NAME)) {
-			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vaos.get(model.getId()).get(attn));
+			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vaos.get(model.getID()).get(attn));
 			IntBuffer dt = storeDataInIntBuffer(data);
 			GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, dt);
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
@@ -126,7 +126,7 @@ public class VAOLoader {
 
 	public static void replace(VAO model, int attn, byte[] data) {
 		if (Thread.currentThread().getName().equals(GU.MAIN_THREAD_NAME)) {
-			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vaos.get(model.getId()).get(attn));
+			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vaos.get(model.getID()).get(attn));
 			ByteBuffer dt = storeDataInByteBuffer(data);
 			GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, dt);
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);

@@ -27,7 +27,7 @@ public class Renderer {
 
 	public void render(Map<VAO, List<Entity>> entities) {
 		for (VAO vao : entities.keySet()) {
-			vao.bind();
+			vao.bind(0, 1, 2, 3, 4, 5);
 			for (Entity e : entities.get(vao)) {
 				shader.transformationMatrix.load(Maths.createTreansformationMatrix(e));
 				CustomColorsComponent customColors = e.getCustomColors();
@@ -44,7 +44,7 @@ public class Renderer {
 	public void render(Blueprint blueprint, Vector3f position) {
 		shader.start();
 //		shader.time.load(0); // Comment this line if you want to have dynamic shop item model movement (like
-								// the leaves of the trees in the world)
+		// the leaves of the trees in the world)
 		shader.viewMatrix.load(new Matrix4f());
 		shader.transformationMatrix.load(Maths.createTransformationMatrix(position, 0, 0, 0, 1));
 		shader.clipPlane.load(new Vector4f(0, 0, 0, 0));
@@ -54,7 +54,7 @@ public class Renderer {
 				shader.customColors[i].load(customColors.getColors().get(i));
 			}
 		VAO vao = blueprint.getModel().getModel();
-		vao.bind();
+		vao.bind(0, 1, 2, 3, 4, 5);
 		vao.batchRenderCall();
 		vao.unbind();
 		shader.stop();

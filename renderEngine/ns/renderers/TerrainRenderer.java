@@ -21,7 +21,7 @@ public class TerrainRenderer {
 	
 	public void render(Terrain terrain) {
 		VAO vao = terrain.getModel();
-		vao.bind();
+		vao.bind(0, 1, 2);
 		shader.transformationMatrix.load(Maths.createTransformationMatrix(new Vector3f(terrain.getX(), 0, terrain.getZ()), 0, 0, 0, 1));
 		GL11.glDrawElements(GL11.GL_TRIANGLES, vao.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
 		vao.unbind();

@@ -22,7 +22,7 @@ public class QuadRenderer {
 		if (center == null)
 			return;
 		shader.start();
-		quad.bind();
+		quad.bind(0);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		shader.transformationMatrix.load(Maths.createTransformationMatrix(center, scale));
 		shader.color.load(color);
@@ -43,7 +43,7 @@ public class QuadRenderer {
 		if (center == null)
 			return;
 		shader.start();
-		quad.bind();
+		quad.bind(0);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		shader.transformationMatrix.load(Maths.createTransformationMatrix(center, scale));
 		shader.config.load((alphaDiscard ? shader.TEXTURE_FILL_ALPHA_01 : shader.TEXTURE_FILL));
@@ -60,7 +60,7 @@ public class QuadRenderer {
 		if (center == null)
 			return;
 		shader.start();
-		quad.bind();
+		quad.bind(0);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, blend);
@@ -80,7 +80,7 @@ public class QuadRenderer {
 		if (center == null)
 			return;
 		shader.start();
-		quad.bind();
+		quad.bind(0);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, blend);
@@ -99,7 +99,7 @@ public class QuadRenderer {
 		if (center == null)
 			return;
 		shader.start();
-		quad.bind();
+		quad.bind(0);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		shader.transformationMatrix.load(Maths.createTransformationMatrix(center, scale));
 		shader.config.load(shader.TEXTURE_FILL);
@@ -123,7 +123,7 @@ public class QuadRenderer {
 		if (center == null)
 			return;
 		shader.start();
-		quad.bind();
+		quad.bind(0);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		shader.transformationMatrix.load(Maths.createTransformationMatrix(center, scale));
 		shader.config.load((alphaDiscard ? shader.TEXTURE_FILL_ALPHA_01 : shader.TEXTURE_FILL));
@@ -143,7 +143,7 @@ public class QuadRenderer {
 		if (center == null)
 			return;
 		shader.start();
-		quad.bind();
+		quad.bind(0);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		shader.transformationMatrix.load(Maths.createTransformationMatrix(center, scale, rot));
 		shader.config.load((alphaDiscard ? shader.TEXTURE_FILL_ALPHA_01 : shader.TEXTURE_FILL));
@@ -163,7 +163,7 @@ public class QuadRenderer {
 		if (center == null)
 			return;
 		shader.start();
-		quad.bind();
+		quad.bind(0);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		shader.color.load(transparencyColor);
 		shader.transformationMatrix.load(Maths.createTransformationMatrix(center, scale));
@@ -186,7 +186,7 @@ public class QuadRenderer {
 		if (center == null)
 			return;
 		shader.start();
-		quad.bind();
+		quad.bind(0);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, blend);
@@ -205,7 +205,7 @@ public class QuadRenderer {
 		if (center == null)
 			return;
 		shader.start();
-		quad.bind();
+		quad.bind(0);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		shader.transformationMatrix.load(Maths.createTransformationMatrix(center, scale));
 		shader.config.load((b ? shader.TEXTURE_FILL_ALPHA_01 : shader.TEXTURE_FILL));

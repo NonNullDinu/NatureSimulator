@@ -41,7 +41,7 @@ public class FontRenderer {
 	}
 
 	private void renderText(GUIText text) {
-		text.getMesh().bind();
+		text.getMesh().bind(0, 1);
 		shader.color.load(text.getColour());
 		shader.translation.load(text.getPosition());
 		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, text.getVertexCount());

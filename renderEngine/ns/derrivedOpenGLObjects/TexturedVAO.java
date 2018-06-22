@@ -8,7 +8,7 @@ public class TexturedVAO extends VAO {
 	private Texture texture;
 
 	public TexturedVAO(Texture texture, VAO vao) {
-		super(vao.getId(), vao.getVertexCount(), vao.getBuffers(), vao.hasIndices());
+		super(vao.getID(), vao.getVertexCount(), vao.getBuffers(), vao.hasIndices());
 		this.texture = texture;
 	}
 
@@ -18,14 +18,14 @@ public class TexturedVAO extends VAO {
 	
 	@Override
 	public void render() {
-		bind();
+		bind((Integer[]) super.getBuffers().keySet().toArray());
 		batchRenderCall();
 		unbind();
 	}
 	
 	@Override
-	public void bind() {
-		super.bind();
+	public void bind(int... attributes) {
+		super.bind(attributes);
 		texture.bindToTextureUnit(0);
 	}
 }

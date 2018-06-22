@@ -48,7 +48,7 @@ public class WaterRenderer {
 		fbos.getRefraction().getDepthTex().bindToTextureUnit(2);
 
 		VAO model = water.getModel();
-		model.bind();
+		model.bind(0, 1);
 		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, model.getVertexCount());
 		model.unbind();
 

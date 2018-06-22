@@ -1,8 +1,6 @@
 package ns.renderers;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
 
 import ns.exceptions.FBOAttachmentException;
 import ns.openglObjects.FBO;
@@ -58,15 +56,13 @@ public class Blurer extends EffectRenderer {
 			shader.start();
 			shader.size.load(source.getSize());
 
-			GL30.glBindVertexArray(quad.getId());
-			GL20.glEnableVertexAttribArray(0);
+			quad.bind(0);
 
 			source.getTex().bindToTextureUnit(0);
 
 			GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);
 
-			GL20.glDisableVertexAttribArray(0);
-			GL30.glBindVertexArray(0);
+			quad.unbind();
 
 			shader.stop();
 
@@ -91,14 +87,12 @@ public class Blurer extends EffectRenderer {
 			shader.start();
 			shader.size.load(source.getSize());
 
-			GL30.glBindVertexArray(quad.getId());
-			GL20.glEnableVertexAttribArray(0);
+			quad.bind(0);
 
 			source.getTex().bindToTextureUnit(0);
 
 			GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);
-			GL20.glDisableVertexAttribArray(0);
-			GL30.glBindVertexArray(0);
+			quad.unbind();
 
 			shader.stop();
 

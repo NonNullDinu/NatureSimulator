@@ -38,12 +38,12 @@ public class DepthFieldBlurRenderer extends EffectRenderer {
 					"The source got wrong configuration:" + source + " - configuration:" + source.getConfig());
 
 		shader.start();
-		
+
 		source.getTex().bindToTextureUnit(0);
 		source.getDepthTex().bindToTextureUnit(1);
 		bluredTexture.bindToTextureUnit(2);
-		
-		quad.bind();
+
+		quad.bind(0);
 		GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);
 		quad.unbind();
 
