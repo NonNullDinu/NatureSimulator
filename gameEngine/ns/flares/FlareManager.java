@@ -84,7 +84,6 @@ public class FlareManager {
 			int result = sunSamplePassed.getResult();
 			lastResult = result;
 			coverage = Math.min((float) result / (float) TOTAL_SAMPLES, 1f);
-			System.out.println(coverage);
 		}
 		if (!sunSamplePassed.isInUse()) {
 			sunSamplePassed.beginQuery();
