@@ -32,13 +32,16 @@ public class FlareManager {
 			return;
 		}
 		Vector2f sunToCenter = Vector2f.sub(CENTER, sunCoords, null);
-		brightness = 1 - (sunToCenter.length() / 0.9f);
+		brightness = 1 - sunToCenter.length() / 1.3f;
 		if (brightness > 0) {
 			calcFlarePositions(sunToCenter, sunCoords);
 		}
 	}
 
 	private void calcFlarePositions(Vector2f sunToCenter, Vector2f sunCoords) {
+		float rotation = (float) Math.toDegrees(Vector2f.angle(sunToCenter, new Vector2f(0, 1)));
+		if(sunToCenter.x < 0)
+			rotation = 360f - rotation;
 		for (int i = 0; i < textures.length; i++) {
 			Vector2f direction = new Vector2f(sunToCenter);
 			direction.scale(i * DIST);
@@ -46,6 +49,8 @@ public class FlareManager {
 			flarePos.x = flarePos.x * -2.0f + 1.0f;
 			flarePos.y = flarePos.y * 2.0f - 1.0f;
 			textures[i].setPosition(flarePos);
+			if (textures[i].hasRotation())
+				textures[i].setRotation(rotation);
 		}
 	}
 
@@ -63,8 +68,12 @@ public class FlareManager {
 
 	public void render() {
 		for (FlareTexture tex : textures) {
-			QuadRenderer.render(tex.getPosition(), new Vector2f(tex.getScale(), tex.getScale()), tex.getTexture(),
-					GL11.GL_ONE, brightness);
+			if (tex.hasRotation())
+				QuadRenderer.render(tex.getPosition(), new Vector2f(tex.getScale(), tex.getScale()), tex.getTexture(),
+						GL11.GL_ONE, brightness, true, tex.getRotation());
+			else
+				QuadRenderer.render(tex.getPosition(), new Vector2f(tex.getScale(), tex.getScale()), tex.getTexture(),
+						GL11.GL_ONE, brightness, true);
 		}
 	}
 }

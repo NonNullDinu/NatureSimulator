@@ -25,10 +25,11 @@ public class ThirdThread implements Runnable {
 		World world = WorldGenerator.generateWorld();
 		GU.sendRequestToMainThread(new SetRequest(world));
 		GU.sendRequestToMainThread(new SetRequest(
-				new FlareManager(new FlareTexture(new TexFile("textures/lensFlare/tex8.tex").load(), 0.8f),
+				new FlareManager(new FlareTexture(new TexFile("textures/lensFlare/tex8.tex").load(), 0.5f, 35f),
 						new FlareTexture(new TexFile("textures/lensFlare/tex2.tex").load(), 0.2f),
 						new FlareTexture(new TexFile("textures/lensFlare/tex3.tex").load(), 0.1f),
-						new FlareTexture(new TexFile("textures/lensFlare/tex1.tex").load(), 0.3f))));
+						new FlareTexture(new TexFile("textures/lensFlare/tex1.tex").load(), 0.3f),
+						new FlareTexture(new TexFile("textures/lensFlare/sun.tex").load(), 0.4f))));
 		while (MasterRenderer.instance == null)
 			Thread.yield();
 		MousePicker.init(camera, world.getTerrain());

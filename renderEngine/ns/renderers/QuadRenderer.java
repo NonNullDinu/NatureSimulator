@@ -70,13 +70,38 @@ public class QuadRenderer {
 	}
 
 	public static void render(Vector2f center, Vector2f scale, Texture tex, int blend, float multFactor) {
+		render(center, scale, tex, blend, multFactor, false);
+	}
+
+	public static void render(Vector2f center, Vector2f scale, Texture tex, int blend, float multFactor,
+			boolean alphaDiscard) {
 		if (center == null)
 			return;
 		shader.start();
 		quad.bind();
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		shader.transformationMatrix.load(Maths.createTransformationMatrix(center, scale));
-		shader.config.load(shader.TEXTURE_FILL);
+		shader.config.load((alphaDiscard ? shader.TEXTURE_FILL_ALPHA_01 : shader.TEXTURE_FILL));
+		shader.multFactor.load(multFactor);
+		tex.bindToTextureUnit(0);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, blend);
+		GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		quad.unbind();
+		shader.stop();
+	}
+
+	public static void render(Vector2f center, Vector2f scale, Texture tex, int blend, float multFactor,
+			boolean alphaDiscard, float rot) {
+		if (center == null)
+			return;
+		shader.start();
+		quad.bind();
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		shader.transformationMatrix.load(Maths.createTransformationMatrix(center, scale, rot));
+		shader.config.load((alphaDiscard ? shader.TEXTURE_FILL_ALPHA_01 : shader.TEXTURE_FILL));
 		shader.multFactor.load(multFactor);
 		tex.bindToTextureUnit(0);
 		GL11.glEnable(GL11.GL_BLEND);

@@ -51,4 +51,12 @@ public final class Maths {
 		matrix.scale(new Vector3f(scale.x, scale.y, 0.0f));
 		return matrix;
 	}
+	
+	public static Matrix4f createTransformationMatrix(Vector2f center, Vector2f scale, float rot) {
+		Matrix4f matrix = new Matrix4f();
+		matrix.translate(center);
+		matrix.rotate((float) Math.toRadians(rot), new Vector3f(0, 0, 1));
+		matrix.scale(new Vector3f(scale.x, scale.y, 0.0f));
+		return matrix;
+	}
 }

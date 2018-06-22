@@ -16,6 +16,8 @@ void main(void) {
 		frag_Color = texture(tex, texCoord);
 		if (config == 3)
 			frag_Color = mix(vec4(color, 1.0), frag_Color, frag_Color.a);
+		if (config == 4 && frag_Color.a < 0.1)
+			discard;
 	}
 	frag_Color.xyz *= multFactor;
 }
