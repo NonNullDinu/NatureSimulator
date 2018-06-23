@@ -16,7 +16,7 @@ public class DisplayManager {
 
 	private static long lastFrameTime;
 	private static float delta;
-	
+
 	public static int frameId = 1;
 
 	public static void createDisplay() {

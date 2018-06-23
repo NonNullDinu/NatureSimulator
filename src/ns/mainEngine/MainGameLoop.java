@@ -177,8 +177,6 @@ public class MainGameLoop implements Runnable {
 			Thread.yield();
 		}
 		executeRequests();
-		flareManager.updateFlares(sun, camera);
-		executeRequests();
 		while (!Display.isCloseRequested()) {
 			if (state == GS.EXIT)
 				break;

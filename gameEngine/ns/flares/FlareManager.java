@@ -81,15 +81,14 @@ public class FlareManager {
 		if (sunToCenter == null)
 			return;
 		if (sunSamplePassed.wasBeginCalled() && sunSamplePassed.isResultAvailable()) {
-			int result = sunSamplePassed.getResult();
-			lastResult = result;
-			coverage = Math.min((float) result / (float) TOTAL_SAMPLES, 1f);
+			lastResult = sunSamplePassed.getResult();
+			coverage = Math.min((float) lastResult / (float) TOTAL_SAMPLES, 1f);
 		}
 		boolean isNotInUse = !sunSamplePassed.isInUse();
 		if (isNotInUse)
 			sunSamplePassed.beginQuery();
 		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		QuadRenderer.renderMaxDepth(new Vector2f(-sunToCenter.x, sunToCenter.y), new Vector2f(0.3f, 0.3f), sunTex,
 				true);
 		GL11.glDisable(GL11.GL_BLEND);

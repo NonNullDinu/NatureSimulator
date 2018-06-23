@@ -1,6 +1,7 @@
 package ns.utils;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
@@ -272,5 +273,19 @@ public class GU {
 			}
 		}
 		return null;
+	}
+
+	public static String getLine(String fileName, int line) {
+		BufferedReader reader = open(new Resource().withLocation(fileName).create());
+		String ln = "";
+		for(int i = 0; i < line; i++) {
+			try {
+				ln = reader.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return ln;
+		
 	}
 }

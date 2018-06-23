@@ -3,7 +3,7 @@
  * 
  * @author Dinu B.
  */
-module GameModule {
+open module GameModule {
 	// Dependencies
 	requires java.desktop;
 	requires lwjgl;
@@ -42,22 +42,4 @@ module GameModule {
 	exports ns.renderers;
 	exports ns.shaders;
 	exports ns.shaders.uniformStructs;
-
-	// Shaders
-	opens res.shaders.standard;
-	opens res.shaders.terrain;
-	opens res.shaders.water;
-	opens res.shaders.depthFieldBlur;
-	opens res.shaders.blur;
-	opens res.shaders.guis;
-	opens res.shaders.menuDNA;
-	opens res.shaders.quad;
-
-	// Textures
-	opens res.textures;
-	opens res.textures.buttonTextures;
-	opens res.textures.lensFlare;
-
-	// Models
-	opens res.models.others;
 }

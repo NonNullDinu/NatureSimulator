@@ -65,18 +65,47 @@ public class TexFile implements File {
 					bytes.add((byte) in);
 				}
 				String line = "";
-				for(int i = 0; i < bytes.size(); i++)
+				for (int i = 0; i < bytes.size(); i++)
 					line += (char) (byte) bytes.get(i);
-				
+
 				String[] pts = line.split(" ");
 				width = Integer.parseInt(pts[0]);
 				height = Integer.parseInt(pts[1]);
-				
+
 				pixels = BufferUtils.createByteBuffer(width * height * 4);
 				for (int i = 0; i < width * height * 4; i++) {
 					int val = is.read();
 					pixels.put((byte) val);
 				}
+			} else if (resource.version() == 3) {
+				InputStream is = resource.asInputStream();
+				byte mb = (byte) is.read();
+				boolean tbmi = false; // Two bites multiplication indicator
+				if(mb == -1) {
+					tbmi = true;
+				}
+				byte[] sizeData = new byte[4];
+				is.read(sizeData, 0, 4);
+				width = Math.abs(sizeData[1]);
+				height = Math.abs(sizeData[3]);
+				byte[] data = is.readAllBytes();
+				byte[] toBufferData = new byte[4 * width * height];
+				int toBufferDataPtr = 0;
+				for (int i = 0; i < data.length; i++) {
+					if ((!tbmi && data[i] == mb) || (tbmi && data[i] == 1 && data[i + 1] == 0)) {
+						int mult = Byte.toUnsignedInt(tbmi ? data[i + 2] : data[i + 1]);
+						for (int j = 1; j < mult; j++) {
+							toBufferData[toBufferDataPtr++] = data[i - 4];
+							toBufferData[toBufferDataPtr++] = data[i - 3];
+							toBufferData[toBufferDataPtr++] = data[i - 2];
+							toBufferData[toBufferDataPtr++] = data[i - 1];
+						}
+						i += (tbmi ? 2 : 1);
+					} else
+						toBufferData[toBufferDataPtr++] = data[i];
+				}
+				pixels = BufferUtils.createByteBuffer(4 * width * height);
+				pixels.put(toBufferData);
 			}
 			pixels.flip();
 
