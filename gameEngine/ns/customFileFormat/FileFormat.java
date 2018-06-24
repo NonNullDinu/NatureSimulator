@@ -5,7 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import ns.exceptions.LoadingException;
 
 public enum FileFormat {
-	TEXTURE("tex", TexFile.class);
+	TEXTURE("tex", TexFile.class), AUDIO("aud", AudFile.class), MODEL("mdl", MdlFile.class);
 
 	private String extension;
 	private Class<? extends File> representingClass;

@@ -48,6 +48,7 @@ public class GU {
 	public static FontType Z003;
 	public static FontType caladea;
 	public static String path;
+	private static ByteBuffer buffer = ByteBuffer.allocate(4);
 
 	public static BufferedReader open(Resource resource) {
 		return new BufferedReader(new InputStreamReader(resource.asInputStream()));
@@ -250,13 +251,12 @@ public class GU {
 		return projectionMatrix;
 	}
 
-	public <T> T[] toArray(List<T> list) {
+	public static <T> T[] toArray(List<T> list) {
 		@SuppressWarnings("unchecked")
 		T[] arr = (T[]) new Object[list.size()];
 		for (int i = 0; i < arr.length; i++)
 			arr[i] = list.get(i);
 		return arr;
-
 	}
 
 	public static String getGLErrorType(int err) {
@@ -287,5 +287,45 @@ public class GU {
 		}
 		return ln;
 		
+	}
+
+	public static float readFloat(byte b1, byte b2, byte b3, byte b4) {
+		buffer.clear();
+		buffer.put(b1);
+		buffer.put(b2);
+		buffer.put(b3);
+		buffer.put(b4);
+		buffer.flip();
+		return buffer.getFloat();
+	}
+
+	public static int readInt(byte b1, byte b2, byte b3, byte b4) {
+		buffer.clear();
+		buffer.put(b1);
+		buffer.put(b2);
+		buffer.put(b3);
+		buffer.put(b4);
+		buffer.flip();
+		return buffer.getInt();
+	}
+
+	public static byte[] getBytes(float f) {
+		buffer.clear();
+		buffer.putFloat(f);
+		buffer.flip();
+		byte[] bytes = new byte[] {
+				buffer.get(), buffer.get(), buffer.get(), buffer.get()
+		};
+		return bytes;
+	}
+	
+	public static byte[] getBytes(int i) {
+		buffer.clear();
+		buffer.putInt(i);
+		buffer.flip();
+		byte[] bytes = new byte[] {
+				buffer.get(), buffer.get(), buffer.get(), buffer.get()
+		};
+		return bytes;
 	}
 }

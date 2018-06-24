@@ -3,6 +3,7 @@ package obj;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
@@ -21,9 +22,9 @@ public class Materials extends ArrayList<Material> {
 			while ((line = reader.readLine()) != null) {
 				if (line.startsWith("newmtl")) {
 					if (current != null) {
-						super.add(current);
+						add(current);
 					}
-					current = new Material();
+					current = new Material((byte) size());
 					current.setName(line.split(" ")[1]);
 				} else if (line.startsWith("Kd")) {
 					String[] pcs = line.split(" ");
@@ -38,7 +39,7 @@ public class Materials extends ArrayList<Material> {
 					current.setData(new Vector4f(Float.valueOf(pcs[1]), 0, 0, 0));
 				}
 			}
-			super.add(current);
+			add(current);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -50,5 +51,13 @@ public class Materials extends ArrayList<Material> {
 				return m;
 		}
 		return null;
+	}
+
+	public List<Byte> asByteMaterials() {
+		List<Byte> bytes = new ArrayList<>();
+		for (Material m : this) {
+			bytes.addAll(m.getBytes());
+		}
+		return bytes;
 	}
 }

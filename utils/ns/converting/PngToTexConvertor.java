@@ -99,10 +99,12 @@ public class PngToTexConvertor {
 						break;
 					}
 				}
-				if (use)
+				Byte[] mbArray = null;
+				if (use) {
 					outStr.write(mb);
-				else {
+				} else {
 					outStr.write(-1);
+					mbArray = new Byte[] { 0, 1 };
 				}
 				outStr.write(sizeData);
 				List<Byte> compressedData = new ArrayList<>();
@@ -117,7 +119,12 @@ public class PngToTexConvertor {
 					compressedData.add((byte) (cdata & 0xFF));
 					compressedData.add((byte) ((cdata >> 24) & 0xFF));
 					if (startI < i - 1) {
-						compressedData.add(mb);
+						if (use)
+							compressedData.add(mb);
+						else {
+							compressedData.add(mbArray[0]);
+							compressedData.add(mbArray[1]);
+						}
 						compressedData.add((byte) (i - startI));
 					}
 				}

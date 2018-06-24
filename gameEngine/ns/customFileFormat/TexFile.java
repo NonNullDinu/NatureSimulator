@@ -81,13 +81,19 @@ public class TexFile implements File {
 				InputStream is = resource.asInputStream();
 				byte mb = (byte) is.read();
 				boolean tbmi = false; // Two bites multiplication indicator
-				if(mb == -1) {
+				if (mb == -1) {
 					tbmi = true;
 				}
 				byte[] sizeData = new byte[4];
 				is.read(sizeData, 0, 4);
-				width = Math.abs(sizeData[1]);
-				height = Math.abs(sizeData[3]);
+				if (sizeData[0] == 0)
+					width = Byte.toUnsignedInt(sizeData[1]);
+				else
+					width = Byte.toUnsignedInt(sizeData[0]) << 8 + Byte.toUnsignedInt(sizeData[1]);
+				if (sizeData[2] == 0)
+					height = Byte.toUnsignedInt(sizeData[3]);
+				else
+					height = Byte.toUnsignedInt(sizeData[2]) << 8 + Byte.toUnsignedInt(sizeData[3]);
 				byte[] data = is.readAllBytes();
 				byte[] toBufferData = new byte[4 * width * height];
 				int toBufferDataPtr = 0;
