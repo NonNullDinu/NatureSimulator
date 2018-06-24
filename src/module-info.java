@@ -15,10 +15,6 @@ open module GameModule {
 	// audioEngine
 	exports ns.openALObjects;
 
-	// resources
-	exports obj;
-	exports res;
-
 	// gameEngine
 	exports ns.camera;
 	exports ns.components;
@@ -34,6 +30,8 @@ open module GameModule {
 	exports ns.water;
 	exports ns.world;
 	exports ns.worldSave;
+	exports res;
+	exports obj;
 
 	// renderEngine
 	exports ns.display;

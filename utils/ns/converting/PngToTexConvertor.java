@@ -18,13 +18,14 @@ public class PngToTexConvertor {
 	public static void main(String[] args) throws IOException {
 		byte[] buf = new byte[50];
 		int len = System.in.read(buf);
+		GU.path = System.getProperty("user.dir") + "/";
 		String location = "";
 		for (int i = 0; i < len - 1; i++)
 			location += (char) buf[i];
 		if (location.equals("UPDATE ALL")) {
-			write(new File("resources/res/textures"));
+			write(new File("gameData/textures"));
 		} else {
-			File target = new File("resources/res/textures/" + location);
+			File target = new File("gameData/" + location);
 			write(target);
 		}
 	}
@@ -40,14 +41,15 @@ public class PngToTexConvertor {
 			target.createNewFile();
 			WritingResource output = new WritingResource().withLocation(target.getPath()).create();
 			OutputStream outStr = output.asOutputStream();
-			BufferedImage img = ImageIO.read(new Resource().withLocation(f.getPath().replace("resources/res/", ""))
+			BufferedImage img = ImageIO.read(new Resource().withLocation(f.getPath().replace("gameData/", ""))
 					.withVersion(false).create().asInputStream());
 			int width = img.getWidth();
 			int height = img.getHeight();
 			int version = 3; // V. 3 uses lossless compression
 			if (target.getName().equals("sun.tex") || target.getName().equals("tex4.tex")
 					|| target.getName().equals("tex6.tex") || target.getName().equals("tex8.tex")
-					|| target.getName().equals("mainMenu_Start.tex")) // The ones mentioned here
+					|| target.getName().equals("mainMenu_Start.tex") || target.getName().equals("Z003.tex")
+					|| target.getName().equals("Caladea.tex")) // The ones mentioned here
 				// still
 				// have
 				// bugs with the .tex version 3

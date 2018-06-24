@@ -5,6 +5,7 @@ import java.util.Map;
 
 import ns.customFileFormat.MdlFile;
 import ns.openglObjects.VAO;
+import obj.OBJLoader;
 
 public class ModelsLibrary {
 	private static Map<String, VAO> models = new HashMap<>();
@@ -12,7 +13,10 @@ public class ModelsLibrary {
 	public static VAO getModel(String name) {
 		VAO model = models.get(name);
 		if (model == null) {
-			model = new MdlFile(name.replace(".obj", ".mdl")).load();
+			if (name.endsWith(".mdl"))
+				model = new MdlFile(name).load();
+			else
+				model = OBJLoader.loadObj(name);
 			models.put(name, model);
 		}
 		return model;

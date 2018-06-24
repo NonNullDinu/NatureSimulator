@@ -4,8 +4,8 @@ import org.lwjgl.opengl.GL20;
 
 public class QuadShader extends ShaderProgram {
 
-	private static final String VERTEX_SHADER = "res/shaders/quad/quadVertex.glsl";
-	private static final String FRAGMENT_SHADER = "res/shaders/quad/quadFragment.glsl";
+	private static final String VERTEX_SHADER = "shaders/quad/quadVertex.glsl";
+	private static final String FRAGMENT_SHADER = "shaders/quad/quadFragment.glsl";
 	
 	public UniformMat4 transformationMatrix = locator.locateUniformMat4("transformationMatrix");
 	public UniformVec3 color = locator.locateUniformVec3("color");

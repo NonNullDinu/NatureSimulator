@@ -74,10 +74,7 @@ public class MetaFile {
 			line = reader.readLine();
 		} catch (IOException e1) {
 		}
-		if (line == null) {
-			return false;
-		}
-		if (line.startsWith("kerning")) {
+		if (line == null || line.startsWith("kerning")) {
 			return false;
 		}
 		for (String part : line.split(SPLITTER)) {

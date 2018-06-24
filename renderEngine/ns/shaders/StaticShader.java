@@ -7,8 +7,8 @@ import ns.shaders.uniformStructs.UniformLight;
 
 public class StaticShader extends ShaderProgram {
 
-	private static final String VERTEX_SHADER = "res/shaders/standard/vertexShader.glsl";
-	private static final String FRAGMENT_SHADER = "res/shaders/standard/fragmentShader.glsl";
+	private static final String VERTEX_SHADER = "shaders/standard/vertexShader.glsl";
+	private static final String FRAGMENT_SHADER = "shaders/standard/fragmentShader.glsl";
 
 	public UniformMat4 projectionMatrix = locator.locateUniformMat4("projectionMatrix");
 	public UniformMat4 viewMatrix = locator.locateUniformMat4("viewMatrix");

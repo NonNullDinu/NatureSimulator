@@ -26,11 +26,11 @@ public class SecondaryThread implements Runnable {
 		MasterRenderer.initStandardModels();
 		StructLib.load(new Resource().withLocation("shaders/structlib.glsl").withVersion(false).create());
 		ShaderLib.loadAll();
-		ModelsLibrary.getModel("models/1000/tree.obj");
-		ModelsLibrary.getModel("models/1001/tree.obj");
-		ModelsLibrary.getModel("models/1002/tree.obj");
-		ModelsLibrary.getModel("models/1003/mushroom.obj");
-		ModelsLibrary.getModel("models/1004/tree.obj");
+		ModelsLibrary.getModel("models/1000/tree.mdl");
+		ModelsLibrary.getModel("models/1001/tree.mdl");
+		ModelsLibrary.getModel("models/1002/tree.mdl");
+		ModelsLibrary.getModel("models/1003/mushroom.mdl");
+		ModelsLibrary.getModel("models/1004/tree.mdl");
 		GU.sendRequestToMainThread(new SetRequest(
 				new Light(new Vector3f(0.5f, -0.15f, 0), new Vector3f(1, 1, 1), new Vector2f(0.5f, 0.5f))));
 		GU.sendRequestToMainThread(new SetRequest(OptionsMaster.createOptions()));

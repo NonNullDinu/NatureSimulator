@@ -27,7 +27,7 @@ public class BlueprintInputStream {
 			modelName = "mushroom";
 		}
 		Blueprint blueprint = new Blueprint(enFolder);
-		blueprint.withModel(new ModelComponent(ModelsLibrary.getModel("res/models/" + enFolder + "/" + modelName + ".obj")));
+		blueprint.withModel(new ModelComponent(ModelsLibrary.getModel("models/" + enFolder + "/" + modelName + ".mdl")));
 		if(data[1] >> 4 != 0) {
 			blueprint.withMovement(new MovementComponent(data[1] >> 4));
 		}

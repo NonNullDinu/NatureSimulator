@@ -4,8 +4,8 @@ import org.lwjgl.opengl.GL20;
 
 public class FontShader extends ShaderProgram {
 
-	private static final String VERTEX_FILE = "res/shaders/font/fontVertex.glsl";
-	private static final String FRAGMENT_FILE = "res/shaders/font/fontFragment.glsl";
+	private static final String VERTEX_FILE = "shaders/font/fontVertex.glsl";
+	private static final String FRAGMENT_FILE = "shaders/font/fontFragment.glsl";
 
 	public UniformVec3 color = locator.locateUniformVec3("color");
 	public UniformVec2 translation = locator.locateUniformVec2("translation");

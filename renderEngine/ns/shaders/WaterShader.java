@@ -7,8 +7,8 @@ import ns.shaders.uniformStructs.UniformLight;
 
 public class WaterShader extends ShaderProgram {
 
-	private static final String VERTEX_SHADER = "res/shaders/water/vertex.glsl";
-	private static final String FRAGMENT_SHADER = "res/shaders/water/fragment.glsl";
+	private static final String VERTEX_SHADER = "shaders/water/vertex.glsl";
+	private static final String FRAGMENT_SHADER = "shaders/water/fragment.glsl";
 
 	public UniformMat4 projectionMatrix = locator.locateUniformMat4("projectionMatrix");
 	public UniformMat4 viewMatrix = locator.locateUniformMat4("viewMatrix");

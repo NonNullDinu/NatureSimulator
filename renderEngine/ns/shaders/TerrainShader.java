@@ -11,8 +11,8 @@ import ns.terrain.Terrain;
 
 public class TerrainShader extends ShaderProgram {
 
-	private static final String VERTEX_SHADER = "res/shaders/terrain/terrainVertex.glsl";
-	private static final String FRAGMENT_SHADER = "res/shaders/terrain/terrainFragment.glsl";
+	private static final String VERTEX_SHADER = "shaders/terrain/terrainVertex.glsl";
+	private static final String FRAGMENT_SHADER = "shaders/terrain/terrainFragment.glsl";
 	
 	public UniformMat4 projectionMatrix = locator.locateUniformMat4("projectionMatrix");
 	public UniformMat4 transformationMatrix = locator.locateUniformMat4("transformationMatrix");

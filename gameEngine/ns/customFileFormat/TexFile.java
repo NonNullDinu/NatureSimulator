@@ -27,13 +27,13 @@ public class TexFile implements File {
 	@Override
 	public Texture load() throws LoadingException {
 		Resource resource = new Resource().withLocation(location).withVersion(true).create();
-		BufferedReader reader = GU.open(resource);
 		int id = 0;
 		int width = 0;
 		int height = 0;
 		try {
 			ByteBuffer pixels = null;
 			if (resource.version() == 1) {
+				BufferedReader reader = GU.open(resource);
 				String line = reader.readLine();
 				String[] pts = line.split(" ");
 				width = Integer.parseInt(pts[0]);
