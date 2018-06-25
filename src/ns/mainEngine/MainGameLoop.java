@@ -120,11 +120,12 @@ public class MainGameLoop implements Runnable {
 			renderer.renderScene(world, camera, sun, new Vector4f(0, -1, 0, 2.0f), false);
 			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 			if (state == GS.GAME) {
-				FBO.unbind();
-				MasterRenderer.prepare();
+				sceneFBO.bind();
 				renderer.renderScene(world, camera, sun, new Vector4f(0, 0, 0, 0), false);
 				waterRenderer.render(water, camera, fbos, sun);
 				flareManager.render();
+				FBO.unbind();
+				sceneFBO.blitToScreen();
 				shopRenderer.render(shop);
 			} else if (state == GS.MENU || state == GS.OPTIONS) {
 				sceneFBO.bind();

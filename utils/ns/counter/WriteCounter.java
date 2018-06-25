@@ -44,7 +44,7 @@ public class WriteCounter {
 		counter = 0;
 		lineCounter = 0;
 
-		sourceFolder = new File("resources/res/shaders");
+		sourceFolder = new File("gameData/shaders");
 		count(sourceFolder);
 		System.out.println("shaders = " + counter + "(" + lineCounter + " lines)");
 		totalCounter += counter;
