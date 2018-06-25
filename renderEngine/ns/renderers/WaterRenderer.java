@@ -43,8 +43,34 @@ public class WaterRenderer {
 		shader.viewMatrix.load(Maths.createViewMatrix(camera));
 		shader.cameraPosition.load(camera.getPosition());
 
-		fbos.getReflexion().getTex().bindToTextureUnit(0);
+		fbos.getReflection().getTex().bindToTextureUnit(0);
 		fbos.getRefraction().getTex().bindToTextureUnit(1);
+		fbos.getRefraction().getDepthTex().bindToTextureUnit(2);
+
+		VAO model = water.getModel();
+		model.bind(0, 1);
+		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, model.getVertexCount());
+		model.unbind();
+
+		shader.stop();
+	}
+
+	public void renderBlured(WaterTile water, ICamera camera, WaterFBOs fbos, Light sun) {
+		shader.start();
+
+		waveTime += WAVE_SPEED;
+		shader.waveTime.load(waveTime);
+
+		shader.skyColor.load(new Vector3f(MasterRenderer.RED, MasterRenderer.GREEN, MasterRenderer.BLUE));
+		shader.fogValues.load(MasterRenderer.FOG_VALUES);
+
+		shader.light.load(sun);
+
+		shader.viewMatrix.load(Maths.createViewMatrix(camera));
+		shader.cameraPosition.load(camera.getPosition());
+
+		fbos.getBluredReflection().getTex().bindToTextureUnit(0);
+		fbos.getBluredRefraction().getTex().bindToTextureUnit(1);
 		fbos.getRefraction().getDepthTex().bindToTextureUnit(2);
 
 		VAO model = water.getModel();

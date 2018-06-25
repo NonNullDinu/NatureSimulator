@@ -109,30 +109,27 @@ public class MainGameLoop implements Runnable {
 	public void render() {
 		if (state == GS.GAME || state == GS.MENU || state == GS.OPTIONS) {
 			GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
-			fbos.bindReflexion();
+			fbos.bindReflection();
 			float distance = 2 * camera.getPosition().y;
 			camera.getPosition().y -= distance;
 			camera.invertPitch();
-			renderer.renderScene(world, camera, sun, new Vector4f(0, 1, 0, 0f), true);
+			renderer.renderScene(world, camera, sun, new Vector4f(0, 1, 0, 2f), true);
 			fbos.bindRefraction();
 			camera.getPosition().y += distance;
 			camera.invertPitch();
-			renderer.renderScene(world, camera, sun, new Vector4f(0, -1, 0, 2.0f), false);
+			renderer.renderScene(world, camera, sun, new Vector4f(0, -1, 0, 0.7f), false);
 			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
+			sceneFBO.bind();
+			renderer.renderScene(world, camera, sun, new Vector4f(0, 0, 0, 0), false);
+			fbos.blur(blurer);
+			sceneFBO.bind();
+			waterRenderer.renderBlured(water, camera, fbos, sun);
+			flareManager.render();
+			FBO.unbind();
 			if (state == GS.GAME) {
-				sceneFBO.bind();
-				renderer.renderScene(world, camera, sun, new Vector4f(0, 0, 0, 0), false);
-				waterRenderer.render(water, camera, fbos, sun);
-				flareManager.render();
-				FBO.unbind();
 				sceneFBO.blitToScreen();
 				shopRenderer.render(shop);
 			} else if (state == GS.MENU || state == GS.OPTIONS) {
-				sceneFBO.bind();
-				renderer.renderScene(world, camera, sun, new Vector4f(0, 0, 0, 0), false);
-				waterRenderer.render(water, camera, fbos, sun);
-				flareManager.render();
-				FBO.unbind();
 				MasterRenderer.prepare();
 				blurer.apply(sceneFBO, bluredSceneFBO);
 				bluredSceneFBO.blitToScreen();
@@ -151,7 +148,7 @@ public class MainGameLoop implements Runnable {
 		executeRequests();
 		shader = new WaterShader();
 		executeRequests();
-		fbos = new WaterFBOs();
+		fbos = new WaterFBOs(true);
 		renderer = new MasterRenderer(camera);
 		executeRequests();
 		sceneFBO = new FBO(1200, 800, (FBO.COLOR_TEXTURE | FBO.DEPTH_RENDERBUFFER)).create();
