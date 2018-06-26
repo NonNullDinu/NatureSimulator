@@ -3,11 +3,13 @@ package ns.world;
 import java.util.List;
 
 import ns.entities.Entity;
+import ns.rivers.RiverList;
 import ns.terrain.Terrain;
 
 public class World {
 	private List<Entity> entities;
 	private Terrain terrain;
+	private RiverList rivers;
 
 	public World(List<Entity> entities, Terrain terrain) {
 		this.entities = entities;
@@ -31,5 +33,13 @@ public class World {
 		entities.add(e);
 		if(e.getBiomeSpreadComponent() != null)
 			terrain.updateColors(e);
+	}
+	
+	public void setRivers(RiverList rivers) {
+		this.rivers = rivers;
+	}
+
+	public RiverList getRivers() {
+		return rivers;
 	}
 }

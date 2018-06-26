@@ -23,7 +23,7 @@ public class PngToTexConvertor {
 		for (int i = 0; i < len - 1; i++)
 			location += (char) buf[i];
 		if (location.equals("UPDATE ALL")) {
-			write(new File("gameData/textures"));
+			write(new File("gameData"));
 		} else {
 			File target = new File("gameData/" + location);
 			write(target);
@@ -33,7 +33,7 @@ public class PngToTexConvertor {
 	private static void write(File f) throws IOException {
 		if (f.isDirectory()) {
 			for (File fl : f.listFiles())
-				if (!fl.getName().endsWith(".tex")) {
+				if (fl.getName().endsWith(".png") || fl.isDirectory()) {
 					write(fl);
 				}
 		} else {
@@ -45,7 +45,7 @@ public class PngToTexConvertor {
 					.withVersion(false).create().asInputStream());
 			int width = img.getWidth();
 			int height = img.getHeight();
-			int version = 3; // V. 3 uses lossless compression
+			int version = 3;
 			if (target.getName().equals("sun.tex") || target.getName().equals("tex4.tex")
 					|| target.getName().equals("tex6.tex") || target.getName().equals("tex8.tex")
 					|| target.getName().equals("mainMenu_Start.tex") || target.getName().equals("Z003.tex")
@@ -53,7 +53,7 @@ public class PngToTexConvertor {
 				// still
 				// have
 				// bugs with the .tex version 3
-				version = 2;
+				version = 4;
 			output.writeVersion(version);
 			if (version == 1) {
 				PrintWriter writer = GU.open(output);
@@ -78,8 +78,6 @@ public class PngToTexConvertor {
 				}
 				outStr.close();
 			} else if (version == 3) {
-				byte[] sizeData = new byte[] { (byte) ((width >> 8) & 0xFF), (byte) (width & 0xFF),
-						(byte) ((height >> 8) & 0xFF), (byte) (height & 0xFF) };
 				List<Integer> intData = new ArrayList<>();
 				List<Byte> data = new ArrayList<>();
 				for (int y = height - 1; y >= 0; y--) {
@@ -108,7 +106,8 @@ public class PngToTexConvertor {
 					outStr.write(-1);
 					mbArray = new Byte[] { 0, 1 };
 				}
-				outStr.write(sizeData);
+				outStr.write(GU.getBytes(width));
+				outStr.write(GU.getBytes(height));
 				List<Byte> compressedData = new ArrayList<>();
 				for (int i = 0; i < intData.size();) {
 					int cdata = intData.get(i);
@@ -132,6 +131,19 @@ public class PngToTexConvertor {
 				}
 				for (byte b : compressedData)
 					outStr.write(b);
+				outStr.close();
+			} else if (version == 4) {
+				outStr.write(GU.getBytes(width));
+				outStr.write(GU.getBytes(height));
+				for (int y = height - 1; y >= 0; y--) {
+					for (int x = 0; x < width; x++) {
+						int pixel = img.getRGB(x, y);
+						outStr.write((pixel >> 16) & 0xFF);
+						outStr.write((pixel >> 8) & 0xFF);
+						outStr.write(pixel & 0xFF);
+						outStr.write((pixel >> 24) & 0xFF);
+					}
+				}
 				outStr.close();
 			}
 		}

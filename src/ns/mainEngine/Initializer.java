@@ -76,15 +76,15 @@ public class Initializer {
 		thread.setUncaughtExceptionHandler(handler);
 		thread.start();
 
+		thread = ThreadMaster.createThread(new LoadingScreenThread(), "loading screen thread");
+		thread.setUncaughtExceptionHandler(handler);
+		thread.start();
+
 		thread = ThreadMaster.createThread(new SecondaryThread(), "secondary thread");
 		thread.setUncaughtExceptionHandler(handler);
 		thread.start();
 
 		thread = ThreadMaster.createThread(new ThirdThread(), "third thread");
-		thread.setUncaughtExceptionHandler(handler);
-		thread.start();
-
-		thread = ThreadMaster.createThread(new LoadingScreenThread(), "loading screen thread");
 		thread.setUncaughtExceptionHandler(handler);
 		thread.start();
 	}

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 import ns.entities.Entity;
+import ns.rivers.River;
 import ns.utils.GU;
 import ns.world.World;
 import res.WritingResource;
@@ -17,6 +18,8 @@ public class SaveWorldMaster {
 			for (Entity entity : world.getEntities())
 				stream.writeObject(entity.asData());
 			stream.writeObject(world.getTerrain().asData());
+			for(River river : world.getRivers())
+				stream.writeObject(river.asData());
 			stream.writeObject(new EndObject());
 			stream.close();
 		} catch (IOException e) {

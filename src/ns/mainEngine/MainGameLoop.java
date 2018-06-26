@@ -24,8 +24,10 @@ import ns.renderers.GUIRenderer;
 import ns.renderers.MainMenuRenderer;
 import ns.renderers.MasterRenderer;
 import ns.renderers.QuadRenderer;
+import ns.renderers.RiverRenderer;
 import ns.renderers.ShopRenderer;
 import ns.renderers.WaterRenderer;
+import ns.rivers.RiverList;
 import ns.shaders.GUIShader;
 import ns.shaders.WaterShader;
 import ns.ui.shop.Shop;
@@ -58,6 +60,8 @@ public class MainGameLoop implements Runnable {
 	private World world;
 	private Options options;
 	private FlareManager flareManager;
+	private RiverRenderer riverRenderer;
+	private RiverList rivers;
 
 	public void executeRequests() {
 		ns.parallelComputing.Thread thread = GU.currentThread();
@@ -82,6 +86,7 @@ public class MainGameLoop implements Runnable {
 				world.add(e);
 			camera.update(world);
 			world.update();
+			rivers.update(world);
 			if (GU.Key.KEY_ESC.pressedThisFrame()) {
 				state = GS.MENU;
 				if (shop.open())
@@ -124,6 +129,7 @@ public class MainGameLoop implements Runnable {
 			fbos.blur(blurer);
 			sceneFBO.bind();
 			waterRenderer.renderBlured(water, camera, fbos, sun);
+			riverRenderer.render(rivers, camera);
 			flareManager.render();
 			FBO.unbind();
 			if (state == GS.GAME) {
@@ -169,6 +175,7 @@ public class MainGameLoop implements Runnable {
 		GU.initMouseCursors(renderer);
 		executeRequests();
 		state = GS.MENU;
+		riverRenderer = new RiverRenderer(MasterRenderer.standardModels.get(1), camera.getProjectionMatrix());
 		GU.currentThread().finishLoading();
 		while (!SecondaryThread.READY || !ThirdThread.READY) {
 			executeRequests();
@@ -222,9 +229,10 @@ public class MainGameLoop implements Runnable {
 			this.menu = (MainMenu) o;
 		if (o instanceof Options)
 			this.options = (Options) o;
-		if (o instanceof FlareManager) {
+		if (o instanceof FlareManager)
 			this.flareManager = (FlareManager) o;
-		}
+		if (o instanceof RiverList)
+			this.rivers = (RiverList) o;
 	}
 
 	public static void requestExecuteRequests() {

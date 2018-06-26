@@ -84,16 +84,10 @@ public class TexFile implements File {
 				if (mb == -1) {
 					tbmi = true;
 				}
-				byte[] sizeData = new byte[4];
-				is.read(sizeData, 0, 4);
-				if (sizeData[0] == 0)
-					width = Byte.toUnsignedInt(sizeData[1]);
-				else
-					width = Byte.toUnsignedInt(sizeData[0]) << 8 + Byte.toUnsignedInt(sizeData[1]);
-				if (sizeData[2] == 0)
-					height = Byte.toUnsignedInt(sizeData[3]);
-				else
-					height = Byte.toUnsignedInt(sizeData[2]) << 8 + Byte.toUnsignedInt(sizeData[3]);
+				byte[] sizeData = new byte[8];
+				is.read(sizeData, 0, 8);
+				width = GU.readInt(sizeData[0], sizeData[1], sizeData[2], sizeData[3]);
+				height = GU.readInt(sizeData[4], sizeData[5], sizeData[6], sizeData[7]);
 				byte[] data = is.readAllBytes();
 				byte[] toBufferData = new byte[4 * width * height];
 				int toBufferDataPtr = 0;
@@ -112,6 +106,18 @@ public class TexFile implements File {
 				}
 				pixels = BufferUtils.createByteBuffer(4 * width * height);
 				pixels.put(toBufferData);
+			} else if (resource.version() == 4) {
+				InputStream is = resource.asInputStream();
+				byte[] sizeData = new byte[8];
+				is.read(sizeData, 0, 8);
+				width = GU.readInt(sizeData[0], sizeData[1], sizeData[2], sizeData[3]);
+				height = GU.readInt(sizeData[4], sizeData[5], sizeData[6], sizeData[7]);
+
+				pixels = BufferUtils.createByteBuffer(width * height * 4);
+				for (int i = 0; i < width * height * 4; i++) {
+					int val = is.read();
+					pixels.put((byte) val);
+				}
 			}
 			pixels.flip();
 

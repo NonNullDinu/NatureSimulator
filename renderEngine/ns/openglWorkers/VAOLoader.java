@@ -14,6 +14,7 @@ import org.lwjgl.opengl.GL30;
 
 import ns.openglObjects.VAO;
 import ns.openglObjects.VBO;
+import ns.parallelComputing.CreateAndPackVAORequest;
 import ns.parallelComputing.CreateVAORequest;
 import ns.parallelComputing.VAOUpdateRequest;
 import ns.utils.GU;

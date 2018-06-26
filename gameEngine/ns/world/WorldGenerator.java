@@ -9,6 +9,7 @@ import org.lwjgl.util.vector.Vector3f;
 import ns.components.Blueprint;
 import ns.components.BlueprintCreator;
 import ns.entities.Entity;
+import ns.parallelComputing.SetRequest;
 import ns.terrain.Terrain;
 import ns.utils.GU;
 import ns.worldSave.LoadWorldMaster;
@@ -24,6 +25,8 @@ public class WorldGenerator {
 		if (resource.exists()) {
 			generatedWorld = LoadWorldMaster.loadWorld(resource);
 			generatedWorld.getTerrain().initColors(generatedWorld.getEntities());
+			if(generatedWorld.getRivers() != null)
+				GU.sendRequestToMainThread(new SetRequest(generatedWorld.getRivers()));
 		}
 		else {
 			System.out.println("Save not found, generating new");

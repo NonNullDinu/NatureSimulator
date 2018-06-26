@@ -12,7 +12,6 @@ import ns.fontRendering.TextMaster;
 import ns.parallelComputing.GLClearRequest;
 import ns.parallelComputing.GLRenderRequest;
 import ns.parallelComputing.GLRenderRequest.RenderMethod;
-import ns.parallelComputing.Thread;
 import ns.parallelComputing.UpdateDisplayRequest;
 import ns.utils.GU;
 import res.Resource;
@@ -42,7 +41,6 @@ public class LoadingScreenThread implements Runnable {
 			}
 		};
 		GU.currentThread().finishLoading();
-		Thread.yield();
 		while (true) {
 			if (prevFrame < DisplayManager.frameId) {
 				prevFrame = DisplayManager.frameId;
@@ -50,11 +48,6 @@ public class LoadingScreenThread implements Runnable {
 						new GLClearRequest(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, new Vector3f(1, 1, 1)));
 				GU.sendRequestToMainThread(new GLRenderRequest(renderMethod));
 				GU.sendRequestToMainThread(new UpdateDisplayRequest());
-			}
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
 			}
 			if (MainGameLoop.state != GS.LOADING)
 				break;

@@ -31,6 +31,7 @@ public class Terrain implements SerializableWorldObject {
 	private float[][] heights;
 	private List<TerrainVertex> vertices;
 	private Map<Integer, List<TerrainVertex>> gridVertices;
+	private Vector3f[][] normals;
 
 	public Terrain() {
 		x = -(SIZE / 2f);
@@ -149,6 +150,7 @@ public class Terrain implements SerializableWorldObject {
 		for (int i = 0; i < VERTEX_COUNT; i++)
 			for (int j = 0; j < VERTEX_COUNT; j++)
 				heights[i][j] = -100f;
+		normals = new Vector3f[VERTEX_COUNT][VERTEX_COUNT];
 		int count = VERTEX_COUNT * VERTEX_COUNT;
 		float[] vao_vertices = new float[3 * count];
 		float[] vao_normals = new float[3 * count];
@@ -166,6 +168,7 @@ public class Terrain implements SerializableWorldObject {
 				vao_normals[3 * vertexPointer] = normal.x;
 				vao_normals[3 * vertexPointer + 1] = normal.y;
 				vao_normals[3 * vertexPointer + 2] = normal.z;
+				normals[x][z] = normal;
 
 				vao_colors[3 * vertexPointer] = DEFAULT_COLOR.x;
 				vao_colors[3 * vertexPointer + 1] = DEFAULT_COLOR.y;
@@ -260,16 +263,11 @@ public class Terrain implements SerializableWorldObject {
 	}
 
 	private Vector3f getNormal(int x, int z) {
-//		float up = getHeight(x, z + 1);
-//		float down = getHeight(x, z - 1);
-//		float left = getHeight(x - 1, z);
-//		float right = getHeight(x + 1, z);
-//		Vector3f normal = new Vector3f(left - right, 2f, down - up);
-//		normal.normalise();
-		Vector3f normal = Vector3f.cross(
-				Vector3f.sub(new Vector3f(x + 1, getHeight(x + 1, z), z), new Vector3f(x, getHeight(x, z), z), null),
-				Vector3f.sub(new Vector3f(x, getHeight(x, z - 1), z - 1), new Vector3f(x, getHeight(x, z), z), null),
-				null);
+		float up = getHeight(x, z + 1);
+		float down = getHeight(x, z - 1);
+		float left = getHeight(x - 1, z);
+		float right = getHeight(x + 1, z);
+		Vector3f normal = new Vector3f(left - right, 2f, down - up);
 		normal.normalise();
 		return normal;
 	}
@@ -316,5 +314,14 @@ public class Terrain implements SerializableWorldObject {
 			ret.addAll(gridVertices.get(index - GRID_SCL));
 		}
 		return ret;
+	}
+
+	public Vector3f getNormal(Vector3f position) {
+		Vector3f posRelToTerrain = posRelToTerrain(position);
+		int x = (int) (posRelToTerrain.x / SIZE * (float) VERTEX_COUNT);
+		int z = (int) (posRelToTerrain.z / SIZE * (float) VERTEX_COUNT);
+		if(x < 0 || x >= VERTEX_COUNT || z < 0 || z >= VERTEX_COUNT)
+			return new Vector3f(0, 1, 0);
+		return normals[x][z];
 	}
 }

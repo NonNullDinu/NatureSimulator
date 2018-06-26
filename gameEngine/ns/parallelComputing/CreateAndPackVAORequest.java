@@ -1,7 +1,8 @@
-package ns.openglWorkers;
+package ns.parallelComputing;
 
 import ns.openglObjects.VAO;
-import ns.parallelComputing.Request;
+import ns.openglWorkers.VAOLoader;
+import ns.openglWorkers.VBOData;
 
 public class CreateAndPackVAORequest extends Request {
 
