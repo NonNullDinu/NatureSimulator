@@ -40,33 +40,35 @@ public class MasterRenderer {
 		VAO vao = VAOLoader.storeDataInVAO(
 				new VBOData(new float[] { -1, 1, -1, -1, 1, 1, 1, -1, }).withAttributeNumber(0).withDimensions(2));
 		standardModels.add(vao);
-		float[] positions = new float[90 * 90 * 18];
+		int ang = 6;
+		float[] positions = new float[ang * ang * 18];
 		int vertexPointer = 0;
-		for(int a = 0; a < 360; a += 4) { // horizontal
-			for(int b = 0; b < 360; b += 4) { // vertical
+		int dlt = 360 / ang;
+		for(int a = 0; a < 360; a += dlt) { // horizontal
+			for(int b = 0; b < 360; b += dlt) { // vertical
 				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a)) * Math.cos(Math.toRadians(b)));
 				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a)) * Math.sin(Math.toRadians(b)));
 				positions[vertexPointer++] = (float) Math.cos(Math.toRadians(a));
 				
-				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a + 4)) * Math.cos(Math.toRadians(b)));
-				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a + 4)) * Math.sin(Math.toRadians(b)));
-				positions[vertexPointer++] = (float) Math.cos(Math.toRadians(a + 4));
+				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a + dlt)) * Math.cos(Math.toRadians(b)));
+				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a + dlt)) * Math.sin(Math.toRadians(b)));
+				positions[vertexPointer++] = (float) Math.cos(Math.toRadians(a + dlt));
 
-				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a)) * Math.cos(Math.toRadians(b + 4)));
-				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a)) * Math.sin(Math.toRadians(b + 4)));
+				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a)) * Math.cos(Math.toRadians(b + dlt)));
+				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a)) * Math.sin(Math.toRadians(b + dlt)));
 				positions[vertexPointer++] = (float) Math.cos(Math.toRadians(a));
 
-				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a)) * Math.cos(Math.toRadians(b + 4)));
-				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a)) * Math.sin(Math.toRadians(b + 4)));
+				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a)) * Math.cos(Math.toRadians(b + dlt)));
+				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a)) * Math.sin(Math.toRadians(b + dlt)));
 				positions[vertexPointer++] = (float) Math.cos(Math.toRadians(a));
 
-				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a + 4)) * Math.cos(Math.toRadians(b)));
-				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a + 4)) * Math.sin(Math.toRadians(b)));
-				positions[vertexPointer++] = (float) Math.cos(Math.toRadians(a + 4));
+				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a + dlt)) * Math.cos(Math.toRadians(b)));
+				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a + dlt)) * Math.sin(Math.toRadians(b)));
+				positions[vertexPointer++] = (float) Math.cos(Math.toRadians(a + dlt));
 
-				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a + 4)) * Math.cos(Math.toRadians(b + 4)));
-				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a + 4)) * Math.sin(Math.toRadians(b + 4)));
-				positions[vertexPointer++] = (float) Math.cos(Math.toRadians(a + 4));
+				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a + dlt)) * Math.cos(Math.toRadians(b + dlt)));
+				positions[vertexPointer++] = (float) (Math.sin(Math.toRadians(a + dlt)) * Math.sin(Math.toRadians(b + dlt)));
+				positions[vertexPointer++] = (float) Math.cos(Math.toRadians(a + dlt));
 			}
 		}
 		vao = VAOLoader.storeDataInVAO(

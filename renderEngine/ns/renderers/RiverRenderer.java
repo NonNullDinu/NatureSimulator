@@ -9,7 +9,6 @@ import org.lwjgl.util.vector.Vector3f;
 import ns.camera.ICamera;
 import ns.openglObjects.VAO;
 import ns.rivers.River;
-import ns.rivers.WaterParticle;
 import ns.shaders.RiverShader;
 import ns.utils.Maths;
 
@@ -29,17 +28,22 @@ public class RiverRenderer {
 		shader.start();
 		shader.viewMatrix.load(Maths.createViewMatrix(camera));
 		shader.color.load(new Vector3f(0.6f, 0.9f, 0.9f));
-		sphereVAO.bind(0);
+//		sphereVAO.bind(0);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		for (River river : rivers)
-			for (WaterParticle particle : river.getParticles()) {
-				shader.transformationMatrix.load(
-						Maths.createTransformationMatrix(particle.getPosition(), 0, 0, 0, particle.getSize()));
-				GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, sphereVAO.getVertexCount());
-			}
+		for (River river : rivers) {
+//			for (WaterParticle particle : river.getParticles()) {
+//				shader.transformationMatrix.load(
+//						Maths.createTransformationMatrix(particle.getPosition(), 0, 0, 0, particle.getSize()));
+//				GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, sphereVAO.getVertexCount());
+//			}
+			VAO model = river.getModel();
+			model.bind(0);
+			GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, river.getParticles().size() * 2);
+			model.unbind();
+		}
 		GL11.glDisable(GL11.GL_BLEND);
-		sphereVAO.unbind();
+//		sphereVAO.unbind();
 		shader.stop();
 	}
 

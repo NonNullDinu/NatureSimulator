@@ -255,4 +255,11 @@ public class VAOLoader {
 		}
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 	}
+
+	public static void recreateAndReplace(VAO model, int attn, float[] data, int usage) {
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vaos.get(model.getID()).get(attn));
+		FloatBuffer dt = storeDataInFloatBuffer(data);
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, dt, usage);
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+	}
 }
