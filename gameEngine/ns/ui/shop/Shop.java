@@ -11,7 +11,7 @@ import ns.utils.GU;
 import ns.utils.MousePicker;
 
 public class Shop {
-	private static final float SLIDE_OFFSET = 0.7f;
+	private static final float SLIDE_OFFSET = 0.75f;
 	private List<ShopItem> items;
 	private ShopItem currentlySelected;
 	private SS state;
@@ -26,17 +26,16 @@ public class Shop {
 	}
 
 	public Entity update() {
-		if (d > 0) {
-			if (increasing) {
-				d += 2;
-				increasing = d < 20;
-			} else
-				d -= 2;
-			GU.setMouseCursor(GU.createCursor(0, 63, 1,
-					GU.getMouseTexture(
-							currentlySelected.getEntityBlueprint().getFolder()
-							, d), null, d));
-		}
+		if (currentlySelected != null)
+			if (d > 0) {
+				if (increasing) {
+					d += 2;
+					increasing = d < 20;
+				} else
+					d -= 2;
+				GU.setMouseCursor(GU.createCursor(0, 63, 1,
+						GU.getMouseTexture(currentlySelected.getEntityBlueprint().getFolder(), d), null, d));
+			}
 		if (GU.Key.KEY_S.pressedThisFrame()) {
 			if (state != SS.OPEN) {
 				if (state == SS.BUYING)
@@ -101,7 +100,7 @@ public class Shop {
 
 	public void refreshCursor() {
 		if (state == SS.BUYING)
-			GU.setMouseCursor(
-					GU.createCursor(0, 63, 1, GU.getMouseTexture(currentlySelected.getEntityBlueprint().getFolder(), 0), null));
+			GU.setMouseCursor(GU.createCursor(0, 63, 1,
+					GU.getMouseTexture(currentlySelected.getEntityBlueprint().getFolder(), 0), null));
 	}
 }

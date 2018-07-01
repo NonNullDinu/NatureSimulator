@@ -17,6 +17,8 @@ import ns.openglObjects.VBO;
 import ns.parallelComputing.CreateAndPackVAORequest;
 import ns.parallelComputing.CreateVAORequest;
 import ns.parallelComputing.VAOUpdateRequest;
+import ns.parallelComputing.VBORecreateAndReplaceRequest;
+import ns.parallelComputing.VBOUpdateRequest;
 import ns.utils.GU;
 
 public class VAOLoader {
@@ -239,27 +241,35 @@ public class VAOLoader {
 	}
 
 	public static void replace(VAO model, int attn, float[] data, List<Integer> changes, int dimensions) {
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, model.getBuffers().get(attn));
-		FloatBuffer buffer = null;
-		for (int i : changes) {
-			long offset = i * dimensions * 4;
-			if (dimensions == 2)
-				buffer = storeDataInFloatBuffer(new float[] { data[i * 2], data[i * 2 + 1] });
-			if (dimensions == 3)
-				buffer = storeDataInFloatBuffer(new float[] { data[i * 3], data[i * 3 + 1], data[i * 3 + 2] });
-			if (dimensions == 4)
-				buffer = storeDataInFloatBuffer(
-						new float[] { data[i * 4], data[i * 4 + 1], data[i * 4 + 2], data[i * 4 + 3] });
-			GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, offset, buffer);
-			buffer.clear();
+		if (Thread.currentThread().getName().equals(GU.MAIN_THREAD_NAME)) {
+			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, model.getBuffers().get(attn));
+			FloatBuffer buffer = null;
+			for (int i : changes) {
+				long offset = i * dimensions * 4;
+				if (dimensions == 2)
+					buffer = storeDataInFloatBuffer(new float[] { data[i * 2], data[i * 2 + 1] });
+				if (dimensions == 3)
+					buffer = storeDataInFloatBuffer(new float[] { data[i * 3], data[i * 3 + 1], data[i * 3 + 2] });
+				if (dimensions == 4)
+					buffer = storeDataInFloatBuffer(
+							new float[] { data[i * 4], data[i * 4 + 1], data[i * 4 + 2], data[i * 4 + 3] });
+				GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, offset, buffer);
+				buffer.clear();
+			}
+			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		} else {
+			GU.sendRequestToMainThread(new VBOUpdateRequest(model, attn, data, changes, dimensions));
 		}
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 	}
 
 	public static void recreateAndReplace(VAO model, int attn, float[] data, int usage) {
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vaos.get(model.getID()).get(attn));
-		FloatBuffer dt = storeDataInFloatBuffer(data);
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, dt, usage);
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		if (Thread.currentThread().getName().equals(GU.MAIN_THREAD_NAME)) {
+			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vaos.get(model.getID()).get(attn));
+			FloatBuffer dt = storeDataInFloatBuffer(data);
+			GL15.glBufferData(GL15.GL_ARRAY_BUFFER, dt, usage);
+			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		} else {
+			GU.sendRequestToMainThread(new VBORecreateAndReplaceRequest(model, attn, data, usage));
+		}
 	}
 }

@@ -53,6 +53,8 @@ public class WorldGenerator {
 			float z = random.nextFloat() * 2f - 1f;
 			x *= TS;
 			z *= TS;
+			x += x < 0 ? 50f : -50f;
+			z += z < 0 ? 50f : -50f;
 			float y = terrain.getHeight(x, z);
 			Vector3f pos = new Vector3f(x, y, z);
 			int type = GU.random.genInt(GU.TOTAL_NUMBER_OF_ENTITIES);

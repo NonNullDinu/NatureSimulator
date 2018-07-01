@@ -8,9 +8,10 @@ import ns.mainEngine.GS;
 import ns.mainEngine.MainGameLoop;
 import ns.renderers.GUIRenderer;
 import ns.ui.GUIButton;
+import ns.ui.UIMenu;
 import ns.utils.GU;
 
-public class Options {
+public class Options implements UIMenu {
 	private List<Option> options;
 	private GUIButton back;
 
@@ -18,20 +19,20 @@ public class Options {
 		this.options = options;
 		this.back = back;
 	}
-	
+
 	public void update() {
 		Vector2f mp = GU.normalizedMousePos();
-		for(Option option : options) {
+		for (Option option : options) {
 			Vector2f pos = option.loc(mp);
 			option.checkAndClick(pos);
 		}
-		if(back.clicked()) {
+		if (back.clicked()) {
 			MainGameLoop.state = GS.MENU;
 		}
 	}
 
 	public void render() {
-		for(Option option : options) {
+		for (Option option : options) {
 			option.render();
 		}
 		GUIRenderer.instance.render(back);

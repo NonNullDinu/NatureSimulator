@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MainMenu [
+<!ELEMENT MainMenu (MainMenuButton*, DNAPos)>
+<!ELEMENT MainMenuButton (#PCDATA)>
+<!ATTLIST MainMenuButton
+	x CDATA #REQUIRED
+	y CDATA #REQUIRED
+	xScale CDATA #REQUIRED
+	yScale CDATA #REQUIRED
+	action CDATA #REQUIRED
+	texture CDATA #REQUIRED
+>
+<!ELEMENT DNAPos (#PCDATA)>
+<!ATTLIST DNAPos
+	x CDATA #REQUIRED
+	y CDATA #REQUIRED
+	xScale CDATA #REQUIRED
+	yScale CDATA #REQUIRED
+	dnaX CDATA #REQUIRED
+	dnaY CDATA #REQUIRED
+	dnaZ CDATA #REQUIRED
+>
+]>
+<MainMenu>
+	<MainMenuButton x="0" y="0.5" xScale="0.1" yScale="0.05"
+		action="1" texture="textures/buttonTextures/mainMenu_Start.tex" />
+	<MainMenuButton x="0" y="0.2" xScale="0.1" yScale="0.05"
+		action="2" texture="textures/buttonTextures/mainMenu_Options.tex" />
+	<MainMenuButton x="0" y="-0.7" xScale="0.1"
+		yScale="0.05" action="3"
+		texture="textures/buttonTextures/mainMenu_Exit.tex" />
+	<DNAPos x="-0.8" y="0" xScale="0.4" yScale="1" dnaX="1"
+		dnaY="-5" dnaZ="-8.1" />
+</MainMenu>

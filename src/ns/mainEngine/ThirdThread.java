@@ -24,6 +24,8 @@ public class ThirdThread implements Runnable {
 		while (MasterRenderer.instance == null)
 			Thread.yield();
 		MousePicker.init(camera, world.getTerrain());
+		if (world.getRivers() != null)
+			world.getRivers().update(world);
 
 		GU.currentThread().finishLoading();
 		READY = true;

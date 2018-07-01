@@ -71,11 +71,11 @@ public class SecondaryThread implements Runnable {
 			Random random = GU.random;
 			Terrain terrain = WorldGenerator.generatedWorld.getTerrain();
 			final float TS = Terrain.SIZE / 2f;
-			for (int i = 0; i < 10; i++) {
+			for (int i = 0; i < 50; i++) {
 				float x = random.genFloat();
 				float z = random.genFloat();
 				float y = terrain.getHeight(x, z);
-				while (y < 50f) {
+				while (y < 100f) {
 					x = (random.genFloat() * 2.0f - 1.0f) * TS;
 					z = (random.genFloat() * 2.0f - 1.0f) * TS;
 					y = terrain.getHeight(x, z);

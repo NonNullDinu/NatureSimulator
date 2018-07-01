@@ -7,6 +7,7 @@ import ns.world.Biome;
 public class BiomeSpreadComponent implements IComponent {
 	private float minRange, maxRange;
 	private Biome biome;
+	private boolean addedColorsToTerrain = false;
 	
 	public BiomeSpreadComponent withMinMaxRange(float minRange, float maxRange) {
 		this.minRange = minRange;
@@ -25,5 +26,13 @@ public class BiomeSpreadComponent implements IComponent {
 	
 	public Biome getBiome() {
 		return biome;
+	}
+
+	public void setAddedColorsToTerrain(boolean addedColorsToTerrain) {
+		this.addedColorsToTerrain = addedColorsToTerrain;
+	}
+
+	public boolean addedColorsToTerrain() {
+		return addedColorsToTerrain;
 	}
 }

@@ -14,6 +14,7 @@ public class World {
 	public World(List<Entity> entities, Terrain terrain) {
 		this.entities = entities;
 		this.terrain = terrain;
+		terrain.setWorld(this);
 	}
 	
 	public void update() {

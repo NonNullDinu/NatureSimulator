@@ -41,7 +41,7 @@ public class GU {
 	private static float[] mouseLengths = new float[20];
 	public static final List<Texture> textures = new ArrayList<>();
 	public static final int TOTAL_NUMBER_OF_ENTITIES = 5;
-	public static final int CURRENT_WORLD_FILE_VERSION = 2;
+	public static final int CURRENT_WORLD_FILE_VERSION = 3;
 	public static final String WORLD_SAVE_FILE_FORMAT = "nssv";
 	public static final String MAIN_THREAD_NAME = "main thread";
 	public static final IntBuffer tempibuffer = BufferUtils.createIntBuffer(1);

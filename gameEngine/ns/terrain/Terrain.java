@@ -14,7 +14,9 @@ import ns.entities.Entity;
 import ns.openglObjects.VAO;
 import ns.openglWorkers.VAOLoader;
 import ns.openglWorkers.VBOData;
+import ns.rivers.RiverEnd;
 import ns.utils.Maths;
+import ns.world.World;
 import ns.worldSave.SerializableWorldObject;
 import ns.worldSave.TerrainData;
 
@@ -22,7 +24,7 @@ public class Terrain implements SerializableWorldObject {
 	public static final float SIZE = 4800;
 	public static final float SIZE_DIV_2 = SIZE / 2;
 	public static final int VERTEX_COUNT = (int) (256f * (SIZE / 2400f));
-	private static final int GRID_SCL = (int) (SIZE / 200f);
+	private static final int GRID_SCL = 50;
 	public static final int GRID_VERTEX_COUNT = VERTEX_COUNT / GRID_SCL;
 	private static final Vector3f DEFAULT_COLOR = new Vector3f(0.71f, 0.478f, 0.0f);
 	private VAO model;
@@ -32,6 +34,8 @@ public class Terrain implements SerializableWorldObject {
 	private List<TerrainVertex> vertices;
 	private Map<Integer, List<TerrainVertex>> gridVertices;
 	private Vector3f[][] normals;
+	private List<RiverEnd> riverEnds;
+	private World world;
 
 	public Terrain() {
 		x = -(SIZE / 2f);
@@ -40,6 +44,7 @@ public class Terrain implements SerializableWorldObject {
 		generator = new HeightsGenerator();
 		gridVertices = new HashMap<>();
 		model = initModel();
+		riverEnds = new ArrayList<>();
 	}
 
 	public Terrain(int seed) {
@@ -49,33 +54,43 @@ public class Terrain implements SerializableWorldObject {
 		generator = new HeightsGenerator(seed);
 		gridVertices = new HashMap<>();
 		model = initModel();
+		riverEnds = new ArrayList<>();
 	}
 
 	public void initColors(List<Entity> entities) {
+		for (TerrainVertex v : vertices) {
+			v.color.set(DEFAULT_COLOR);
+		}
 		for (Entity e : entities) {
 			BiomeSpreadComponent comp = e.getBiomeSpreadComponent();
 			if (comp != null) {
 				Vector3f pos = posRelToTerrain(e.getPosition());
 				List<TerrainVertex> vertx = getVertices(pos);
 				for (TerrainVertex vertex : vertx) {
-					float len = Vector3f.sub(pos, vertex.position, null).length();
-					Vector2f minMax = comp.getMinMax();
-					Vector3f cl = new Vector3f();
-					if (len < minMax.x) {
-						cl = new Vector3f(comp.getBiome().getColor());
-					} else if (len < minMax.y) {
-						Vector3f bcl = new Vector3f(comp.getBiome().getColor());
-						float fac = (len - minMax.x) / (minMax.y - minMax.x);
-						bcl.scale(1.0f - fac);
-						Vector3f prevC = new Vector3f(vertex.color);
-						prevC.scale(fac);
-						cl = new Vector3f(Vector3f.add(bcl, prevC, null));
-					}
-					if (!(cl.x == 0 && cl.y == 0 && cl.z == 0)) {
-						if (vertex.color.x == DEFAULT_COLOR.x && vertex.color.y == DEFAULT_COLOR.x && vertex.color.z == DEFAULT_COLOR.x)
-							vertex.color = cl;
-						else
-							Vector3f.add(vertex.color, cl, vertex.color).scale(0.5f); // Average colors
+					if (comp.getBiome().accept(this, posRelToWorld(vertex.position))) {
+						comp.setAddedColorsToTerrain(true);
+						float len = Vector3f.sub(pos, vertex.position, null).length();
+						Vector2f minMax = comp.getMinMax();
+						Vector3f cl = new Vector3f();
+						if (comp.getBiome().accept(this, posRelToWorld(vertex.position))) {
+							if (len < minMax.x) {
+								cl = new Vector3f(comp.getBiome().getColor());
+							} else if (len < minMax.y) {
+								Vector3f bcl = new Vector3f(comp.getBiome().getColor());
+								float fac = (len - minMax.x) / (minMax.y - minMax.x);
+								bcl.scale(1.0f - fac);
+								Vector3f prevC = new Vector3f(vertex.color);
+								prevC.scale(fac);
+								cl = new Vector3f(Vector3f.add(bcl, prevC, null));
+							}
+							if (!(cl.x == 0 && cl.y == 0 && cl.z == 0)) {
+								if (vertex.color.x == DEFAULT_COLOR.x && vertex.color.y == DEFAULT_COLOR.x
+										&& vertex.color.z == DEFAULT_COLOR.x)
+									vertex.color = cl;
+								else
+									Vector3f.add(vertex.color, cl, vertex.color).scale(0.5f); // Average colors
+							}
+						}
 					}
 				}
 			}
@@ -104,28 +119,32 @@ public class Terrain implements SerializableWorldObject {
 		BiomeSpreadComponent comp = e.getBiomeSpreadComponent();
 		if (comp != null) {
 			for (TerrainVertex vertex : vertices) {
-				float len = Vector3f.sub(pos, vertex.position, null).length();
-				Vector2f minMax = comp.getMinMax();
-				Vector3f cl = new Vector3f();
-				if (len < minMax.x) {
-					cl = new Vector3f(comp.getBiome().getColor());
-				} else if (len < minMax.y) {
-					Vector3f bcl = new Vector3f(comp.getBiome().getColor());
-					float fac = (len - minMax.x) / (minMax.y - minMax.x);
-					bcl.scale(1.0f - fac);
-					Vector3f prevC = new Vector3f(vertex.color);
-					prevC.scale(fac);
-					cl = new Vector3f(Vector3f.add(bcl, prevC, null));
+				if (comp.getBiome().accept(this, posRelToWorld(vertex.position))) {
+					float len = Vector3f.sub(pos, vertex.position, null).length();
+					Vector2f minMax = comp.getMinMax();
+					Vector3f cl = new Vector3f();
+					comp.setAddedColorsToTerrain(true);
+					if (len < minMax.x) {
+						cl = new Vector3f(comp.getBiome().getColor());
+					} else if (len < minMax.y) {
+						Vector3f bcl = new Vector3f(comp.getBiome().getColor());
+						float fac = (len - minMax.x) / (minMax.y - minMax.x);
+						bcl.scale(1.0f - fac);
+						Vector3f prevC = new Vector3f(vertex.color);
+						prevC.scale(fac);
+						cl = new Vector3f(Vector3f.add(bcl, prevC, null));
+					}
+					if (cl.length() > 0f) {
+						cls[ptr * 3] = cl.x;
+						cls[ptr * 3 + 1] = cl.y;
+						cls[ptr * 3 + 2] = cl.z;
+					}
+					changes.add(ptr);
 				}
-				if (cl.length() > 0f) {
-					cls[ptr * 3] = cl.x;
-					cls[ptr * 3 + 1] = cl.y;
-					cls[ptr * 3 + 2] = cl.z;
-				}
-				changes.add(ptr);
 				ptr++;
 			}
-		}
+		} else
+			return;
 		List<Integer> ch = new ArrayList<>();
 		for (int c : changes) {
 			ptr = c;
@@ -145,6 +164,10 @@ public class Terrain implements SerializableWorldObject {
 		return new Vector3f(position.x - this.x, position.y, position.z - this.z);
 	}
 
+	private Vector3f posRelToWorld(Vector3f tposition) {
+		return new Vector3f(tposition.x + this.x, tposition.y, tposition.z + this.z);
+	}
+
 	private VAO initModel() {
 		heights = new float[VERTEX_COUNT][VERTEX_COUNT];
 		for (int i = 0; i < VERTEX_COUNT; i++)
@@ -156,8 +179,8 @@ public class Terrain implements SerializableWorldObject {
 		float[] vao_normals = new float[3 * count];
 		float[] vao_colors = new float[3 * count];
 		int vertexPointer = 0;
-		List<TerrainVertex> currentList = new ArrayList<>();
-		int prevIndex = 0;
+		List<TerrainVertex> currentList = null;
+		int prevIndex = -1;
 		for (int z = 0; z < VERTEX_COUNT; z++) {
 			for (int x = 0; x < VERTEX_COUNT; x++) {
 				vao_vertices[3 * vertexPointer] = ((float) x / ((float) VERTEX_COUNT - 1)) * SIZE;
@@ -320,8 +343,28 @@ public class Terrain implements SerializableWorldObject {
 		Vector3f posRelToTerrain = posRelToTerrain(position);
 		int x = (int) (posRelToTerrain.x / SIZE * (float) VERTEX_COUNT);
 		int z = (int) (posRelToTerrain.z / SIZE * (float) VERTEX_COUNT);
-		if(x < 0 || x >= VERTEX_COUNT || z < 0 || z >= VERTEX_COUNT)
+		if (x < 0 || x >= VERTEX_COUNT || z < 0 || z >= VERTEX_COUNT)
 			return new Vector3f(0, 1, 0);
 		return normals[x][z];
+	}
+
+	public void addRiverEnd(RiverEnd riverEnd) {
+		this.riverEnds.add(riverEnd);
+		boolean update = false;
+		for (Entity e : world.getEntities()) {
+			if (e.getBiomeSpreadComponent() != null && !e.getBiomeSpreadComponent().addedColorsToTerrain()) {
+				update = true;
+			}
+		}
+		if (update)
+			this.initColors(world.getEntities());
+	}
+
+	public List<RiverEnd> getRiverEnds() {
+		return riverEnds;
+	}
+
+	public void setWorld(World world) {
+		this.world = world;
 	}
 }

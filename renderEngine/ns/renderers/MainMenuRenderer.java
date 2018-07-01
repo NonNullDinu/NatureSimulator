@@ -2,6 +2,7 @@ package ns.renderers;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector4f;
 
 import ns.camera.ICamera;
 import ns.entities.Entity;
@@ -38,7 +39,8 @@ public class MainMenuRenderer {
 		shader.stop();
 		FBO.unbind();
 		guiRenderer.bind();
-		guiRenderer.batchRenderCall(new Vector2f(-0.8f, 0.0f), new Vector2f(0.4f, 1f), DNAFBO.getTex());
+		Vector4f dnaLoc = menu.getDnaLocation();
+		guiRenderer.batchRenderCall(new Vector2f(dnaLoc.x, dnaLoc.y), new Vector2f(dnaLoc.z, dnaLoc.w), DNAFBO.getTex());
 		for (MainMenuButton button : menu.getButtons())
 			guiRenderer.batchRenderCall(button.getCenter(), button.getScale(), button.getTex());
 		guiRenderer.unbind();

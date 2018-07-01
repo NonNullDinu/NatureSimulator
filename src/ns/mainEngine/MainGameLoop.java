@@ -118,11 +118,11 @@ public class MainGameLoop implements Runnable {
 			float distance = 2 * camera.getPosition().y;
 			camera.getPosition().y -= distance;
 			camera.invertPitch();
-			renderer.renderScene(world, camera, sun, new Vector4f(0, 1, 0, 2f), true);
+			renderer.renderScene(world, camera, sun, new Vector4f(0, 1, 0, 0.6f), true);
 			fbos.bindRefraction();
 			camera.getPosition().y += distance;
 			camera.invertPitch();
-			renderer.renderScene(world, camera, sun, new Vector4f(0, -1, 0, 0.7f), false);
+			renderer.renderScene(world, camera, sun, new Vector4f(0, -1, 0, 0.8f), false);
 			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 			sceneFBO.bind();
 			renderer.renderScene(world, camera, sun, new Vector4f(0, 0, 0, 0), false);
@@ -175,7 +175,7 @@ public class MainGameLoop implements Runnable {
 		GU.initMouseCursors(renderer);
 		executeRequests();
 		state = GS.MENU;
-		riverRenderer = new RiverRenderer(MasterRenderer.standardModels.get(1), camera.getProjectionMatrix());
+		riverRenderer = new RiverRenderer(camera.getProjectionMatrix());
 		GU.currentThread().finishLoading();
 		while (!SecondaryThread.READY || !ThirdThread.READY) {
 			executeRequests();
