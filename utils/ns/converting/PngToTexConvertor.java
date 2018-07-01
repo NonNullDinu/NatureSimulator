@@ -22,12 +22,13 @@ public class PngToTexConvertor {
 		String location = "";
 		for (int i = 0; i < len - 1; i++)
 			location += (char) buf[i];
-		if (location.equals("UPDATE ALL")) {
-			write(new File("gameData"));
-		} else {
-			File target = new File("gameData/" + location);
-			write(target);
-		}
+//		if (location.equals("UPDATE ALL")) {
+//			write(new File("gameData"));
+//		} else {
+		File target = new File(// "gameData/" +
+				location);
+		write(target);
+//		}
 	}
 
 	private static void write(File f) throws IOException {
@@ -45,15 +46,15 @@ public class PngToTexConvertor {
 					.withVersion(false).create().asInputStream());
 			int width = img.getWidth();
 			int height = img.getHeight();
-			int version = 3;
-			if (target.getName().equals("sun.tex") || target.getName().equals("tex4.tex")
-					|| target.getName().equals("tex6.tex") || target.getName().equals("tex8.tex")
-					|| target.getName().equals("mainMenu_Start.tex") || target.getName().equals("Z003.tex")
-					|| target.getName().equals("Caladea.tex")) // The ones mentioned here
-				// still
-				// have
-				// bugs with the .tex version 3
-				version = 4;
+			int version = 4;
+//			if (target.getName().equals("sun.tex") || target.getName().equals("tex4.tex")
+//					|| target.getName().equals("tex6.tex") || target.getName().equals("tex8.tex")
+//					|| target.getName().equals("mainMenu_Start.tex") || target.getName().equals("Z003.tex")
+//					|| target.getName().equals("Caladea.tex")) // The ones mentioned here
+//				// still
+//				// have
+//				// bugs with the .tex version 3
+//				version = 4;
 			output.writeVersion(version);
 			if (version == 1) {
 				PrintWriter writer = GU.open(output);

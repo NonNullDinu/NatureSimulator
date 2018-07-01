@@ -6,10 +6,12 @@ out vec4 frag_Color;
 
 uniform sampler2D tex;
 
+const vec3 transparency = vec3(1.0, 4.0 / 255.0, 214.0 / 255.0);
+
 void main(void){
 	frag_Color = texture(tex, in_texCoords);
 	if(frag_Color.a < 0.5)
 		discard;
-	if(dot(normalize(frag_Color.xyz * 2.0 - 1.0), normalize(vec3(1.0, 0.016, 0.839) * 2.0 - 1.0)) >= 0.99999)
+	if(dot(frag_Color.xyz * 2.0 - 1.0, transparency * 2.0 - 1.0) >= 0.9999999)
 		discard;
 }

@@ -21,7 +21,7 @@ import res.WritingResource;
 public class Initializer {
 	public static void main(String[] args) {
 		GU.path = (args.length == 0 ? System.getProperty("user.dir") : args[0]) + "/";
-		System.setProperty("org.lwjgl.librarypath", new File(GU.path + "lib/natives").getAbsolutePath());
+		System.setProperty("org.lwjgl.librarypath", GU.path + "lib/natives");
 		UncaughtExceptionHandler handler = new UncaughtExceptionHandler() {
 			@Override
 			public void uncaughtException(Thread t, Throwable e) {
@@ -72,6 +72,7 @@ public class Initializer {
 		};
 
 		ns.parallelComputing.Thread thread;
+		
 		thread = ThreadMaster.createThread(new MainGameLoop(), GU.MAIN_THREAD_NAME);
 		thread.setUncaughtExceptionHandler(handler);
 		thread.start();
