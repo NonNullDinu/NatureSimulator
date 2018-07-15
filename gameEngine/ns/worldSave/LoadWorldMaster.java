@@ -4,7 +4,7 @@ import ns.world.World;
 import ns.worldSave.NSSV1000.NSSV1000File;
 import ns.worldSave.NSSV1100.NSSV1100File;
 import ns.worldSave.NSSV1200.NSSV1200File;
-import res.Resource;
+import resources.Resource;
 
 public class LoadWorldMaster {
 	public static World loadWorld(Resource res) {

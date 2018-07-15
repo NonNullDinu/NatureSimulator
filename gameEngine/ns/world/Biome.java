@@ -14,13 +14,14 @@ public enum Biome {
 		@Override
 		public boolean accept(Terrain terrain, Vector3f point) {
 			List<RiverEnd> riverEnds = terrain.getRiverEnds();
-			for(RiverEnd riverEnd : riverEnds) {
-				if(Vector3f.sub(point, riverEnd.getPosition(), null).length() < 150f)
+			for (RiverEnd riverEnd : riverEnds) {
+				if (Vector3f.sub(point, riverEnd.getPosition(), null).length() < 150f)
 					return true;
 			}
 			return false;
 		}
-	}), SNOW_LANDS(3, new Vector3f(0.9f, 0.9f, 0.9f), null),;
+	}), SNOW_LANDS(3, new Vector3f(0.9f, 0.9f, 0.9f), null), GRASS_LAND(4, new Vector3f(0f, 0.9f, 0f), null),
+	RIVER_LAND(5, new Vector3f(0.722f, 0.639f, 0.102f), null),;
 
 	protected int biomeId;
 	protected Vector3f color;
@@ -45,12 +46,9 @@ public enum Biome {
 	}
 
 	public static Biome get(int id) {
-		if (id == FOREST.biomeId)
-			return FOREST;
-		else if (id == SWAMP.biomeId)
-			return SWAMP;
-		else if (id == SNOW_LANDS.biomeId)
-			return SNOW_LANDS;
+		for (Biome b : Biome.values())
+			if (id == b.biomeId)
+				return b;
 		return null;
 	}
 

@@ -7,10 +7,10 @@ import java.nio.ByteBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL10;
 
+import data.GameData;
 import ns.exceptions.LoadingException;
 import ns.openALObjects.Buffer;
 import ns.utils.GU;
-import res.Resource;
 
 public class AudFile implements File {
 	private String location;
@@ -22,7 +22,7 @@ public class AudFile implements File {
 	@Override
 	public Buffer load() throws LoadingException {
 		int id = AL10.alGenBuffers();
-		BufferedReader reader = GU.open(new Resource().withLocation(location).withVersion(false).create());
+		BufferedReader reader = GU.open(GameData.getResourceAt(location));
 		String line;
 		try {
 			line = reader.readLine();

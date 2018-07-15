@@ -9,7 +9,7 @@ import ns.utils.MousePicker;
 import ns.world.World;
 import ns.world.WorldGenerator;
 import ns.worldSave.SaveWorldMaster;
-import res.WritingResource;
+import resources.WritingResource;
 
 public class ThirdThread implements Runnable {
 	public static boolean READY = false;

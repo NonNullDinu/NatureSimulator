@@ -83,10 +83,10 @@ public class Blueprint implements SerializableWorldObject {
 
 	public Blueprint withDefaultCustomColors() {
 		List<Vector3f> cc = new ArrayList<>();
-		if (objectName.equals("1000") || objectName.equals("1001") || objectName.equals("1002")) {
-			cc.add(new Vector3f(0f, 0.750769f, 0f));
-		}
-		else if(objectName.equals("1004")) {
+		if (objectName.equals("1000") || objectName.equals("1001") || objectName.equals("1002")
+				|| objectName.equals("1006") || objectName.equals("1010")) {
+			cc.add(new Vector3f(0f, 0.6f, 0f));
+		} else if (objectName.equals("1004") || objectName.equals("1005")) {
 			cc.add(new Vector3f(0.002494f, 0.350834f, 0.000000f));
 			cc.add(new Vector3f(0.000000f, 0.307499f, 0.002174f));
 		}
@@ -101,11 +101,11 @@ public class Blueprint implements SerializableWorldObject {
 		case 1: // Movement and biome spread 1
 			MovementComponent mvm = getMovement();
 			int front2 = 0;
-			if(mvm != null)
+			if (mvm != null)
 				front2 = mvm.getConfig();
 			BiomeSpreadComponent comp = getBiomeSpread();
 			int back = 0;
-			if(comp != null)
+			if (comp != null)
 				back = comp.getBiome().getId();
 			return (front2 << 4) | back;
 		case 2: // Biome spread part 2

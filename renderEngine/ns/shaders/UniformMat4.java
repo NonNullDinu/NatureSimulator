@@ -10,8 +10,8 @@ public class UniformMat4 extends UniformVar {
 	
 	private static final FloatBuffer matrix = BufferUtils.createFloatBuffer(16);
 	
-	public UniformMat4(int location) {
-		super(location);
+	public UniformMat4(String name) {
+		super(name);
 	}
 	
 	public void load(Matrix4f value) {

@@ -2,6 +2,7 @@ package ns.entities;
 
 import org.lwjgl.util.vector.Vector3f;
 
+import ns.components.BiomeSpreadComponent;
 import ns.components.Blueprint;
 import ns.components.CustomColorsComponent;
 import ns.openglObjects.VAO;
@@ -64,7 +65,7 @@ public class Entity implements SerializableWorldObject {
 		this.rotZ += dz;
 	}
 
-	public ns.components.BiomeSpreadComponent getBiomeSpreadComponent() {
+	public BiomeSpreadComponent getBiomeSpreadComponent() {
 		return blueprint.getBiomeSpread();
 	}
 	

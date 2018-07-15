@@ -1,8 +1,8 @@
 package ns.options;
 
+import data.GameData;
 import ns.ui.loading.UILoader;
 import ns.utils.GU;
-import res.Resource;
 
 public class OptionsMaster {
 	public static Options createOptions() {
@@ -17,6 +17,6 @@ public class OptionsMaster {
 		while (GU.Z003 == null && GU.caladea == null)
 			Thread.yield();
 		return (Options) UILoader
-				.load(new Resource().withLocation("gameData/uiResources/xml/Options.xml").create().asInputStream());
+				.load(GameData.getResourceAt("uiResources/xml/Options.xml").asInputStream());
 	}
 }

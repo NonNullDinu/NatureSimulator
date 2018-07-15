@@ -6,6 +6,7 @@ import java.util.Random;
 
 import org.lwjgl.util.vector.Vector3f;
 
+import data.SaveData;
 import ns.components.Blueprint;
 import ns.components.BlueprintCreator;
 import ns.entities.Entity;
@@ -13,15 +14,14 @@ import ns.parallelComputing.SetRequest;
 import ns.terrain.Terrain;
 import ns.utils.GU;
 import ns.worldSave.LoadWorldMaster;
-import res.Resource;
+import resources.Resource;
 
 public class WorldGenerator {
 	public static World generatedWorld = null;
 	private static final float TS = Terrain.SIZE / 2f;
 
 	public static World generateWorld() {
-		Resource resource = new Resource().withLocation("saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT)
-				.withVersion(true).create();
+		Resource resource = SaveData.getResourceAt("save0." + GU.WORLD_SAVE_FILE_FORMAT, true);
 		if (resource.exists()) {
 			generatedWorld = LoadWorldMaster.loadWorld(resource);
 			generatedWorld.getTerrain().initColors(generatedWorld.getEntities());

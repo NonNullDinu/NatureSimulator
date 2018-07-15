@@ -19,6 +19,7 @@ public class WaterParticle implements Serializable {
 	private boolean reachedBaseLake;
 
 	private Vector3f[] prevPos = new Vector3f[River.COUNT];
+	protected final int idx;
 
 	private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.defaultReadObject();
@@ -29,12 +30,13 @@ public class WaterParticle implements Serializable {
 		}
 	}
 
-	public WaterParticle(Vector3f position) {
+	public WaterParticle(Vector3f position, int idx) {
 		this.position = position;
 		this.size = 0f;
 		this.velocity = new Vector2f();
 		for(int i = 0; i < prevPos.length; i++)
 			prevPos[i] = new Vector3f(position);
+		this.idx = idx;
 	}
 
 	public boolean update(Terrain terrain, float sourceHeight) {

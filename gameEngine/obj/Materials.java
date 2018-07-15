@@ -9,7 +9,7 @@ import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 import ns.utils.GU;
-import res.Resource;
+import resources.Resource;
 
 public class Materials extends ArrayList<Material> {
 	private static final long serialVersionUID = -4711987157168197781L;

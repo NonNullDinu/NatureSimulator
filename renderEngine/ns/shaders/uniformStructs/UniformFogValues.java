@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.lwjgl.util.vector.Vector2f;
 
+import ns.shaders.UniformFloat;
 import ns.shaders.UniformLocator;
 import ns.shaders.UniformVar;
 
@@ -16,8 +17,8 @@ public class UniformFogValues extends UniformStruct {
 
 	private static List<UniformVar> getAttributes(String name, UniformLocator locator) {
 		List<UniformVar> attributes = new ArrayList<>();
-		attributes.add(locator.locateUniformFloat(name + ".density", false));
-		attributes.add(locator.locateUniformFloat(name + ".gradient", false));
+		attributes.add(new UniformFloat(name + ".density"));
+		attributes.add(new UniformFloat(name + ".gradient"));
 		return attributes;
 	}
 	

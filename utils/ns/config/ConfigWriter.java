@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import ns.utils.GU;
-import res.WritingResource;
+import resources.WritingResource;
 
 public class ConfigWriter {
 

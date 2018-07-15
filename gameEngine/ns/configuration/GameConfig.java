@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import res.Resource;
+import data.GameData;
 
 public class GameConfig {
 	public static final int FULLSCREEN = 0;
@@ -15,7 +15,7 @@ public class GameConfig {
 	protected static final int TOTAL = 1;
 
 	static {
-		ConfigInputStream inp = new ConfigInputStream(new Resource().withLocation("config/gameConfiguration.config")
+		ConfigInputStream inp = new ConfigInputStream(GameData.getResourceAt("config/gameConfiguration.config")
 				.withVersion(false).create().asInputStream());
 		try {
 			inp.readTo(configuration);

@@ -14,7 +14,6 @@ public class VBOUpdateRequest extends Request {
 	private int dimensions;
 
 	public VBOUpdateRequest(VAO model, int attn, float[] data, List<Integer> changes, int dimensions) {
-		super("update vbo", null);
 		this.model = model;
 		this.attn = attn;
 		this.data = data;

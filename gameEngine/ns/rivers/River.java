@@ -17,7 +17,7 @@ import ns.world.World;
 public class River implements Serializable {
 	private static final long serialVersionUID = 3885806111259199169L;
 
-	protected static final int COUNT = 15;
+	protected static final int COUNT = 30;
 	private List<WaterParticle> waterParticles = new ArrayList<>();
 	private Vector3f source;
 	private int cnt;
@@ -25,6 +25,7 @@ public class River implements Serializable {
 	private RiverEnd riverEnd;
 	private transient boolean addEnd;
 	private transient boolean dec;
+	private int idx;
 
 	private int sub;
 
@@ -51,7 +52,7 @@ public class River implements Serializable {
 		else
 			cnt++;
 		if (cnt == 0 || cnt == COUNT) {
-			waterParticles.add(new WaterParticle(new Vector3f(source)));
+			waterParticles.add(new WaterParticle(new Vector3f(source), idx++));
 			dec = cnt == COUNT;
 		}
 		Terrain terrain = world.getTerrain();
@@ -118,7 +119,7 @@ public class River implements Serializable {
 			list3.add(currentPos.z - pos.z * size * 2);
 		}
 		sub = 0;
-		final float wave = 0.2f * (float) cnt / (float) COUNT;
+		final float wave = 0.1f * (float) cnt / (float) COUNT;
 		for (int i = 1; i < waterParticles.size(); i++) {
 			current = waterParticles.get(i);
 			if (current.getVelocity().length() != 0 && currentPos.length() != 0) {
@@ -127,17 +128,18 @@ public class River implements Serializable {
 				vel = new Vector3f(current.getVelocity().x, current.deltaY(), current.getVelocity().y);
 				Vector3f.cross(vel, UP, pos);
 				size = current.getSize();
+				boolean b = current.idx % 2 == 0;
 				pos.normalise();
 				list1.add(currentPos.x + pos.x * size);
-				list1.add(currentPos.y + riverHeight + (i % 2 == 0 ? (wave) : (-wave)));
+				list1.add(currentPos.y + riverHeight + size * (b ? (wave) : (-wave)));
 				list1.add(currentPos.z + pos.z * size);
 
 				list1.add(currentPos.x - pos.x * size);
-				list1.add(currentPos.y + riverHeight + (i % 2 == 0 ? (wave) : (-wave)));
+				list1.add(currentPos.y + riverHeight + size * (b ? (wave) : (-wave)));
 				list1.add(currentPos.z - pos.z * size);
 
 				list2.add(currentPos.x + pos.x * size);
-				list2.add(currentPos.y + riverHeight + (i % 2 == 0 ? (wave) : (-wave)));
+				list2.add(currentPos.y + riverHeight + size * (b ? (wave) : (-wave)));
 				list2.add(currentPos.z + pos.z * size);
 
 				list2.add(currentPos.x + pos.x * size * 2);
@@ -145,7 +147,7 @@ public class River implements Serializable {
 				list2.add(currentPos.z + pos.z * size * 2);
 
 				list3.add(currentPos.x - pos.x * size);
-				list3.add(currentPos.y + riverHeight + (i % 2 == 0 ? (wave) : (-wave)));
+				list3.add(currentPos.y + riverHeight + size * (b ? (wave) : (-wave)));
 				list3.add(currentPos.z - pos.z * size);
 
 				list3.add(currentPos.x - pos.x * size * 2);

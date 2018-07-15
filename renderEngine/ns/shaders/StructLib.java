@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ns.utils.GU;
-import res.Resource;
+import resources.Resource;
 
 public class StructLib {
 	private static Map<String, String> structs = new HashMap<>();

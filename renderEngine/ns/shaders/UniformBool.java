@@ -4,8 +4,8 @@ import org.lwjgl.opengl.GL20;
 
 public class UniformBool extends UniformVar {
 
-	public UniformBool(int location) {
-		super(location);
+	public UniformBool(String name) {
+		super(name);
 	}
 	
 	public void load(boolean value) {

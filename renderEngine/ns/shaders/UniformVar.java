@@ -12,29 +12,18 @@ public abstract class UniformVar {
 	protected static final int TYPE_LIGHT = 9;
 
 	protected int location;
+	private String name;
 
-	public UniformVar(int location) {
+	public UniformVar(int location, String name) {
 		this.location = location;
+		this.name = name;
 	}
 
-	public static UniformVar createVar(int type, int location) {
-		if (type == TYPE_FLOAT)
-			return new UniformFloat(location);
-		else if (type == TYPE_VEC2)
-			return new UniformVec2(location);
-		else if (type == TYPE_VEC3)
-			return new UniformVec3(location);
-		else if (type == TYPE_VEC4)
-			return new UniformVec4(location);
-		else if (type == TYPE_MAT4)
-			return new UniformMat4(location);
-		else if (type == TYPE_INT)
-			return new UniformInt(location);
-		else if (type == TYPE_BOOL)
-			return new UniformBool(location);
-		else if (type == TYPE_SAMPLER_2D)
-			return new UniformSampler2D(location);
-		else
-			return null;
+	public UniformVar(String name) {
+		this.name = name;
+	}
+
+	public void loadLocation(UniformLocator locator) {
+		this.location = locator.getLocation(name);
 	}
 }

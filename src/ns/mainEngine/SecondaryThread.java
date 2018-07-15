@@ -3,6 +3,7 @@ package ns.mainEngine;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
+import data.GameData;
 import ns.customFileFormat.TexFile;
 import ns.derrivedOpenGLObjects.FlareTexture;
 import ns.entities.Light;
@@ -24,7 +25,6 @@ import ns.utils.GU;
 import ns.utils.GU.Random;
 import ns.water.WaterTile;
 import ns.world.WorldGenerator;
-import res.Resource;
 
 public class SecondaryThread implements Runnable {
 	public static boolean READY = false;
@@ -32,7 +32,8 @@ public class SecondaryThread implements Runnable {
 	@Override
 	public void run() {
 		MasterRenderer.initStandardModels();
-		StructLib.load(new Resource().withLocation("shaders/structlib.glsl").withVersion(false).create());
+		GU.currentThread().waitForDisplayInit();
+		StructLib.load(GameData.getResourceAt("shaders/structlib.glsl"));
 		ShaderLib.loadAll();
 		ModelsLibrary.getModel("models/1000/tree.mdl");
 		ModelsLibrary.getModel("models/1001/tree.mdl");

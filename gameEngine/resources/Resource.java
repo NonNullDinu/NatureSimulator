@@ -1,4 +1,4 @@
-package res;
+package resources;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,13 +8,22 @@ import java.io.InputStream;
 import ns.utils.GU;
 
 public class Resource {
+	
 	private String location;
 	private InputStream asInputStream;
 	private boolean exists;
 	private int ver;
 	private boolean hasVersion;
 
-	public Resource() {
+	private Resource() {
+	}
+	
+	public static Resource create(String location) {
+		return new Resource().withLocation(location).create();
+	}
+	
+	public static Resource create(String location, boolean version) {
+		return new Resource().withLocation(location).withVersion(version).create();
 	}
 
 	public Resource withLocation(String location) {
@@ -31,13 +40,7 @@ public class Resource {
 		try {
 			this.asInputStream = new FileInputStream(GU.path + location);
 			exists = true;
-		} catch (FileNotFoundException e1) {
-			try {
-				this.asInputStream = new FileInputStream(GU.path + "gameData/" + location);
-				exists = true;
-			} catch (FileNotFoundException e) {
-				exists = false;
-			}
+		} catch (FileNotFoundException e) {
 		}
 		if (this.exists && this.hasVersion) {
 			try {

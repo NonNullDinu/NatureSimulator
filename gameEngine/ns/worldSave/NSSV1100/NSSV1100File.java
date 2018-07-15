@@ -14,7 +14,7 @@ import ns.worldSave.EndObject;
 import ns.worldSave.EntityData;
 import ns.worldSave.NSSVFile;
 import ns.worldSave.TerrainData;
-import res.Resource;
+import resources.Resource;
 
 public class NSSV1100File extends NSSVFile {
 

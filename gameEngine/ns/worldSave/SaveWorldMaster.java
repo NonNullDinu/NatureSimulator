@@ -6,7 +6,7 @@ import java.io.ObjectOutputStream;
 import ns.entities.Entity;
 import ns.utils.GU;
 import ns.world.World;
-import res.WritingResource;
+import resources.WritingResource;
 
 public class SaveWorldMaster {
 	public static void save(World world, WritingResource resource) {

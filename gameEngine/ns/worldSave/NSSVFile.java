@@ -5,7 +5,7 @@ import java.io.InputStream;
 import ns.customFileFormat.File;
 import ns.exceptions.LoadingException;
 import ns.world.World;
-import res.Resource;
+import resources.Resource;
 
 public abstract class NSSVFile implements File {
 	private Resource resource;

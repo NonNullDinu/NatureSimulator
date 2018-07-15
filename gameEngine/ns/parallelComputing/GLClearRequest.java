@@ -9,7 +9,6 @@ public class GLClearRequest extends Request {
 	private Vector3f color;
 
 	public GLClearRequest(int mask, Vector3f color) {
-		super("clear", new Object[] { color });
 		this.mask = mask;
 		this.color = color;
 	}

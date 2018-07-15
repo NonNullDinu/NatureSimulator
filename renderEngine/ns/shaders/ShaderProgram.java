@@ -55,6 +55,7 @@ public abstract class ShaderProgram implements IOpenGLObject {
 			String[] lineParts = s.split(" ");
 			if (lineParts[lineParts.length - 1].equals(name + ";")) {
 				declarationLine = s;
+				break;
 			}
 		}
 		if (declarationLine == null)
@@ -136,5 +137,35 @@ public abstract class ShaderProgram implements IOpenGLObject {
 	
 	public boolean isCreated() {
 		return created;
+	}
+	
+	public void storeUniforms(UniformVar... vars) {
+		for(UniformVar var : vars) {
+			var.loadLocation(locator);
+		}
+	}
+
+	public String getDeclarationParticleForArray(String name) {
+		String[] src = this.src.toString().split("\n");
+		for (String s : src) {
+			String[] lineParts = s.split(" ");
+			String decl = lineParts[lineParts.length - 1];
+			if (decl.startsWith(name + "[") && decl.endsWith("];")) {
+				return decl;
+			}
+		}
+		return null;
+	}
+
+	public String getDeclarationLineForArray(String name) {
+		String[] src = this.src.toString().split("\n");
+		for (String s : src) {
+			String[] lineParts = s.split(" ");
+			String decl = lineParts[lineParts.length - 1];
+			if (decl.startsWith(name + "[") && decl.endsWith("];")) {
+				return s;
+			}
+		}
+		return null;
 	}
 }

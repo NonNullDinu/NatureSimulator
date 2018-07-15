@@ -10,12 +10,13 @@ import java.util.List;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
+import data.GameData;
 import ns.exceptions.CorruptException;
 import ns.exceptions.LoadingException;
 import ns.openglObjects.Texture;
 import ns.parallelComputing.TextureCreateRequest;
 import ns.utils.GU;
-import res.Resource;
+import resources.Resource;
 
 public class TexFile implements File {
 	private String location;
@@ -26,7 +27,7 @@ public class TexFile implements File {
 
 	@Override
 	public Texture load() throws LoadingException {
-		Resource resource = new Resource().withLocation(location).withVersion(true).create();
+		Resource resource = GameData.getResourceAt(location, true);
 		int id = 0;
 		int width = 0;
 		int height = 0;

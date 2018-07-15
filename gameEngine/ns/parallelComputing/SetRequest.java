@@ -7,7 +7,6 @@ public class SetRequest extends Request {
 	private Object o;
 
 	public SetRequest(Object o) {
-		super("set " + o.getClass().getName(), null);
 		this.o = o;
 	}
 

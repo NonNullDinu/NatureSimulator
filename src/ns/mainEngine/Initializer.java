@@ -1,5 +1,7 @@
 package ns.mainEngine;
 
+import static java.lang.System.getProperty;
+
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -7,13 +9,12 @@ import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import static java.lang.System.*;
 
 import ns.parallelComputing.ThreadMaster;
 import ns.utils.GU;
 import ns.world.WorldGenerator;
 import ns.worldSave.SaveWorldMaster;
-import res.WritingResource;
+import resources.WritingResource;
 
 /**
  * @version 1.3.1

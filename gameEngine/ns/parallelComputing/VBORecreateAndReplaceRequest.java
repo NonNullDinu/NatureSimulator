@@ -11,7 +11,6 @@ public class VBORecreateAndReplaceRequest extends Request {
 	private int usage;
 
 	public VBORecreateAndReplaceRequest(VAO model, int attn, float[] data, int usage) {
-		super("recreate and replace vao", null);
 		this.model = model;
 		this.attn = attn;
 		this.data = data;

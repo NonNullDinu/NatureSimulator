@@ -5,8 +5,8 @@ import org.lwjgl.util.vector.Vector4f;
 
 public class UniformVec4 extends UniformVar {
 
-	public UniformVec4(int location) {
-		super(location);
+	public UniformVec4(String name) {
+		super(name);
 	}
 	
 	public void load(Vector4f value) {

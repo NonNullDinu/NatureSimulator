@@ -90,7 +90,7 @@ public class VAOLoader {
 			return new VAO(vaoId, vertexCount, current, hasIndices);
 		} else {
 			VAO target = new VAO();
-			GU.sendRequestToMainThread(new CreateAndPackVAORequest("create and pack vao", data, target));
+			GU.sendRequestToMainThread(new CreateAndPackVAORequest(data, target));
 			return target;
 		}
 	}

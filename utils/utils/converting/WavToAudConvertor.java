@@ -1,4 +1,4 @@
-package ns.converting;
+package utils.converting;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
 
 import org.lwjgl.util.WaveData;
 
-import res.Resource;
+import resources.Resource;
 
 public class WavToAudConvertor {
 
@@ -22,7 +22,7 @@ public class WavToAudConvertor {
 		System.out.println("resources/" + location.replace(".wav", ".aud"));
 		target.createNewFile();
 		BufferedWriter writer = new BufferedWriter(new FileWriter(target));
-		WaveData data = WaveData.create(new Resource().withLocation(location).withVersion(false).create().asInputStream());
+		WaveData data = WaveData.create(Resource.create(location).asInputStream());
 		int format = data.format;
 		ByteBuffer bufferData = data.data;
 		int samplerate = data.samplerate;

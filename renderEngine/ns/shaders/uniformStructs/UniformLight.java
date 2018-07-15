@@ -6,6 +6,8 @@ import java.util.List;
 import ns.entities.Light;
 import ns.shaders.UniformLocator;
 import ns.shaders.UniformVar;
+import ns.shaders.UniformVec2;
+import ns.shaders.UniformVec3;
 
 public class UniformLight extends UniformStruct {
 
@@ -19,9 +21,9 @@ public class UniformLight extends UniformStruct {
 
 	private static List<UniformVar> getAttributes(String name, UniformLocator locator) {
 		List<UniformVar> attributes = new ArrayList<>();
-		attributes.add(locator.locateUniformVec3(name + ".direction", false));
-		attributes.add(locator.locateUniformVec3(name + ".color", false));
-		attributes.add(locator.locateUniformVec2(name + ".bias", false));
+		attributes.add(new UniformVec3(name + ".direction"));
+		attributes.add(new UniformVec3(name + ".color"));
+		attributes.add(new UniformVec2(name + ".bias"));
 		return attributes;
 	}
 }

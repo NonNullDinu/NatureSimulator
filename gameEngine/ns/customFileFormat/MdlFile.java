@@ -8,6 +8,7 @@ import java.util.List;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
+import data.GameData;
 import ns.exceptions.LoadingException;
 import ns.openglObjects.VAO;
 import ns.openglWorkers.VAOLoader;
@@ -15,7 +16,7 @@ import ns.openglWorkers.VBOData;
 import ns.utils.GU;
 import obj.ByteMaterial;
 import obj.ByteMaterials;
-import res.Resource;
+import resources.Resource;
 
 public class MdlFile implements File {
 	private String location;
@@ -26,7 +27,7 @@ public class MdlFile implements File {
 
 	@Override
 	public VAO load() throws LoadingException {
-		Resource resource = new Resource().withLocation(location).withVersion(true).create();
+		Resource resource = GameData.getResourceAt(location, true);
 		InputStream ins = resource.asInputStream();
 		byte[] data;
 		try {
@@ -47,9 +48,9 @@ public class MdlFile implements File {
 			List<Byte> bytes = new ArrayList<>();
 			int ptr = 8;
 			ByteMaterials materials = null;
-			if (data[8] == 109) {
+			if (data[8] == 0x7F) {
 				ptr++;
-				while (data[ptr] != 109)
+				while (data[ptr] != 0x7F)
 					bytes.add(data[ptr++]);
 				materials = new ByteMaterials(bytes);
 				ptr++;

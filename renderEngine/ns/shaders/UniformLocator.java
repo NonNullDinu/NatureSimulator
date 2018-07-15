@@ -6,68 +6,83 @@ public final class UniformLocator {
 	public UniformLocator(ShaderProgram program) {
 		this.program = program;
 	}
-	
-	public UniformFloat locateUniformFloat(String name) {
-		return (UniformFloat) UniformVar.createVar(program.variableType(name), program.getLocation(name));
-	}
-	
-	public UniformVec2 locateUniformVec2(String name) {
-		return (UniformVec2) UniformVar.createVar(program.variableType(name), program.getLocation(name));
-	}
-	
-	public UniformVec3 locateUniformVec3(String name) {
-		return (UniformVec3) UniformVar.createVar(program.variableType(name), program.getLocation(name));
-	}
-	
-	public UniformVec4 locateUniformVec4(String name) {
-		return (UniformVec4) UniformVar.createVar(program.variableType(name), program.getLocation(name));
-	}
-	
-	public UniformMat4 locateUniformMat4(String name) {
-		return (UniformMat4) UniformVar.createVar(program.variableType(name), program.getLocation(name));
-	}
-	
-	public UniformInt locateUniformInt(String name) {
-		return (UniformInt) UniformVar.createVar(program.variableType(name), program.getLocation(name));
-	}
-	
-	public UniformBool locateUniformBool(String name) {
-		return (UniformBool) UniformVar.createVar(program.variableType(name), program.getLocation(name));
+
+	public int getLocation(String name) {
+		return program.getLocation(name);
 	}
 
-	public UniformSampler2D locateUniformSampler2D(String name) {
-		return (UniformSampler2D) UniformVar.createVar(program.variableType(name), program.getLocation(name));
-	}
-	
-	public UniformFloat locateUniformFloat(String name, boolean typeCheck) {
-		return (UniformFloat) UniformVar.createVar((typeCheck ? program.variableType(name) : UniformVar.TYPE_FLOAT), program.getLocation(name));
-	}
-	
-	public UniformVec2 locateUniformVec2(String name, boolean typeCheck) {
-		return (UniformVec2) UniformVar.createVar((typeCheck ? program.variableType(name) : UniformVar.TYPE_VEC2), program.getLocation(name));
-	}
-	
-	public UniformVec3 locateUniformVec3(String name, boolean typeCheck) {
-		return (UniformVec3) UniformVar.createVar((typeCheck ? program.variableType(name) : UniformVar.TYPE_VEC3), program.getLocation(name));
-	}
-	
-	public UniformVec4 locateUniformVec4(String name, boolean typeCheck) {
-		return (UniformVec4) UniformVar.createVar((typeCheck ? program.variableType(name) : UniformVar.TYPE_VEC4), program.getLocation(name));
-	}
-	
-	public UniformMat4 locateUniformMat4(String name, boolean typeCheck) {
-		return (UniformMat4) UniformVar.createVar((typeCheck ? program.variableType(name) : UniformVar.TYPE_MAT4), program.getLocation(name));
-	}
-	
-	public UniformInt locateUniformInt(String name, boolean typeCheck) {
-		return (UniformInt) UniformVar.createVar((typeCheck ? program.variableType(name) : UniformVar.TYPE_INT), program.getLocation(name));
-	}
-	
-	public UniformBool locateUniformBool(String name, boolean typeCheck) {
-		return (UniformBool) UniformVar.createVar((typeCheck ? program.variableType(name) : UniformVar.TYPE_BOOL), program.getLocation(name));
-	}
-
-	public UniformSampler2D locateUniformSampler2D(String name, boolean typeCheck) {
-		return (UniformSampler2D) UniformVar.createVar((typeCheck ? program.variableType(name) : UniformVar.TYPE_SAMPLER_2D), program.getLocation(name));
+	@SuppressWarnings("unchecked")
+	public <T extends UniformVar> T[] getArrayLocation(String name) {
+		String declLine = program.getDeclarationLineForArray(name);
+		String[] pts = declLine.split(" ");
+		String decl = pts[pts.length - 1];
+		decl = decl.replace(name + "[", "").replace("];", "");
+		int elemCnt = Integer.parseInt(decl);
+		T[] vars = null;
+		int ind = 0;
+		switch (pts[pts.length - 2]) {
+		case "float":
+			vars = (T[]) new UniformFloat[elemCnt];
+			ind = 0;
+			break;
+		case "vec2":
+			vars = (T[]) new UniformVec2[elemCnt];
+			ind = 1;
+			break;
+		case "vec3":
+			vars = (T[]) new UniformVec3[elemCnt];
+			ind = 2;
+			break;
+		case "vec4":
+			vars = (T[]) new UniformVec4[elemCnt];
+			ind = 3;
+			break;
+		case "mat4":
+			vars = (T[]) new UniformMat4[elemCnt];
+			ind = 4;
+			break;
+		case "int":
+			vars = (T[]) new UniformInt[elemCnt];
+			ind = 5;
+			break;
+		case "bool":
+			vars = (T[]) new UniformBool[elemCnt];
+			ind = 6;
+			break;
+		case "sampler2D":
+			vars = (T[]) new UniformSampler2D[elemCnt];
+			ind = 7;
+			break;
+		}
+		for (int i = 0; i < elemCnt; i++) {
+			switch (ind) {
+			case 0:
+				vars[i] = (T) new UniformFloat(name + "[" + i + "]");
+				break;
+			case 1:
+				vars[i] = (T) new UniformVec2(name + "[" + i + "]");
+				break;
+			case 2:
+				vars[i] = (T) new UniformVec3(name + "[" + i + "]");
+				break;
+			case 3:
+				vars[i] = (T) new UniformVec4(name + "[" + i + "]");
+				break;
+			case 4:
+				vars[i] = (T) new UniformMat4(name + "[" + i + "]");
+				break;
+			case 5:
+				vars[i] = (T) new UniformInt(name + "[" + i + "]");
+				break;
+			case 6:
+				vars[i] = (T) new UniformBool(name + "[" + i + "]");
+				break;
+			case 7:
+				vars[i] = (T) new UniformSampler2D(name + "[" + i + "]");
+				break;
+			}
+			vars[i].loadLocation(this);
+		}
+		return vars;
 	}
 }

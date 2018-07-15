@@ -11,8 +11,8 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import ns.utils.GU;
-import res.Resource;
-import res.WritingResource;
+import resources.Resource;
+import resources.WritingResource;
 
 public class PngToTexConvertor {
 	public static void main(String[] args) throws IOException {
@@ -42,8 +42,7 @@ public class PngToTexConvertor {
 			target.createNewFile();
 			WritingResource output = new WritingResource().withLocation(target.getPath()).create();
 			OutputStream outStr = output.asOutputStream();
-			BufferedImage img = ImageIO.read(new Resource().withLocation(f.getPath().replace("gameData/", ""))
-					.withVersion(false).create().asInputStream());
+			BufferedImage img = ImageIO.read(Resource.create(f.getPath().replace("gameData/", "")).asInputStream());
 			int width = img.getWidth();
 			int height = img.getHeight();
 			int version = 4;

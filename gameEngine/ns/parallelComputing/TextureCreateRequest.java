@@ -12,7 +12,6 @@ public class TextureCreateRequest extends Request {
 	private ByteBuffer pixels;
 
 	public TextureCreateRequest(Texture target, ByteBuffer pixels) {
-		super("create texture", null);
 		this.target = target;
 		this.pixels = pixels;
 	}

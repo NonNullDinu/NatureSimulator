@@ -2,14 +2,16 @@ package ns.shaders.uniformStructs;
 
 import java.util.List;
 
+import ns.shaders.UniformLocator;
 import ns.shaders.UniformVar;
 
-public abstract class UniformStruct {
+public abstract class UniformStruct extends UniformVar {
 
 	private String name;
 	private List<UniformVar> attributes;
 
 	public UniformStruct(String name, List<UniformVar> attributes) {
+		super(-1, name);
 		this.name = name;
 		this.attributes = attributes;
 	}
@@ -30,5 +32,11 @@ public abstract class UniformStruct {
 		for (int i = 0; i < itn; i++) {
 			values[i].loadTo(attributes.get(i));
 		}
+	}
+
+	@Override
+	public void loadLocation(UniformLocator locator) {
+		for (UniformVar attribute : attributes)
+			attribute.loadLocation(locator);
 	}
 }

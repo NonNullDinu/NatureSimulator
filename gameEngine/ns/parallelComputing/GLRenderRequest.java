@@ -9,7 +9,6 @@ public class GLRenderRequest extends Request {
 	private RenderMethod renderMethod;
 
 	public GLRenderRequest(RenderMethod renderMethod) {
-		super("render", null);
 		this.renderMethod = renderMethod;
 	}
 

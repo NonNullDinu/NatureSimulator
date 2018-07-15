@@ -1,7 +1,6 @@
 package ns.utils;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
@@ -22,6 +21,9 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
+import data.GameData;
+import data.SaveData;
+import ns.components.Blueprint;
 import ns.components.BlueprintCreator;
 import ns.fontMeshCreator.FontType;
 import ns.openglObjects.FBO;
@@ -30,8 +32,8 @@ import ns.parallelComputing.Request;
 import ns.parallelComputing.Thread;
 import ns.parallelComputing.ThreadMaster;
 import ns.renderers.MasterRenderer;
-import res.Resource;
-import res.WritingResource;
+import resources.Resource;
+import resources.WritingResource;
 
 public class GU {
 	public static final Random random = new Random();
@@ -40,7 +42,7 @@ public class GU {
 	public static float lastFramesLengths;
 	private static float[] mouseLengths = new float[20];
 	public static final List<Texture> textures = new ArrayList<>();
-	public static final int TOTAL_NUMBER_OF_ENTITIES = 5;
+	public static final int TOTAL_NUMBER_OF_ENTITIES = 13;
 	public static final int CURRENT_WORLD_FILE_VERSION = 3;
 	public static final String WORLD_SAVE_FILE_FORMAT = "nssv";
 	public static final String MAIN_THREAD_NAME = "main thread";
@@ -49,6 +51,11 @@ public class GU {
 	public static FontType caladea;
 	public static String path;
 	private static ByteBuffer buffer = ByteBuffer.allocate(4);
+	
+	public static void init() {
+		GameData.init();
+		SaveData.init();
+	}
 
 	public static BufferedReader open(Resource resource) {
 		return new BufferedReader(new InputStreamReader(resource.asInputStream()));
@@ -88,8 +95,8 @@ public class GU {
 		th.setToCarryOutRequest(r);
 	}
 
-	public static ns.parallelComputing.Thread currentThread() {
-		return (ns.parallelComputing.Thread) Thread.currentThread();
+	public static Thread currentThread() {
+		return (Thread) Thread.currentThread();
 	}
 
 	public static void setMouseCursor(Cursor cursor) {
@@ -106,9 +113,11 @@ public class GU {
 		GL11.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 		for (int i = 0; i < TOTAL_NUMBER_OF_ENTITIES; i++) {
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+			Blueprint blueprint = BlueprintCreator.createModelBlueprintFor(Integer.toString(1000 + i)).withDefaultCustomColors();
+			boolean shouldScale = blueprint.getModel().shouldScale();
 			renderer.render(
-					BlueprintCreator.createModelBlueprintFor(Integer.toString(1000 + i)).withDefaultCustomColors(),
-					new Vector3f(0f, -3f, -20f));
+					blueprint,
+					new Vector3f(0f, shouldScale ? -1f : -3f, shouldScale ? -6.6f : -20f));
 			textures.add(i, fbo.getTex());
 			fbo.createNewTexture();
 		}
@@ -251,14 +260,6 @@ public class GU {
 		return projectionMatrix;
 	}
 
-	public static <T> T[] toArray(List<T> list) {
-		@SuppressWarnings("unchecked")
-		T[] arr = (T[]) new Object[list.size()];
-		for (int i = 0; i < arr.length; i++)
-			arr[i] = list.get(i);
-		return arr;
-	}
-
 	public static String getGLErrorType(int err) {
 		Field[] fields = GL11.class.getFields();
 		for (Field field : fields) {
@@ -273,20 +274,6 @@ public class GU {
 			}
 		}
 		return null;
-	}
-
-	public static String getLine(String fileName, int line) {
-		BufferedReader reader = open(new Resource().withLocation(fileName).create());
-		String ln = "";
-		for(int i = 0; i < line; i++) {
-			try {
-				ln = reader.readLine();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return ln;
-		
 	}
 
 	public static float readFloat(byte b1, byte b2, byte b3, byte b4) {

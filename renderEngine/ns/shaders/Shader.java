@@ -14,7 +14,7 @@ public class Shader implements IOpenGLObject {
 
 	public Shader(String name, int type) {
 		while (this.src == null)
-			this.src = ShaderLib.getSource(name);
+			this.src = ShaderLib.getSource("gameData/shaders/" + name);
 		this.name = name;
 		this.type = type;
 	}

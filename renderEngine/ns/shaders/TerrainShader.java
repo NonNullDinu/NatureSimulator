@@ -11,18 +11,18 @@ import ns.terrain.Terrain;
 
 public class TerrainShader extends ShaderProgram {
 
-	private static final String VERTEX_SHADER = "shaders/terrain/terrainVertex.glsl";
-	private static final String FRAGMENT_SHADER = "shaders/terrain/terrainFragment.glsl";
+	private static final String VERTEX_SHADER = "terrain/terrainVertex.glsl";
+	private static final String FRAGMENT_SHADER = "terrain/terrainFragment.glsl";
 	
-	public UniformMat4 projectionMatrix = locator.locateUniformMat4("projectionMatrix");
-	public UniformMat4 transformationMatrix = locator.locateUniformMat4("transformationMatrix");
-	public UniformMat4 viewMatrix = locator.locateUniformMat4("viewMatrix");
+	public UniformMat4 projectionMatrix = new UniformMat4("projectionMatrix");
+	public UniformMat4 transformationMatrix = new UniformMat4("transformationMatrix");
+	public UniformMat4 viewMatrix = new UniformMat4("viewMatrix");
 	
 	public UniformLight light = new UniformLight("light", locator);
 	
-	public UniformVec4 clipPlane = locator.locateUniformVec4("clipPlane");
+	public UniformVec4 clipPlane = new UniformVec4("clipPlane");
 	
-	public UniformVec3 skyColor = locator.locateUniformVec3("skyColor");
+	public UniformVec3 skyColor = new UniformVec3("skyColor");
 
 	public UniformFogValues fogValues = new UniformFogValues("fogValues", locator);
 	
@@ -30,6 +30,7 @@ public class TerrainShader extends ShaderProgram {
 	
 	public TerrainShader() {
 		super(new Shader(VERTEX_SHADER, GL20.GL_VERTEX_SHADER), new Shader(FRAGMENT_SHADER, GL20.GL_FRAGMENT_SHADER));
+		storeUniforms(projectionMatrix, transformationMatrix, viewMatrix, light, clipPlane, skyColor, fogValues);
 	}
 	
 	@Override

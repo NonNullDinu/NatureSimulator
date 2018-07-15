@@ -4,8 +4,8 @@ import org.lwjgl.opengl.GL20;
 
 public class UniformInt extends UniformVar {
 
-	public UniformInt(int location) {
-		super(location);
+	public UniformInt(String name) {
+		super(name);
 	}
 	
 	public void load(int value) {

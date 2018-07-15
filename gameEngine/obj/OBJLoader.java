@@ -7,22 +7,23 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
+import data.GameData;
 import ns.openglObjects.VAO;
 import ns.openglWorkers.VAOLoader;
 import ns.openglWorkers.VBOData;
 import ns.utils.GU;
-import res.Resource;
+import resources.Resource;
 
 public class OBJLoader {
 
 	public static VAO loadObj(String file) {
-		Resource asResource = new Resource().withLocation(file).withVersion(false).create();
+		Resource asResource = GameData.getResourceAt(file);
 		if (!asResource.exists())
 			return null;
 		BufferedReader reader = GU.open(asResource);
 		Materials materials = null;
 		{
-			Resource materialsResource = new Resource().withLocation(file.replace(".obj", ".mtl")).withVersion(false).create();
+			Resource materialsResource = GameData.getResourceAt(file.replace(".obj", ".mtl"));
 			if (materialsResource.exists())
 				materials = new Materials(materialsResource);
 		}
@@ -47,7 +48,7 @@ public class OBJLoader {
 				if (line.startsWith("mtllib") && materials == null) {
 					String[] filepcs = file.split("/");
 					String mtlFile = file.replace(filepcs[filepcs.length - 1], currentLine[1]);
-					Resource materialsResource = new Resource().withLocation(mtlFile).withVersion(false).create();
+					Resource materialsResource = GameData.getResourceAt(mtlFile);
 					if (materialsResource.exists())
 						materials = new Materials(materialsResource);
 				}

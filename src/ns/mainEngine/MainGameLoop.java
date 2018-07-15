@@ -82,8 +82,10 @@ public class MainGameLoop implements Runnable {
 		if (state == GS.GAME) {
 			MousePicker.update();
 			Entity e = shop.update();
-			if (e != null)
+			if (e != null) {
+				e.rotate(0, GU.random.genFloat() * 360f, 0);
 				world.add(e);
+			}
 			camera.update(world);
 			world.update();
 			rivers.update(world);
@@ -149,12 +151,15 @@ public class MainGameLoop implements Runnable {
 	}
 
 	public void run() {
+		GU.init();
 		DisplayManager.createDisplay();
 		TextMaster.init();
 		executeRequests();
 		shader = new WaterShader();
 		executeRequests();
 		fbos = new WaterFBOs(true);
+		while(camera == null)
+			executeRequests();
 		renderer = new MasterRenderer(camera);
 		executeRequests();
 		sceneFBO = new FBO(1200, 800, (FBO.COLOR_TEXTURE | FBO.DEPTH_RENDERBUFFER)).create();
@@ -206,6 +211,7 @@ public class MainGameLoop implements Runnable {
 		Texture.cleanUp();
 		TextMaster.cleanUp();
 		flareManager.cleanUp();
+		riverRenderer.cleanUp();
 		DisplayManager.closeDisplay();
 	}
 

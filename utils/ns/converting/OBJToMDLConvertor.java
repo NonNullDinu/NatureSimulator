@@ -10,11 +10,12 @@ import java.util.List;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
+import data.GameData;
 import ns.utils.GU;
 import obj.Material;
 import obj.Materials;
-import res.Resource;
-import res.WritingResource;
+import resources.Resource;
+import resources.WritingResource;
 
 public class OBJToMDLConvertor {
 	public static void main(String[] args) throws IOException {
@@ -42,14 +43,12 @@ public class OBJToMDLConvertor {
 			target.createNewFile();
 			WritingResource output = new WritingResource().withLocation(target.getPath()).create();
 			System.out.println(target.getPath());
-			Resource asResource = new Resource().withLocation(file.getPath().replace("resources/res/", ""))
-					.withVersion(false).create();
+			Resource asResource = GameData.getResourceAt(file.getPath()).withVersion(false).create();
 			BufferedReader reader = GU.open(asResource);
 			Materials materials = null;
 			{
-				Resource materialsResource = new Resource()
-						.withLocation(file.getPath().replace("resources/res/", "").replace(".obj", ".mtl"))
-						.withVersion(false).create();
+				Resource materialsResource = GameData
+						.getResourceAt(file.getPath().replace("resources/res/", "").replace(".obj", ".mtl"));
 				if (materialsResource.exists())
 					materials = new Materials(materialsResource);
 			}
@@ -72,8 +71,7 @@ public class OBJToMDLConvertor {
 					if (line.startsWith("mtllib") && materials == null) {
 						String[] filepcs = file.getPath().split("/");
 						String mtlFile = file.getPath().replace(filepcs[filepcs.length - 1], currentLine[1]);
-						Resource materialsResource = new Resource().withLocation(mtlFile.replace("resources/res/", ""))
-								.withVersion(false).create();
+						Resource materialsResource = GameData.getResourceAt(mtlFile);
 						if (materialsResource.exists())
 							materials = new Materials(materialsResource);
 					}
@@ -162,7 +160,7 @@ public class OBJToMDLConvertor {
 					outStr.write(GU.getBytes(texturesArray[i]));
 				}
 //				for (int i = 0; i < materialsArray.length; i++) {
-					outStr.write(materialsArray);
+				outStr.write(materialsArray);
 //				}
 				for (int i = 0; i < indicesArray.length; i++) {
 					outStr.write(GU.getBytes(indicesArray[i]));
