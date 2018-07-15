@@ -10,7 +10,6 @@ import java.util.List;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import data.GameData;
 import ns.utils.GU;
 import obj.Material;
 import obj.Materials;
@@ -19,15 +18,16 @@ import resources.WritingResource;
 
 public class OBJToMDLConvertor {
 	public static void main(String[] args) throws IOException {
+		GU.path = System.getProperty("user.dir") + "/";
 		byte[] buf = new byte[50];
 		int len = System.in.read(buf);
 		String location = "";
 		for (int i = 0; i < len - 1; i++)
 			location += (char) buf[i];
 		if (location.equals("UPDATE ALL")) {
-			write(new File("resources/res/models"));
+			write(new File("gameData/models"));
 		} else {
-			File target = new File("resources/res/models/" + location);
+			File target = new File("gameData/models/" + location);
 			write(target);
 		}
 	}
@@ -43,12 +43,11 @@ public class OBJToMDLConvertor {
 			target.createNewFile();
 			WritingResource output = new WritingResource().withLocation(target.getPath()).create();
 			System.out.println(target.getPath());
-			Resource asResource = GameData.getResourceAt(file.getPath()).withVersion(false).create();
+			Resource asResource = Resource.create(file.getPath());
 			BufferedReader reader = GU.open(asResource);
 			Materials materials = null;
 			{
-				Resource materialsResource = GameData
-						.getResourceAt(file.getPath().replace("resources/res/", "").replace(".obj", ".mtl"));
+				Resource materialsResource = Resource.create(file.getPath().replace(".obj", ".mtl"));
 				if (materialsResource.exists())
 					materials = new Materials(materialsResource);
 			}
@@ -71,7 +70,7 @@ public class OBJToMDLConvertor {
 					if (line.startsWith("mtllib") && materials == null) {
 						String[] filepcs = file.getPath().split("/");
 						String mtlFile = file.getPath().replace(filepcs[filepcs.length - 1], currentLine[1]);
-						Resource materialsResource = GameData.getResourceAt(mtlFile);
+						Resource materialsResource = Resource.create(mtlFile);
 						if (materialsResource.exists())
 							materials = new Materials(materialsResource);
 					}
@@ -144,11 +143,11 @@ public class OBJToMDLConvertor {
 				outStr.write(GU.getBytes(size));
 				outStr.write(GU.getBytes(vertexCount));
 				if (materials != null) {
-					outStr.write(109);
+					outStr.write(0x7F);
 					List<Byte> bts = materials.asByteMaterials();
 					for (byte b : bts)
 						outStr.write(b);
-					outStr.write(109);
+					outStr.write(0x7F);
 				}
 				for (int i = 0; i < verticesArray.length; i++) {
 					outStr.write(GU.getBytes(verticesArray[i]));

@@ -16,8 +16,10 @@ import ns.fontRendering.TextMaster;
 import ns.mainMenu.MainMenu;
 import ns.openglObjects.FBO;
 import ns.openglObjects.Texture;
+import ns.openglObjects.VAO;
 import ns.openglWorkers.VAOLoader;
 import ns.options.Options;
+import ns.parallelComputing.SetRequest;
 import ns.parallelComputing.ThreadMaster;
 import ns.renderers.Blurer;
 import ns.renderers.GUIRenderer;
@@ -30,6 +32,9 @@ import ns.renderers.WaterRenderer;
 import ns.rivers.RiverList;
 import ns.shaders.GUIShader;
 import ns.shaders.WaterShader;
+import ns.ui.Action;
+import ns.ui.PAction;
+import ns.ui.loading.UILoader;
 import ns.ui.shop.Shop;
 import ns.utils.GU;
 import ns.utils.MousePicker;
@@ -152,13 +157,30 @@ public class MainGameLoop implements Runnable {
 
 	public void run() {
 		GU.init();
+		SetRequest.init(new PAction() {
+			public void pexecute(Object... o) {
+				set(o[0]);
+			}
+		});
+		VAO.init(() -> {
+			requestExecuteRequests();
+		});
+		UILoader.init(new Action[] { () -> {
+			MainGameLoop.state = GS.GAME;
+		}, () -> {
+			MainGameLoop.state = GS.OPTIONS;
+		}, () -> {
+			MainGameLoop.state = GS.EXIT;
+		}, () -> {
+			MainGameLoop.state = GS.MENU;
+		}, });
 		DisplayManager.createDisplay();
 		TextMaster.init();
 		executeRequests();
 		shader = new WaterShader();
 		executeRequests();
 		fbos = new WaterFBOs(true);
-		while(camera == null)
+		while (camera == null)
 			executeRequests();
 		renderer = new MasterRenderer(camera);
 		executeRequests();
