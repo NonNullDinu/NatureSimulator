@@ -5,7 +5,7 @@
  * @author Dinu
  *
  */
-module gameModule {
+module ns.gameModule {
 	exports ns.mainEngine;
 
 	requires java.desktop;

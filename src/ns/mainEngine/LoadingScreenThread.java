@@ -1,12 +1,14 @@
 package ns.mainEngine;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import data.GameData;
 import ns.customFileFormat.TexFile;
-import ns.display.DisplayManager;
 import ns.fontMeshCreator.FontType;
 import ns.fontMeshCreator.GUIText;
 import ns.fontRendering.TextMaster;
@@ -17,9 +19,16 @@ import ns.parallelComputing.UpdateDisplayRequest;
 import ns.utils.GU;
 
 public class LoadingScreenThread implements Runnable {
+	private static final float SPD = 0.01f;
+
+	private float alphaCoef = 0.1f;
+	private int textI = 0;
+	public static boolean READY = false;
+	private GUIText text;
+	private boolean incr = true;
+
 	@Override
 	public void run() {
-		int prevFrame = DisplayManager.frameId - 1;
 		GU.currentThread().waitForDisplayInit();
 		FontType z003 = new FontType(new TexFile("fonts/Z003.tex").load(),
 				GU.open(GameData.getResourceAt("fonts/Z003.fnt")));
@@ -27,32 +36,71 @@ public class LoadingScreenThread implements Runnable {
 		FontType caladea = new FontType(new TexFile("fonts/Caladea.tex").load(),
 				GU.open(GameData.getResourceAt("fonts/Caladea.fnt")));
 		GU.setCaladea(caladea);
-		GUIText text = new GUIText("Loading...", 2f, z003, new Vector2f(0.0f, 0.0f), 0.2f, true);
-//		GUIText textCopyright = new GUIText("Copyright (c) 2018, NonNullDinu", 1f, caladea, new Vector2f(0.4f, -0.7f), 0.4f, true);
-		TextMaster.loadText(text);
-//		TextMaster.loadText(textCopyright);
+		List<GUIText> textToShow = new ArrayList<>();
+		textToShow.add(new GUIText("Made by", 5f, z003, new Vector2f(0.0f, 0.0f), 0.4f, true));
+		textToShow.add(new GUIText("NonNullDinu", 3f, caladea, new Vector2f(0.0f, 0.0f), 0.4f, true));
+		textToShow.add(new GUIText("Loading...", 2f, z003, new Vector2f(0.0f, 0.0f), 0.2f, true));
+		text = textToShow.get(textI);
+		for (GUIText t : textToShow)
+			TextMaster.loadText(t);
 		text.setColour(0f, 0f, 0f);
 		TextMaster.add(text);
-//		TextMaster.add(textCopyright);
 		RenderMethod renderMethod = new RenderMethod() {
 			@Override
 			public void render() {
-				TextMaster.render();
+				if (!READY) {
+					addToAC(incr ? SPD : -SPD);
+					if (alphaCoef >= 1.0)
+						setIncr(false);
+				} else {
+					addToAC(1.0f - alphaCoef);
+				}
+				if (alphaCoef <= 0.0f) {
+					addToAC(-alphaCoef);
+					text.remove();
+					textI++;
+					setReady(textI >= textToShow.size() - 1);
+					setIncr(true);
+					if (READY) {
+						TextMaster.render(alphaCoef);
+						return;
+					}
+					setText(textToShow.get(textI));
+					TextMaster.add(text);
+				}
+				TextMaster.render(alphaCoef);
 			}
 		};
 		GU.currentThread().finishLoading();
 		while (true) {
-			if (prevFrame < DisplayManager.frameId) {
-				prevFrame = DisplayManager.frameId;
-				GU.sendRequestToMainThread(
-						new GLClearRequest(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, new Vector3f(1, 1, 1)));
-				GU.sendRequestToMainThread(new GLRenderRequest(renderMethod));
-				GU.sendRequestToMainThread(new UpdateDisplayRequest());
+			GU.sendRequestToMainThread(
+					new GLClearRequest(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, new Vector3f(1, 1, 1)));
+			GU.sendRequestToMainThread(new GLRenderRequest(renderMethod));
+			GU.sendRequestToMainThread(new UpdateDisplayRequest());
+			try {
+				Thread.sleep(0, 50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 			if (MainGameLoop.state != GS.LOADING)
 				break;
 		}
-		TextMaster.remove(text);
-//		TextMaster.remove(textCopyright);
+		GU.currentThread().finishExecution();
+	}
+
+	protected void setIncr(boolean b) {
+		incr = b;
+	}
+
+	private void addToAC(float d) {
+		alphaCoef += d;
+	}
+
+	private void setText(GUIText text) {
+		this.text = text;
+	}
+
+	private void setReady(boolean b) {
+		READY = b;
 	}
 }

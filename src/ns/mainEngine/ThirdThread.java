@@ -29,11 +29,13 @@ public class ThirdThread implements Runnable {
 
 		GU.currentThread().finishLoading();
 		READY = true;
-		while (MainGameLoop.state != GS.CLOSING) {
-			Thread.yield();
-		}
+		GU.currentThread()._stop(() -> {
+			return MainGameLoop.state != GS.CLOSING;
+		});
 
 		SaveWorldMaster.save(world,
 				new WritingResource().withLocation(GU.path + "saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT).create());
+		GU.currentThread().checkpoint();
+		GU.currentThread().finishExecution();
 	}
 }

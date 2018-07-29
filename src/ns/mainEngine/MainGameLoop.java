@@ -13,6 +13,8 @@ import ns.entities.Entity;
 import ns.entities.Light;
 import ns.flares.FlareManager;
 import ns.fontRendering.TextMaster;
+import ns.interfaces.Action;
+import ns.interfaces.PAction;
 import ns.mainMenu.MainMenu;
 import ns.openglObjects.FBO;
 import ns.openglObjects.Texture;
@@ -32,8 +34,6 @@ import ns.renderers.WaterRenderer;
 import ns.rivers.RiverList;
 import ns.shaders.GUIShader;
 import ns.shaders.WaterShader;
-import ns.ui.Action;
-import ns.ui.PAction;
 import ns.ui.loading.UILoader;
 import ns.ui.shop.Shop;
 import ns.utils.GU;
@@ -84,6 +84,7 @@ public class MainGameLoop implements Runnable {
 	}
 
 	public void logic() {
+		GU.rn_update();
 		if (state == GS.GAME) {
 			MousePicker.update();
 			Entity e = shop.update();
@@ -115,19 +116,19 @@ public class MainGameLoop implements Runnable {
 			options.update();
 		}
 		GU.update();
-		GU.updateWireFrame();
 	}
 
 	public void render() {
+		GU.updateWireFrame();
 		if (state == GS.GAME || state == GS.MENU || state == GS.OPTIONS) {
 			GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 			fbos.bindReflection();
 			float distance = 2 * camera.getPosition().y;
-			camera.getPosition().y -= distance;
+			camera.addToPositionNoViewMatUpdate(0, -distance, 0);
 			camera.invertPitch();
 			renderer.renderScene(world, camera, sun, new Vector4f(0, 1, 0, 0.6f), true);
 			fbos.bindRefraction();
-			camera.getPosition().y += distance;
+			camera.addToPositionNoViewMatUpdate(0, distance, 0);
 			camera.invertPitch();
 			renderer.renderScene(world, camera, sun, new Vector4f(0, -1, 0, 0.8f), false);
 			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
@@ -201,24 +202,26 @@ public class MainGameLoop implements Runnable {
 		executeRequests();
 		GU.initMouseCursors(renderer);
 		executeRequests();
-		state = GS.MENU;
 		riverRenderer = new RiverRenderer(camera.getProjectionMatrix());
 		GU.currentThread().finishLoading();
-		while (!SecondaryThread.READY || !ThirdThread.READY) {
+		while (!SecondaryThread.READY || !ThirdThread.READY || !LoadingScreenThread.READY) {
 			executeRequests();
-			Thread.yield();
 		}
 		executeRequests();
+		state = GS.MENU;
+		GU.rn_update();
+		camera.update(world);
+		int err;
 		while (!Display.isCloseRequested()) {
 			if (state == GS.EXIT)
 				break;
 			runLogicAndRender();
 			DisplayManager.updateDisplay();
 			executeRequests();
-			int err = GL11.glGetError();
-			if (err != GL11.GL_NO_ERROR)
+			while ((err = GL11.glGetError()) != GL11.GL_NO_ERROR)
 				System.err.println("GL error " + err + "(" + GU.getGLErrorType(err) + ")");
 		}
+		GU.currentThread().checkpoint();
 		state = GS.CLOSING;
 		VAOLoader.cleanUp();
 		renderer.cleanUp();
@@ -235,6 +238,8 @@ public class MainGameLoop implements Runnable {
 		flareManager.cleanUp();
 		riverRenderer.cleanUp();
 		DisplayManager.closeDisplay();
+		GU.currentThread().checkpoint();
+		GU.currentThread().finishExecution();
 	}
 
 	private void runLogicAndRender() {
