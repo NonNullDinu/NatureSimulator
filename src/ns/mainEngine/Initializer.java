@@ -17,7 +17,7 @@ import ns.worldSave.SaveWorldMaster;
 import resources.WritingResource;
 
 /**
- * @version 1.3.1
+ * @version 1.3.2
  */
 public class Initializer {
 	public static void main(String[] args) {
