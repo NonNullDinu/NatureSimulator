@@ -1,7 +1,4 @@
 /**
- * 
- */
-/**
  * @author Dinu
  *
  */
@@ -9,7 +6,6 @@ module ns.gameModule {
 	exports ns.mainEngine;
 	exports ns.camera;
 	exports ns.components;
-	exports ns.config;
 	exports ns.configuration;
 	exports ns.customFileFormat;
 	exports ns.derrivedOpenGLObjects;
