@@ -1,0 +1,17 @@
+<component name="ArtifactManager">
+  <artifact name="NS:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/NS_jar</output-path>
+    <root id="root">
+      <element id="archive" name="NS.jar">
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$USER_HOME$/build/META-INF/MANIFEST.MF" />
+        </element>
+        <element id="module-output" name="NS" />
+        <element id="module-output" name="ns.core" />
+      </element>
+      <element id="file-copy" path="$PROJECT_DIR$/lib/jar/lwjgl.jar" />
+      <element id="library" level="module" name="lwjgl" module-name="NS" />
+      <element id="file-copy" path="$PROJECT_DIR$/lib/jar/lwjgl_util.jar" />
+    </root>
+  </artifact>
+</component>
