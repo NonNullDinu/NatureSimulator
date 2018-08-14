@@ -1,19 +1,10 @@
 package ns.shaders.uniformStructs;
 
+import ns.shaders.*;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
-
-import ns.shaders.UniformBool;
-import ns.shaders.UniformFloat;
-import ns.shaders.UniformInt;
-import ns.shaders.UniformMat4;
-import ns.shaders.UniformSampler2D;
-import ns.shaders.UniformVar;
-import ns.shaders.UniformVec2;
-import ns.shaders.UniformVec3;
-import ns.shaders.UniformVec4;
 
 public class UniformValue {
 

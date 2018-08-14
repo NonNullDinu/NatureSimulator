@@ -1,1 +1,177 @@
-1.1
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE root_folder SYSTEM "./data_folder.dtd">
+<root_folder name="gameData">
+	<version v="1.2"/>
+	<description>
+		Made to hold all the data that the game needs.
+	</description>
+	<root_tree>
+		<folder name="shaders">
+			<folder name="blur">
+				<file name="vhshader" extension=".glsl"/>
+				<file name="fshader" extension=".glsl"/>
+				<file name="vvshader" extension=".glsl"/>
+			</folder>
+			<folder name="depthFieldBlur">
+				<file name="fragment" extension=".glsl"/>
+				<file name="vertex" extension=".glsl"/>
+			</folder>
+			<folder name="river">
+				<file name="riverVertex" extension=".glsl"/>
+				<file name="riverFragment" extension=".glsl"/>
+			</folder>
+			<folder name="font">
+				<file name="fontVertex" extension=".glsl"/>
+				<file name="fontFragment" extension=".glsl"/>
+			</folder>
+			<folder name="water">
+				<file name="fragment" extension=".glsl"/>
+				<file name="vertex" extension=".glsl"/>
+			</folder>
+			<folder name="guis">
+				<file name="guiVertex" extension=".glsl"/>
+				<file name="guiFragment" extension=".glsl"/>
+			</folder>
+			<folder name="terrain">
+				<file name="terrainFragment" extension=".glsl"/>
+				<file name="terrainVertex" extension=".glsl"/>
+			</folder>
+			<folder name="standard">
+				<file name="fragmentShader" extension=".glsl"/>
+				<file name="vertexShader" extension=".glsl"/>
+			</folder>
+			<folder name="quad">
+				<file name="quadVertex" extension=".glsl"/>
+				<file name="quadFragment" extension=".glsl"/>
+			</folder>
+			<folder name="menuDNA">
+				<file name="fragmentShader" extension=".glsl"/>
+				<file name="vertexShader" extension=".glsl"/>
+			</folder>
+			<file name="structlib" extension=".glsl"/>
+		</folder>
+		<folder name="textures">
+			<folder name="lensFlare">
+				<file name="tex4" extension=".png"/>
+				<file name="tex4" extension=".tex"/>
+				<file name="tex9" extension=".png"/>
+				<file name="tex6" extension=".tex"/>
+				<file name="tex5" extension=".tex"/>
+				<file name="sun" extension=".png"/>
+				<file name="tex9" extension=".tex"/>
+				<file name="tex7" extension=".png"/>
+				<file name="tex1" extension=".tex"/>
+				<file name="tex6" extension=".png"/>
+				<file name="tex2" extension=".tex"/>
+				<file name="tex5" extension=".png"/>
+				<file name="tex2" extension=".png"/>
+				<file name="tex3" extension=".tex"/>
+				<file name="tex8" extension=".tex"/>
+				<file name="tex3" extension=".png"/>
+				<file name="tex1" extension=".png"/>
+				<file name="tex8" extension=".png"/>
+				<file name="tex7" extension=".tex"/>
+				<file name="sun" extension=".tex"/>
+			</folder>
+			<folder name="buttonTextures">
+				<file name="mainMenu_Options" extension=".png"/>
+				<file name="mainMenu_Start" extension=".png"/>
+				<file name="mainMenu_Options" extension=".tex"/>
+				<file name="mainMenu_Exit" extension=".tex"/>
+				<file name="mainMenu_Start" extension=".tex"/>
+				<file name="mainMenu_Exit" extension=".png"/>
+			</folder>
+			<file name="back_arrow" extension=".png"/>
+			<file name="back_arrow" extension=".tex"/>
+		</folder>
+		<folder name="config">
+			<file name="gameConfiguration" extension=".config"/>
+		</folder>
+		<folder name="fonts">
+			<file name="Z003" extension=".fnt"/>
+			<file name="Caladea" extension=".fnt"/>
+			<file name="Caladea" extension=".tex"/>
+			<file name="Z003" extension=".tex"/>
+			<file name="Z003" extension=".png"/>
+			<file name="Caladea" extension=".png"/>
+		</folder>
+		<folder name="uiResources">
+			<folder name="xml">
+				<file name="MainMenu" extension=".xml"/>
+				<file name="Options" extension=".xml"/>
+			</folder>
+		</folder>
+		<folder name="models">
+			<folder name="1009">
+				<file name="seaWeed" extension=".mtl"/>
+				<file name="seaWeed" extension=".obj"/>
+				<file name="seaWeed" extension=".mdl"/>
+			</folder>
+			<folder name="1010">
+				<file name="tree" extension=".obj"/>
+				<file name="tree" extension=".mtl"/>
+				<file name="tree" extension=".mdl"/>
+			</folder>
+			<folder name="others">
+				<file name="menu_DNA" extension=".obj"/>
+				<file name="menu_DNA" extension=".mdl"/>
+			</folder>
+			<folder name="1000">
+				<file name="tree" extension=".obj"/>
+				<file name="tree" extension=".mtl"/>
+				<file name="tree" extension=".mdl"/>
+			</folder>
+			<folder name="1012">
+				<file name="sheep" extension=".mdl"/>
+				<file name="sheep" extension=".obj"/>
+				<file name="sheep" extension=".mtl"/>
+			</folder>
+			<folder name="1006">
+				<file name="tree" extension=".obj"/>
+				<file name="tree" extension=".mtl"/>
+				<file name="tree" extension=".mdl"/>
+			</folder>
+			<folder name="1008">
+				<file name="stone" extension=".mdl"/>
+				<file name="stone" extension=".mtl"/>
+				<file name="stone" extension=".obj"/>
+			</folder>
+			<folder name="1011">
+				<file name="snowman" extension=".mdl"/>
+				<file name="snowman" extension=".mtl"/>
+				<file name="snowman" extension=".obj"/>
+			</folder>
+			<folder name="1002">
+				<file name="tree" extension=".obj"/>
+				<file name="tree" extension=".mtl"/>
+				<file name="tree" extension=".mdl"/>
+			</folder>
+			<folder name="1003">
+				<file name="mushroom" extension=".obj"/>
+				<file name="mushroom" extension=".mdl"/>
+				<file name="mushroom" extension=".mtl"/>
+			</folder>
+			<folder name="1007">
+				<file name="grass" extension=".mdl"/>
+				<file name="grass" extension=".mtl"/>
+				<file name="grass" extension=".obj"/>
+			</folder>
+			<folder name="1001">
+				<file name="tree" extension=".obj"/>
+				<file name="tree" extension=".mtl"/>
+				<file name="tree" extension=".mdl"/>
+			</folder>
+			<folder name="1004">
+				<file name="tree" extension=".obj"/>
+				<file name="tree" extension=".mtl"/>
+				<file name="tree" extension=".mdl"/>
+			</folder>
+			<folder name="1005">
+				<file name="tree" extension=".obj"/>
+				<file name="tree" extension=".mtl"/>
+				<file name="tree" extension=".mdl"/>
+			</folder>
+		</folder>
+		<file name="gameData" extension=".fd.xml"/>
+	</root_tree>
+</root_folder>

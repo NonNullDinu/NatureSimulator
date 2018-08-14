@@ -1,14 +1,13 @@
 package ns.camera;
 
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
-
 import ns.display.DisplayManager;
 import ns.utils.GU;
 import ns.utils.Maths;
 import ns.world.World;
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 public class Camera extends ICamera {
 	private static final float DIST_AB_TER = 10f;

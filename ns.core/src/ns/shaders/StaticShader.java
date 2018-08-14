@@ -1,9 +1,8 @@
 package ns.shaders;
 
-import org.lwjgl.opengl.GL20;
-
 import ns.shaders.uniformStructs.UniformFogValues;
 import ns.shaders.uniformStructs.UniformLight;
+import org.lwjgl.opengl.GL20;
 
 public class StaticShader extends ShaderProgram {
 
@@ -19,7 +18,7 @@ public class StaticShader extends ShaderProgram {
 	public UniformVec4 clipPlane = new UniformVec4("clipPlane");
 //	public UniformVec3[] customColors = { new UniformVec3("customColors[0]"), new UniformVec3("customColors[1]"),
 //			new UniformVec3("customColors[2]") };
-	public UniformVec3[] customColors = locator.<UniformVec3>getArrayLocation("customColors");
+public UniformVec3[] customColors = locator.getArrayLocation("customColors");
 
 	public UniformVec3 skyColor = new UniformVec3("skyColor");
 

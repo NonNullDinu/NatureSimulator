@@ -1,8 +1,7 @@
 package ns.components;
 
-import org.lwjgl.util.vector.Vector2f;
-
 import ns.world.Biome;
+import org.lwjgl.util.vector.Vector2f;
 
 public class BiomeSpreadComponent implements IComponent {
 	private float minRange, maxRange;

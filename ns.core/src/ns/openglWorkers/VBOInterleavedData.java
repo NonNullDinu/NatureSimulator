@@ -1,13 +1,12 @@
 package ns.openglWorkers;
 
-import java.nio.ByteBuffer;
-import java.util.Map;
-
+import ns.openglObjects.VBO;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 
-import ns.openglObjects.VBO;
+import java.nio.ByteBuffer;
+import java.util.Map;
 
 public class VBOInterleavedData {
 

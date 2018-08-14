@@ -1,9 +1,8 @@
 package ns.shaders;
 
-import org.lwjgl.opengl.GL20;
-
 import ns.shaders.uniformStructs.UniformFogValues;
 import ns.shaders.uniformStructs.UniformLight;
+import org.lwjgl.opengl.GL20;
 
 public class WaterShader extends ShaderProgram {
 

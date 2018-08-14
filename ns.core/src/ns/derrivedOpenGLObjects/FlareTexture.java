@@ -1,8 +1,7 @@
 package ns.derrivedOpenGLObjects;
 
-import org.lwjgl.util.vector.Vector2f;
-
 import ns.openglObjects.Texture;
+import org.lwjgl.util.vector.Vector2f;
 
 public class FlareTexture {
 	private Vector2f position;

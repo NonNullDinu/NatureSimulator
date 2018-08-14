@@ -1,20 +1,19 @@
 package ns.converting;
 
+import ns.utils.GU;
+import obj.Material;
+import obj.Materials;
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
+import resources.In;
+import resources.Out;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
-
-import ns.utils.GU;
-import obj.Material;
-import obj.Materials;
-import resources.Resource;
-import resources.WritingResource;
 
 public class OBJToMDLConvertor {
 	public static void main(String[] args) throws IOException {
@@ -41,20 +40,20 @@ public class OBJToMDLConvertor {
 		} else {
 			File target = new File(file.getPath().replace(".obj", ".mdl"));
 			target.createNewFile();
-			WritingResource output = new WritingResource().withLocation(target.getPath()).create();
+			Out output = Out.create(target.getPath());
 			System.out.println(target.getPath());
-			Resource asResource = Resource.create(file.getPath());
+			In asResource = In.create(file.getPath());
 			BufferedReader reader = GU.open(asResource);
 			Materials materials = null;
 			{
-				Resource materialsResource = Resource.create(file.getPath().replace(".obj", ".mtl"));
+				In materialsResource = In.create(file.getPath().replace(".obj", ".mtl"));
 				if (materialsResource.exists())
 					materials = new Materials(materialsResource);
 			}
 			String line;
-			ArrayList<Vector3f> vertices = new ArrayList<Vector3f>();
-			ArrayList<Vector2f> textures = new ArrayList<Vector2f>();
-			ArrayList<Vector3f> normals = new ArrayList<Vector3f>();
+			ArrayList<Vector3f> vertices = new ArrayList<>();
+			ArrayList<Vector2f> textures = new ArrayList<>();
+			ArrayList<Vector3f> normals = new ArrayList<>();
 			ArrayList<Integer> indices = new ArrayList<Integer>();
 			float[] verticesArray = null;
 			float[] texturesArray = null;
@@ -70,7 +69,7 @@ public class OBJToMDLConvertor {
 					if (line.startsWith("mtllib") && materials == null) {
 						String[] filepcs = file.getPath().split("/");
 						String mtlFile = file.getPath().replace(filepcs[filepcs.length - 1], currentLine[1]);
-						Resource materialsResource = Resource.create(mtlFile);
+						In materialsResource = In.create(mtlFile);
 						if (materialsResource.exists())
 							materials = new Materials(materialsResource);
 					}

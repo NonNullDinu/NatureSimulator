@@ -1,13 +1,12 @@
 package ns.renderers;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
-
 import ns.openglObjects.VAO;
 import ns.shaders.TerrainShader;
 import ns.terrain.Terrain;
 import ns.utils.Maths;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 public class TerrainRenderer {
 	private TerrainShader shader;

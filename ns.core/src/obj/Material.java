@@ -1,12 +1,11 @@
 package obj;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import ns.utils.GU;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
-import ns.utils.GU;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Material {
 	private Vector3f color;

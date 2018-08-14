@@ -1,13 +1,12 @@
 package ns.renderers;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
-
 import ns.openglObjects.Texture;
 import ns.openglObjects.VAO;
 import ns.shaders.QuadShader;
 import ns.utils.Maths;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
 
 public class QuadRenderer {
 	private static QuadShader shader;

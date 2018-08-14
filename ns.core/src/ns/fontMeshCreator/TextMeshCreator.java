@@ -24,7 +24,7 @@ public class TextMeshCreator {
 
 	private List<Line> createStructure(GUIText text) {
 		char[] chars = text.getTextString().toCharArray();
-		List<Line> lines = new ArrayList<Line>();
+		List<Line> lines = new ArrayList<>();
 		Line currentLine = new Line(metaData.getSpaceWidth(), text.getFontSize(), text.getMaxLineSize());
 		Word currentWord = new Word(text.getFontSize(), metaData.getSpaceWidth());
 		for (char c : chars) {
@@ -66,8 +66,8 @@ public class TextMeshCreator {
 		text.setNumberOfLines(lines.size());
 		double cursorX = 0f;
 		double cursorY = -(text.getFontSize() * LINE_HEIGHT * (float)lines.size() / 2.0);
-		List<Float> vertices = new ArrayList<Float>();
-		List<Float> textureCoords = new ArrayList<Float>();
+		List<Float> vertices = new ArrayList<>();
+		List<Float> textureCoords = new ArrayList<>();
 		for (Line line : lines) {
 			if (text.isCentered()) {
 //				cursorX = (line.getMaxLength() - line.getLineLength()) / 2;
@@ -94,7 +94,7 @@ public class TextMeshCreator {
 	}
 
 	private void addVerticesForCharacter(double cursorX, double cursorY, Character character, double fontSize,
-			List<Float> vertices) {
+	                                     List<Float> vertices) {
 		double x = cursorX + (character.getxOffset() * fontSize);
 		double y = cursorY + (character.getyOffset() * fontSize);
 		double maxX = x + (character.getSizeX() * fontSize);

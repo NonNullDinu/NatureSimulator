@@ -1,13 +1,5 @@
 package ns.customFileFormat;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
-
 import data.GameData;
 import ns.exceptions.LoadingException;
 import ns.openglObjects.VAO;
@@ -16,7 +8,14 @@ import ns.openglWorkers.VBOData;
 import ns.utils.GU;
 import obj.ByteMaterial;
 import obj.ByteMaterials;
-import resources.Resource;
+import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
+import resources.In;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MdlFile implements File {
 	private String location;
@@ -27,7 +26,7 @@ public class MdlFile implements File {
 
 	@Override
 	public VAO load() throws LoadingException {
-		Resource resource = GameData.getResourceAt(location, true);
+		In resource = GameData.getResourceAt(location, true);
 		InputStream ins = resource.asInputStream();
 		byte[] data;
 		try {

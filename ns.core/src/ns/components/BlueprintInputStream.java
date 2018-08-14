@@ -1,10 +1,10 @@
 package ns.components;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import ns.openglWorkers.ModelsLibrary;
 import ns.world.Biome;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class BlueprintInputStream {
 	private InputStream in;

@@ -1,9 +1,9 @@
 package ns.parallelComputing;
 
-import java.util.List;
-
 import ns.openglObjects.VAO;
 import ns.openglWorkers.VAOLoader;
+
+import java.util.List;
 
 public class VBOUpdateRequest extends Request {
 

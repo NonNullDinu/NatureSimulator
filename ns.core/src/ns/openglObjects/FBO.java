@@ -1,13 +1,9 @@
 package ns.openglObjects;
 
-import java.nio.ByteBuffer;
-
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL14;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL32;
+import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.nio.ByteBuffer;
 
 public class FBO implements IOpenGLObject {
 	public static final int COLOR_TEXTURE = 1; // 00000001

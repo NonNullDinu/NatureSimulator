@@ -1,5 +1,6 @@
 package ns.mainEngine;
 
+import data.SaveData;
 import ns.camera.Camera;
 import ns.camera.ICamera;
 import ns.parallelComputing.SetRequest;
@@ -9,7 +10,6 @@ import ns.utils.MousePicker;
 import ns.world.World;
 import ns.world.WorldGenerator;
 import ns.worldSave.SaveWorldMaster;
-import resources.WritingResource;
 
 public class ThirdThread implements Runnable {
 	public static boolean READY = false;
@@ -29,12 +29,10 @@ public class ThirdThread implements Runnable {
 
 		GU.currentThread().finishLoading();
 		READY = true;
-		GU.currentThread()._stop(() -> {
-			return MainGameLoop.state != GS.CLOSING;
-		});
+		GU.currentThread()._stop(() -> MainGameLoop.state != GS.CLOSING);
 
 		SaveWorldMaster.save(world,
-				new WritingResource().withLocation(GU.path + "saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT).create());
+				SaveData.openOutput("save0." + GU.WORLD_SAVE_FILE_FORMAT));
 		GU.currentThread().checkpoint();
 		GU.currentThread().finishExecution();
 	}

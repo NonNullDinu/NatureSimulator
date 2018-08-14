@@ -2,8 +2,8 @@ package ns.parallelComputing;
 
 public class GLRenderRequest extends Request {
 
-	public static interface RenderMethod {
-		public abstract void render();
+	public interface RenderMethod {
+		void render();
 	}
 
 	private RenderMethod renderMethod;

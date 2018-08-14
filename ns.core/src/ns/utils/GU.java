@@ -1,15 +1,17 @@
 package ns.utils;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.lang.reflect.Field;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
-
+import data.GameData;
+import data.SaveData;
+import ns.components.Blueprint;
+import ns.components.BlueprintCreator;
+import ns.display.DisplayManager;
+import ns.fontMeshCreator.FontType;
+import ns.openglObjects.FBO;
+import ns.openglObjects.Texture;
+import ns.parallelComputing.Request;
+import ns.parallelComputing.Thread;
+import ns.parallelComputing.ThreadMaster;
+import ns.renderers.MasterRenderer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Cursor;
@@ -20,20 +22,21 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+import resources.In;
+import resources.Out;
 
-import data.GameData;
-import data.SaveData;
-import ns.components.Blueprint;
-import ns.components.BlueprintCreator;
-import ns.fontMeshCreator.FontType;
-import ns.openglObjects.FBO;
-import ns.openglObjects.Texture;
-import ns.parallelComputing.Request;
-import ns.parallelComputing.ThreadMaster;
-import ns.parallelComputing.Thread;
-import ns.renderers.MasterRenderer;
-import resources.Resource;
-import resources.WritingResource;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GU {
 	public static final Random random = new Random();
@@ -51,19 +54,32 @@ public class GU {
 	public static FontType Z003;
 	public static FontType caladea;
 	public static String path;
-	private static ByteBuffer buffer = ByteBuffer.allocate(4);
+	private static ByteBuffer buffer = ByteBuffer.allocateDirect(4);
 	public static Vector2b mouseButtons;
+	public static DocumentBuilder documentBuilder;
+
+	static {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setIgnoringComments(true);
+		factory.setIgnoringElementContentWhitespace(true);
+		factory.setValidating(true);
+		try {
+			documentBuilder = factory.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public static void init() {
 		GameData.init();
 		SaveData.init();
 	}
 
-	public static BufferedReader open(Resource resource) {
+	public static BufferedReader open(In resource) {
 		return new BufferedReader(new InputStreamReader(resource.asInputStream()));
 	}
 
-	public static PrintWriter open(WritingResource resource) {
+	public static PrintWriter open(Out resource) {
 		return new PrintWriter(resource.asOutputStream());
 	}
 
@@ -150,7 +166,7 @@ public class GU {
 		private int id;
 		private boolean pressedPrevFrame;
 
-		private Key(int id) {
+		Key(int id) {
 			this.id = id;
 		}
 
@@ -212,15 +228,15 @@ public class GU {
 	}
 
 	public static FloatBuffer storeDataInFloatBuffer(float[] data) {
-		return (FloatBuffer) BufferUtils.createFloatBuffer(data.length).put(data).flip();
+		return BufferUtils.createFloatBuffer(data.length).put(data).flip();
 	}
 
 	public static IntBuffer storeDataInIntBuffer(int[] data) {
-		return (IntBuffer) BufferUtils.createIntBuffer(data.length).put(data).flip();
+		return BufferUtils.createIntBuffer(data.length).put(data).flip();
 	}
 
 	public static ByteBuffer storeDataInByteBuffer(byte[] data) {
-		return (ByteBuffer) BufferUtils.createByteBuffer(data.length).put(data).flip();
+		return BufferUtils.createByteBuffer(data.length).put(data).flip();
 	}
 
 	public static Vector2f normalizedMousePos() {
@@ -250,7 +266,7 @@ public class GU {
 
 	public static Matrix4f creteProjection(float FOV, float NEAR_PLANE, float FAR_PLANE) {
 		Matrix4f projectionMatrix = new Matrix4f();
-		float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
+		float aspectRatio = (float) DisplayManager.WIDTH / (float) DisplayManager.HEIGHT;
 
 		float y_scale = 1f / (float) Math.tan(FOV / 2f);
 		float x_scale = y_scale / aspectRatio;
@@ -283,7 +299,7 @@ public class GU {
 	}
 
 	public static float readFloat(byte b1, byte b2, byte b3, byte b4) {
-//		buffer.flip();
+		buffer.flip();
 		buffer.clear();
 		buffer.put(b1);
 		buffer.put(b2);
@@ -294,7 +310,7 @@ public class GU {
 	}
 
 	public static int readInt(byte b1, byte b2, byte b3, byte b4) {
-//		buffer.flip();
+		buffer.flip();
 		buffer.clear();
 		buffer.put(b1);
 		buffer.put(b2);
@@ -305,7 +321,7 @@ public class GU {
 	}
 
 	public static byte[] getBytes(float f) {
-//		buffer.flip();
+		buffer.flip();
 		buffer.clear();
 		buffer.putFloat(f);
 		buffer.flip();
@@ -314,11 +330,20 @@ public class GU {
 	}
 
 	public static byte[] getBytes(int i) {
-//		buffer.flip();
+		buffer.flip();
 		buffer.clear();
 		buffer.putInt(i);
 		buffer.flip();
-		byte[] bytes = new byte[] { buffer.get(), buffer.get(), buffer.get(), buffer.get() };
+		byte[] bytes = new byte[]{buffer.get(), buffer.get(), buffer.get(), buffer.get()};
 		return bytes;
+	}
+
+	public static Document getDocument(InputStream in) {
+		try {
+			return documentBuilder.parse(in);
+		} catch (IOException | SAXException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

@@ -1,8 +1,8 @@
 package ns.fontMeshCreator;
 
-import java.io.BufferedReader;
-
 import ns.openglObjects.Texture;
+
+import java.io.BufferedReader;
 
 /**
  * Represents a font. It holds the font's texture atlas as well as having the

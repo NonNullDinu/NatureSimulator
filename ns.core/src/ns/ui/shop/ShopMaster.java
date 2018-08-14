@@ -1,13 +1,12 @@
 package ns.ui.shop;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.lwjgl.util.vector.Vector2f;
-
 import ns.renderers.GUIRenderer;
 import ns.ui.ComplexGUI;
 import ns.utils.GU;
+import org.lwjgl.util.vector.Vector2f;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ShopMaster {
 	public static Shop shop;

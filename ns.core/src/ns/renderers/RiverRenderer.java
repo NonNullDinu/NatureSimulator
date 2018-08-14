@@ -1,15 +1,14 @@
 package ns.renderers;
 
-import java.util.List;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
-
 import ns.camera.ICamera;
 import ns.openglObjects.VAO;
 import ns.rivers.River;
 import ns.shaders.RiverShader;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
+
+import java.util.List;
 
 public class RiverRenderer {
 	private RiverShader shader;

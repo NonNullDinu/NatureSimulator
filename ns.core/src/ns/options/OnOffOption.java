@@ -1,9 +1,8 @@
 package ns.options;
 
-import org.lwjgl.util.vector.Vector2f;
-
 import ns.fontMeshCreator.GUIText;
 import ns.fontRendering.TextMaster;
+import org.lwjgl.util.vector.Vector2f;
 
 public class OnOffOption extends Option {
 	private boolean on;

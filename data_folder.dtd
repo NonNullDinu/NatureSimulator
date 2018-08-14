@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+		<!ELEMENT root_folder (version, description, root_tree)>
+		<!ATTLIST root_folder name CDATA #REQUIRED path CDATA #IMPLIED>
+		<!ELEMENT version EMPTY>
+		<!ATTLIST version v CDATA #REQUIRED>
+		<!ELEMENT description (#PCDATA)>
+		<!ELEMENT root_tree (folder*, file*)>
+		<!ELEMENT folder (folder*, file*)>
+		<!ATTLIST folder name CDATA #REQUIRED>
+		<!ELEMENT file EMPTY>
+		<!ATTLIST file
+				name CDATA #REQUIRED
+				extension CDATA #REQUIRED
+				>

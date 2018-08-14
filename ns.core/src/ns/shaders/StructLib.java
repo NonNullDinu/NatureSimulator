@@ -1,17 +1,17 @@
 package ns.shaders;
 
+import ns.utils.GU;
+import resources.In;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import ns.utils.GU;
-import resources.Resource;
-
 public class StructLib {
 	private static Map<String, String> structs = new HashMap<>();
 
-	public static void load(Resource resource) {
+	public static void load(In resource) {
 		BufferedReader reader = GU.open(resource);
 		try {
 			String line;

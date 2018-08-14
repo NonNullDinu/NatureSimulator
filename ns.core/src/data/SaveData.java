@@ -1,9 +1,11 @@
 package data;
 
-import resources.IFolder;
-import resources.Resource;
+import ns.utils.GU;
+import resources.IReadWriteFolder;
+import resources.In;
+import resources.Out;
 
-public class SaveData implements IFolder {
+public class SaveData implements IReadWriteFolder {
 	private static SaveData folder;
 	
 	public static void init() {
@@ -14,20 +16,29 @@ public class SaveData implements IFolder {
 	}
 
 	@Override
-	public Resource _getResourceAt(String location) {
-		return Resource.create("saveData/" + location);
+	public In _getResourceAt(String location) {
+		return In.create("saveData/" + location);
 	}
 
-	public static Resource getResourceAt(String location) {
+	public static In getResourceAt(String location) {
 		return folder._getResourceAt(location);
 	}
 
 	@Override
-	public Resource _getResourceAt(String location, boolean version) {
-		return Resource.create("saveData/" + location, version);
+	public In _getResourceAt(String location, boolean version) {
+		return In.create("saveData/" + location, version);
 	}
 
-	public static Resource getResourceAt(String location, boolean version) {
+	public static In getResourceAt(String location, boolean version) {
 		return folder._getResourceAt(location, version);
+	}
+
+	@Override
+	public Out _openOutput(String location) {
+		return Out.create(GU.path + "/saveData/" + location);
+	}
+
+	public static Out openOutput(String location) {
+		return folder._openOutput(location);
 	}
 }

@@ -1,22 +1,21 @@
 package ns.customFileFormat;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-
 import data.GameData;
 import ns.exceptions.CorruptException;
 import ns.exceptions.LoadingException;
 import ns.openglObjects.Texture;
 import ns.parallelComputing.TextureCreateRequest;
 import ns.utils.GU;
-import resources.Resource;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
+import resources.In;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TexFile implements File {
 	private String location;
@@ -27,7 +26,7 @@ public class TexFile implements File {
 
 	@Override
 	public Texture load() throws LoadingException {
-		Resource resource = GameData.getResourceAt(location, true);
+		In resource = GameData.getResourceAt(location, true);
 		int id = 0;
 		int width = 0;
 		int height = 0;

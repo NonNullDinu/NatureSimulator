@@ -1,16 +1,15 @@
 package ns.openglWorkers;
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-
+import ns.openglObjects.VBO;
+import ns.utils.GU;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 
-import ns.openglObjects.VBO;
-import ns.utils.GU;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 public class VBOData {
 	private final float[] dataf;
@@ -91,15 +90,15 @@ public class VBOData {
 	}
 
 	private FloatBuffer storeDataInFloatBuffer(float[] data) {
-		return (FloatBuffer) BufferUtils.createFloatBuffer(data.length).put(data).flip();
+		return BufferUtils.createFloatBuffer(data.length).put(data).flip();
 	}
 
 	private IntBuffer storeDataInIntBuffer(int[] data) {
-		return (IntBuffer) BufferUtils.createIntBuffer(data.length).put(data).flip();
+		return BufferUtils.createIntBuffer(data.length).put(data).flip();
 	}
 
 	private ByteBuffer storeDataInByteBuffer(byte[] data) {
-		return (ByteBuffer) BufferUtils.createByteBuffer(data.length).put(data).flip();
+		return BufferUtils.createByteBuffer(data.length).put(data).flip();
 	}
 
 	public boolean isIndices() {

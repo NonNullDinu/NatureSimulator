@@ -1,16 +1,15 @@
 package ns.renderers;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
-
 import ns.camera.ICamera;
 import ns.entities.Light;
 import ns.openglObjects.VAO;
 import ns.shaders.WaterShader;
 import ns.water.WaterFBOs;
 import ns.water.WaterTile;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
 
 public class WaterRenderer {
 	private static final float WAVE_SPEED = 0.003f;

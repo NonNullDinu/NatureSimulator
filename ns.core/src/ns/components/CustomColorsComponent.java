@@ -1,8 +1,8 @@
 package ns.components;
 
-import java.util.List;
-
 import org.lwjgl.util.vector.Vector3f;
+
+import java.util.List;
 
 public class CustomColorsComponent implements IComponent {
 	private List<Vector3f> colors;

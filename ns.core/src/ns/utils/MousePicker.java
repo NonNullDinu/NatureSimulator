@@ -1,14 +1,13 @@
 package ns.utils;
 
+import ns.camera.ICamera;
+import ns.terrain.Terrain;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
-
-import ns.camera.ICamera;
-import ns.terrain.Terrain;
 
 public class MousePicker {
 	private static ICamera camera;

@@ -1,5 +1,9 @@
 package ns.shaders;
 
+import data.GameData;
+import ns.utils.GU;
+import resources.In;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,17 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import data.GameData;
-import ns.utils.GU;
-import resources.Resource;
-
 public class ShaderLib {
 	private static final Map<String, String> sources = new HashMap<>();
 
 	public static void loadAll() {
-		List<Resource> shaders = new ArrayList<>();
+		List<In> shaders = new ArrayList<>();
 		addDeclarations(shaders);
-		for (Resource shaderFile : shaders) {
+		for (In shaderFile : shaders) {
 			BufferedReader reader = GU.open(shaderFile);
 			String line, source = "";
 			try {
@@ -31,11 +31,11 @@ public class ShaderLib {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			sources.put(shaderFile.getLocation(), source);
+			sources.put(shaderFile.getLocation().relativeLocation(), source);
 		}
 	}
 
-	private static void addDeclarations(List<Resource> shaders) {
+	private static void addDeclarations(List<In> shaders) {
 		shaders.add(GameData.getResourceAt("shaders/standard/vertexShader.glsl"));
 		shaders.add(GameData.getResourceAt("shaders/standard/fragmentShader.glsl")); // Entity (standard)
 		shaders.add(GameData.getResourceAt("shaders/terrain/terrainVertex.glsl"));

@@ -1,13 +1,12 @@
 package ns.ui;
 
-import java.util.List;
-
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
-
 import ns.openglObjects.IRenderable;
 import ns.renderers.GUIRenderer;
 import ns.renderers.QuadRenderer;
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
+
+import java.util.List;
 
 public class ComplexGUI implements IRenderable {
 	private Vector2f center;

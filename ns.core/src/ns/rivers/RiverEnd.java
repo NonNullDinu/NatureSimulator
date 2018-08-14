@@ -1,15 +1,14 @@
 package ns.rivers;
 
-import java.io.Serializable;
-
-import org.lwjgl.util.vector.Vector3f;
-
 import ns.components.BlueprintCreator;
 import ns.display.DisplayManager;
 import ns.entities.Entity;
 import ns.terrain.Terrain;
 import ns.utils.GU;
 import ns.world.World;
+import org.lwjgl.util.vector.Vector3f;
+
+import java.io.Serializable;
 
 public class RiverEnd implements Serializable {
 	private static final long serialVersionUID = -4775100940305038961L;

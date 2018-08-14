@@ -1,10 +1,5 @@
 package ns.fontRendering;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import ns.fontMeshCreator.FontType;
 import ns.fontMeshCreator.GUIText;
 import ns.fontMeshCreator.TextMeshData;
@@ -12,6 +7,11 @@ import ns.openglObjects.VAO;
 import ns.openglWorkers.VAOLoader;
 import ns.openglWorkers.VBOData;
 import ns.renderers.FontRenderer;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TextMaster {
 	private static Map<FontType, List<GUIText>> texts = new HashMap<>();

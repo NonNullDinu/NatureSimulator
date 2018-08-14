@@ -1,8 +1,7 @@
 package ns.worldSave;
 
-import org.lwjgl.util.vector.Vector3f;
-
 import ns.entities.Entity;
+import org.lwjgl.util.vector.Vector3f;
 
 public class EntityData extends Data {
 	private static final long serialVersionUID = -2117931221477865196L;

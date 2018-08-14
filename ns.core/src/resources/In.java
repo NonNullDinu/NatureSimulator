@@ -1,44 +1,45 @@
 package resources;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import ns.utils.GU;
+public class In {
 
-public class Resource {
-	
-	private String location;
+	private PATH location;
 	private InputStream asInputStream;
 	private boolean exists;
 	private int ver;
 	private boolean hasVersion;
 
-	private Resource() {
-	}
-	
-	public static Resource create(String location) {
-		return new Resource().withLocation(location).create();
-	}
-	
-	public static Resource create(String location, boolean version) {
-		return new Resource().withLocation(location).withVersion(version).create();
+	private In() {
 	}
 
-	public Resource withLocation(String location) {
+	public static In create(String location) {
+		return new In().withLocation(location).create();
+	}
+
+	public static In create(String location, boolean version) {
+		return new In().withLocation(location).withVersion(version).create();
+	}
+
+	public In withLocation(String location) {
+		return withLocation(new PATH(location));
+	}
+
+	public In withLocation(PATH location) {
 		this.location = location;
 		return this;
 	}
 
-	public Resource withVersion(boolean version) {
+	public In withVersion(boolean version) {
 		this.hasVersion = version;
 		return this;
 	}
 
-	public Resource create() {
+	public In create() {
 		try {
-			this.asInputStream = new FileInputStream(GU.path + location);
+			this.asInputStream = location.openInput();
 			exists = true;
 		} catch (FileNotFoundException e) {
 		}
@@ -52,11 +53,11 @@ public class Resource {
 		return this;
 	}
 
-	public String getLocation() {
+	public PATH getLocation() {
 		return location;
 	}
 
-	public InputStream asInputStream() {
+	public InputStream asInputStream() throws NullPointerException {
 		if (asInputStream != null)
 			return asInputStream;
 		else

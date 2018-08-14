@@ -5,5 +5,5 @@ package ns.mainEngine;
  * @author Dinu B.
  */
 public enum GS {
-	GAME, MENU, EXIT, LOADING, CLOSING, OPTIONS;
+	GAME, MENU, EXIT, LOADING, CLOSING, OPTIONS
 }

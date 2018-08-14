@@ -1,11 +1,10 @@
 package ns.ui.shop;
 
-import org.lwjgl.util.vector.Vector2f;
-
 import ns.components.Blueprint;
 import ns.components.BlueprintCreator;
 import ns.ui.Button;
 import ns.ui.ComplexGUI;
+import org.lwjgl.util.vector.Vector2f;
 
 public class ShopItem extends Button {
 	public static final Vector2f SCALE = new Vector2f(0.1f, 0.1f);

@@ -1,15 +1,14 @@
 package ns.openglObjects;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import ns.interfaces.Action;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import ns.interfaces.Action;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class VAO implements IOpenGLObject, IRenderable {
 	private static int nextId = 1;

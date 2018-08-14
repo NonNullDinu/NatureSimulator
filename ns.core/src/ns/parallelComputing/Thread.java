@@ -1,14 +1,14 @@
 package ns.parallelComputing;
 
+import data.GameData;
+import ns.interfaces.Condition;
+import org.lwjgl.opengl.Display;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.opengl.Display;
-
-import ns.interfaces.Condition;
-
 public class Thread extends java.lang.Thread {
-	public static enum ThreadState {
+	public enum ThreadState {
 		WAITING, RUNNING, FINISHED
 	}
 
@@ -19,7 +19,7 @@ public class Thread extends java.lang.Thread {
 	private long timeb;
 	public boolean isExecutingRequests;
 	private ThreadState state;
-	private boolean sple;
+	private boolean special_loop_executing;
 
 	protected Thread(String name, Runnable runnable) {
 		super(runnable, name);
@@ -57,6 +57,15 @@ public class Thread extends java.lang.Thread {
 			Thread.yield();
 	}
 
+	public void waitForGameDataInit() {
+		while (!GameData.initialized())
+			java.lang.Thread.yield();
+	}
+
+	public void sayTimeSinceBegin() {
+		System.out.println(getName() + " ran for " + (System.nanoTime() - timeb));
+	}
+
 	public void finishLoading() {
 		System.out.println(getName() + " finished loading in " + (System.nanoTime() - timeb));
 	}
@@ -80,17 +89,17 @@ public class Thread extends java.lang.Thread {
 	}
 
 	public void _stop(Condition c) {
-		sple = true;
+		special_loop_executing = true;
 		state = ThreadState.WAITING;
 		while (c.value()) {
 			Thread.yield();
 		}
 		state = ThreadState.RUNNING;
-		sple = false;
+		special_loop_executing = false;
 	}
 
 	public void _resume() {
-		if (!sple)
+		if (!special_loop_executing)
 			state = ThreadState.RUNNING;
 	}
 

@@ -1,13 +1,12 @@
 package ns.shaders;
 
+import ns.shaders.uniformStructs.UniformFogValues;
+import ns.shaders.uniformStructs.UniformLight;
+import ns.terrain.Terrain;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL43;
-
-import ns.shaders.uniformStructs.UniformFogValues;
-import ns.shaders.uniformStructs.UniformLight;
-import ns.terrain.Terrain;
 
 public class TerrainShader extends ShaderProgram {
 

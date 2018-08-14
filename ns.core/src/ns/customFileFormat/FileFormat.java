@@ -1,8 +1,8 @@
 package ns.customFileFormat;
 
-import java.lang.reflect.InvocationTargetException;
-
 import ns.exceptions.LoadingException;
+
+import java.lang.reflect.InvocationTargetException;
 
 public enum FileFormat {
 	TEXTURE("tex", TexFile.class), AUDIO("aud", AudFile.class), MODEL("mdl", MdlFile.class);
@@ -10,7 +10,7 @@ public enum FileFormat {
 	private String extension;
 	private Class<? extends File> representingClass;
 
-	private FileFormat(String extension, Class<? extends File> representingClass) {
+	FileFormat(String extension, Class<? extends File> representingClass) {
 		this.extension = extension;
 		this.representingClass = representingClass;
 	}

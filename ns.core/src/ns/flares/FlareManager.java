@@ -1,12 +1,5 @@
 package ns.flares;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
-
 import ns.camera.ICamera;
 import ns.derrivedOpenGLObjects.FlareTexture;
 import ns.entities.Light;
@@ -14,6 +7,12 @@ import ns.openglObjects.Query;
 import ns.openglObjects.Texture;
 import ns.renderers.QuadRenderer;
 import ns.utils.Maths;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL15;
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 public class FlareManager {
 	private static final float DIST = 0.2f;

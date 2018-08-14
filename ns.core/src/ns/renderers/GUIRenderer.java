@@ -1,17 +1,16 @@
 package ns.renderers;
 
-import java.util.List;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
-
 import ns.openglObjects.Texture;
 import ns.openglObjects.VAO;
 import ns.shaders.GUIShader;
 import ns.ui.GUIButton;
 import ns.ui.GUITexture;
 import ns.utils.Maths;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
+
+import java.util.List;
 
 public class GUIRenderer {
 	public static final Vector3f TRANSPARENCY = new Vector3f(1.0f, 4f / 255f, 214f / 255f);

@@ -1,18 +1,17 @@
 package ns.rivers;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.util.vector.Vector3f;
-
 import ns.openglObjects.VAO;
 import ns.openglWorkers.VAOLoader;
 import ns.openglWorkers.VBOData;
 import ns.terrain.Terrain;
 import ns.world.World;
+import org.lwjgl.opengl.GL15;
+import org.lwjgl.util.vector.Vector3f;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class River implements Serializable {
 	private static final long serialVersionUID = 3885806111259199169L;

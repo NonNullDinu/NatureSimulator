@@ -1,7 +1,5 @@
 package ns.entities;
 
-import org.lwjgl.util.vector.Vector3f;
-
 import ns.components.BiomeSpreadComponent;
 import ns.components.Blueprint;
 import ns.components.CustomColorsComponent;
@@ -9,6 +7,7 @@ import ns.openglObjects.VAO;
 import ns.world.World;
 import ns.worldSave.EntityData;
 import ns.worldSave.SerializableWorldObject;
+import org.lwjgl.util.vector.Vector3f;
 
 public class Entity implements SerializableWorldObject {
 

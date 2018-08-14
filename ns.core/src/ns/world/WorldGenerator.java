@@ -1,11 +1,5 @@
 package ns.world;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import org.lwjgl.util.vector.Vector3f;
-
 import data.SaveData;
 import ns.components.Blueprint;
 import ns.components.BlueprintCreator;
@@ -14,14 +8,19 @@ import ns.parallelComputing.SetRequest;
 import ns.terrain.Terrain;
 import ns.utils.GU;
 import ns.worldSave.LoadWorldMaster;
-import resources.Resource;
+import org.lwjgl.util.vector.Vector3f;
+import resources.In;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class WorldGenerator {
 	public static World generatedWorld = null;
 	private static final float TS = Terrain.SIZE / 2f;
 
 	public static World generateWorld() {
-		Resource resource = SaveData.getResourceAt("save0." + GU.WORLD_SAVE_FILE_FORMAT, true);
+		In resource = SaveData.getResourceAt("save0." + GU.WORLD_SAVE_FILE_FORMAT, true);
 		if (resource.exists()) {
 			generatedWorld = LoadWorldMaster.loadWorld(resource);
 			generatedWorld.getTerrain().initColors(generatedWorld.getEntities());

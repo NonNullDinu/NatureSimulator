@@ -1,11 +1,10 @@
 package ns.options;
 
-import org.lwjgl.input.Mouse;
-import org.lwjgl.util.vector.Vector2f;
-
 import ns.fontMeshCreator.GUIText;
 import ns.fontRendering.TextMaster;
 import ns.utils.GU;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.util.vector.Vector2f;
 
 public abstract class Option {
 	private Vector2f position, scale;

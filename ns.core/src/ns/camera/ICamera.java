@@ -1,9 +1,8 @@
 package ns.camera;
 
+import ns.utils.Maths;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
-
-import ns.utils.Maths;
 
 /**
  * @author Dinu B.

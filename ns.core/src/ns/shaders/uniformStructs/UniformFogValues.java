@@ -1,13 +1,12 @@
 package ns.shaders.uniformStructs;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.lwjgl.util.vector.Vector2f;
-
 import ns.shaders.UniformFloat;
 import ns.shaders.UniformLocator;
 import ns.shaders.UniformVar;
+import org.lwjgl.util.vector.Vector2f;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UniformFogValues extends UniformStruct {
 

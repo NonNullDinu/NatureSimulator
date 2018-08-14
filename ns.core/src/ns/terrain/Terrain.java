@@ -1,14 +1,5 @@
 package ns.terrain;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
-
 import ns.components.BiomeSpreadComponent;
 import ns.entities.Entity;
 import ns.openglObjects.VAO;
@@ -19,6 +10,14 @@ import ns.utils.Maths;
 import ns.world.World;
 import ns.worldSave.SerializableWorldObject;
 import ns.worldSave.TerrainData;
+import org.lwjgl.opengl.GL15;
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Terrain implements SerializableWorldObject {
 	public static final float SIZE = 4800;

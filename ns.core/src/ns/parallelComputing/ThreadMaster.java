@@ -1,9 +1,9 @@
 package ns.parallelComputing;
 
+import ns.parallelComputing.Thread.ThreadState;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import ns.parallelComputing.Thread.ThreadState;
 
 public class ThreadMaster {
 	private static Map<String, Thread> threads = new HashMap<>();

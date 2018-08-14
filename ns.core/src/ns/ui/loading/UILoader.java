@@ -1,23 +1,5 @@
 package ns.ui.loading;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
 import ns.components.BlueprintCreator;
 import ns.customFileFormat.TexFile;
 import ns.entities.Entity;
@@ -33,29 +15,27 @@ import ns.options.Option;
 import ns.options.Options;
 import ns.ui.GUIButton;
 import ns.utils.GU;
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UILoader {
-	private static DocumentBuilder builder;
 	private static Action[] actions;
 	
 	public static void init(Action[] actions) {
 		UILoader.actions = actions;
 	}
 
-	static {
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setIgnoringComments(true);
-		factory.setIgnoringElementContentWhitespace(true);
-		factory.setValidating(true);
-		try {
-			builder = factory.newDocumentBuilder();
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public static UIMenu load(InputStream in) {
-		Document document = getDocument(in);
+		Document document = GU.getDocument(in);
 		UIMenu menu = null;
 		if (document.getDoctype().getName().equals("MainMenu")) {
 			List<MainMenuButton> buttons = new ArrayList<>();
@@ -126,14 +106,5 @@ public class UILoader {
 			menu = new Options(options, backButton, actions[actions.length - 1]);
 		}
 		return menu;
-	}
-
-	private static Document getDocument(InputStream in) {
-		try {
-			return builder.parse(in);
-		} catch (IOException | SAXException e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 }

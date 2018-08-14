@@ -1,10 +1,10 @@
 package ns.configuration;
 
+import ns.utils.GU;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
-
-import ns.utils.GU;
 
 public class ConfigInputStream {
 	private static final int CONF_TYPE = GU.binaryInt("0011 0000");

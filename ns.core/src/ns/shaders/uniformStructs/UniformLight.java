@@ -1,13 +1,13 @@
 package ns.shaders.uniformStructs;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ns.entities.Light;
 import ns.shaders.UniformLocator;
 import ns.shaders.UniformVar;
 import ns.shaders.UniformVec2;
 import ns.shaders.UniformVec3;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UniformLight extends UniformStruct {
 

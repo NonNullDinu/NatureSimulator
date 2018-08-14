@@ -1,10 +1,10 @@
 package ns.configuration;
 
+import data.GameData;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import data.GameData;
 
 public class GameConfig {
 	public static final int FULLSCREEN = 0;

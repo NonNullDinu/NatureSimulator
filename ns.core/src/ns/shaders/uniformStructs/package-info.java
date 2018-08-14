@@ -2,7 +2,7 @@
  * 
  */
 /**
- * This package is for dealing with uniform structures from the predefined structures in structlib.glsl
+ * Made for dealing with uniform structures from the predefined structures in structlib.glsl
  * @author Dinu B.
  *
  */

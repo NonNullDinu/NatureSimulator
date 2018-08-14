@@ -1,17 +1,15 @@
 package ns.mainMenu;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import ns.entities.Entity;
+import ns.interfaces.UIMenu;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector4f;
 
-import ns.entities.Entity;
-import ns.interfaces.UIMenu;
+import java.util.List;
 
 public class MainMenu implements UIMenu {
 	public static MainMenu instance;
-	private List<MainMenuButton> buttons = new ArrayList<>();
+	private List<MainMenuButton> buttons;
 	private Entity DNA;
 	private Vector4f dnaLocation;
 

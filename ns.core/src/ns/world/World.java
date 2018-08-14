@@ -1,10 +1,10 @@
 package ns.world;
 
-import java.util.List;
-
 import ns.entities.Entity;
 import ns.rivers.RiverList;
 import ns.terrain.Terrain;
+
+import java.util.List;
 
 public class World {
 	private List<Entity> entities;

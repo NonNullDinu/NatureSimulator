@@ -1,13 +1,5 @@
 package ns.renderers;
 
-import java.util.List;
-import java.util.Map;
-
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
-
 import ns.components.Blueprint;
 import ns.components.CustomColorsComponent;
 import ns.entities.Entity;
@@ -15,6 +7,13 @@ import ns.entities.Light;
 import ns.openglObjects.VAO;
 import ns.shaders.StaticShader;
 import ns.utils.Maths;
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
+
+import java.util.List;
+import java.util.Map;
 
 public class Renderer {
 

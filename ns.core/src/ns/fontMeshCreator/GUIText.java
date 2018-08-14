@@ -1,10 +1,9 @@
 package ns.fontMeshCreator;
 
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
-
 import ns.fontRendering.TextMaster;
 import ns.openglObjects.VAO;
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
 
 /**
  * Represents a piece of text in the game.

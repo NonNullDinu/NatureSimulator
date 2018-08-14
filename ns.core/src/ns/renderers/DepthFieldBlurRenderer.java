@@ -1,13 +1,12 @@
 package ns.renderers;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Vector2f;
-
 import ns.exceptions.FBOAttachmentException;
 import ns.openglObjects.FBO;
 import ns.openglObjects.Texture;
 import ns.openglObjects.VAO;
 import ns.shaders.DepthFieldBlurShader;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Vector2f;
 
 public class DepthFieldBlurRenderer extends EffectRenderer {
 	private DepthFieldBlurShader shader;

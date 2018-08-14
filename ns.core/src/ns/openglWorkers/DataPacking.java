@@ -1,14 +1,13 @@
 package ns.openglWorkers;
 
+import ns.openglObjects.VBO;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL15;
+
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL15;
-
-import ns.openglObjects.VBO;
 
 public class DataPacking {
 	public static VBO packVertexDataf(int vertexCount, Map<Integer, Integer> current, VBOData... data) {

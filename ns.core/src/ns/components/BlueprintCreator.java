@@ -1,12 +1,11 @@
 package ns.components;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.lwjgl.util.vector.Vector3f;
-
 import ns.openglWorkers.ModelsLibrary;
 import ns.world.Biome;
+import org.lwjgl.util.vector.Vector3f;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BlueprintCreator {
 	public static Blueprint createBlueprintFor(String entityFolder) {

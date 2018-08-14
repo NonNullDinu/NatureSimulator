@@ -1,11 +1,11 @@
 package ns.openglObjects;
 
 public interface IOpenGLObject {
-	public abstract IOpenGLObject create();
+	IOpenGLObject create();
 
-	public abstract void delete();
+	void delete();
 
-	public abstract int getID();
-	
-	public abstract boolean isCreated();
+	int getID();
+
+	boolean isCreated();
 }

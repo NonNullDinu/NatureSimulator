@@ -1,13 +1,12 @@
 package ns.renderers;
 
-import java.util.List;
-import java.util.Map;
-
-import org.lwjgl.opengl.GL11;
-
 import ns.fontMeshCreator.FontType;
 import ns.fontMeshCreator.GUIText;
 import ns.shaders.FontShader;
+import org.lwjgl.opengl.GL11;
+
+import java.util.List;
+import java.util.Map;
 
 public class FontRenderer {
 

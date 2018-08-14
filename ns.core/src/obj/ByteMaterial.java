@@ -1,9 +1,9 @@
 package obj;
 
-import java.nio.ByteBuffer;
-
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
+
+import java.nio.ByteBuffer;
 
 public class ByteMaterial {
 	private float[] dataf;

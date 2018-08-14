@@ -1,9 +1,5 @@
 package ns.renderers;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector4f;
-
 import ns.camera.ICamera;
 import ns.entities.Entity;
 import ns.mainMenu.MainMenu;
@@ -11,6 +7,9 @@ import ns.mainMenu.MainMenuButton;
 import ns.openglObjects.FBO;
 import ns.shaders.MenuDNAShader;
 import ns.utils.Maths;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector4f;
 
 public class MainMenuRenderer {
 	private GUIRenderer guiRenderer;

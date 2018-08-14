@@ -1,17 +1,5 @@
 package ns.renderers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL32;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
-
 import ns.camera.ICamera;
 import ns.components.Blueprint;
 import ns.display.DisplayManager;
@@ -24,6 +12,17 @@ import ns.shaders.StaticShader;
 import ns.shaders.TerrainShader;
 import ns.terrain.Terrain;
 import ns.world.World;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL32;
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MasterRenderer {
 	public static final float FAR_PLANE = 1000f;

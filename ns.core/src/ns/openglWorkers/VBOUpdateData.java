@@ -1,13 +1,12 @@
 package ns.openglWorkers;
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-
+import ns.openglObjects.VAO;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL15;
 
-import ns.openglObjects.VAO;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 public class VBOUpdateData {
 	private final float[] dataf;
@@ -65,15 +64,15 @@ public class VBOUpdateData {
 	}
 
 	private static FloatBuffer storeDataInFloatBuffer(float[] data) {
-		return (FloatBuffer) BufferUtils.createFloatBuffer(data.length).put(data).flip();
+		return BufferUtils.createFloatBuffer(data.length).put(data).flip();
 	}
 
 	private static IntBuffer storeDataInIntBuffer(int[] data) {
-		return (IntBuffer) BufferUtils.createIntBuffer(data.length).put(data).flip();
+		return BufferUtils.createIntBuffer(data.length).put(data).flip();
 	}
 
 	private static ByteBuffer storeDataInByteBuffer(byte[] data) {
-		return (ByteBuffer) BufferUtils.createByteBuffer(data.length).put(data).flip();
+		return BufferUtils.createByteBuffer(data.length).put(data).flip();
 	}
 
 	public VBOUpdateData withBegin(long begin) {

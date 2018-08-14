@@ -1,16 +1,15 @@
 package ns.customFileFormat;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.openal.AL10;
-
 import data.GameData;
 import ns.exceptions.LoadingException;
 import ns.openALObjects.Buffer;
 import ns.utils.GU;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.openal.AL10;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
 public class AudFile implements File {
 	private String location;

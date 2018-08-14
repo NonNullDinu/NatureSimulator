@@ -1,11 +1,11 @@
 package ns.fontMeshCreator;
 
+import ns.display.DisplayManager;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.lwjgl.opengl.Display;
 
 /**
  * Provides functionality for getting the values from a font file.
@@ -41,11 +41,11 @@ public class MetaFile {
 
 	/**
 	 * Opens a font file in preparation for reading.
-	 * 
-	 * @param file - the font file.
+	 *
+	 * @param reader - the reader that reads the font file.
 	 */
 	protected MetaFile(BufferedReader reader) {
-		this.aspectRatio = (double) Display.getWidth() / (double) Display.getHeight();
+		this.aspectRatio = (double) DisplayManager.WIDTH / (double) DisplayManager.HEIGHT;
 		this.reader = reader;
 		loadPaddingData();
 		loadLineSizes();

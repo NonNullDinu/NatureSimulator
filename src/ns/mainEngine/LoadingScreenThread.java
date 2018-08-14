@@ -1,12 +1,5 @@
 package ns.mainEngine;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
-
 import data.GameData;
 import ns.customFileFormat.TexFile;
 import ns.fontMeshCreator.FontType;
@@ -17,6 +10,12 @@ import ns.parallelComputing.GLRenderRequest;
 import ns.parallelComputing.GLRenderRequest.RenderMethod;
 import ns.parallelComputing.UpdateDisplayRequest;
 import ns.utils.GU;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LoadingScreenThread implements Runnable {
 	private static final float SPD = 0.01f;
@@ -29,7 +28,7 @@ public class LoadingScreenThread implements Runnable {
 
 	@Override
 	public void run() {
-		GU.currentThread().waitForDisplayInit();
+		GU.currentThread().waitForGameDataInit();
 		FontType z003 = new FontType(new TexFile("fonts/Z003.tex").load(),
 				GU.open(GameData.getResourceAt("fonts/Z003.fnt")));
 		GU.setZ003(z003);
@@ -45,31 +44,28 @@ public class LoadingScreenThread implements Runnable {
 			TextMaster.loadText(t);
 		text.setColour(0f, 0f, 0f);
 		TextMaster.add(text);
-		RenderMethod renderMethod = new RenderMethod() {
-			@Override
-			public void render() {
-				if (!READY) {
-					addToAC(incr ? SPD : -SPD);
-					if (alphaCoef >= 1.0)
-						setIncr(false);
-				} else {
-					addToAC(1.0f - alphaCoef);
-				}
-				if (alphaCoef <= 0.0f) {
-					addToAC(-alphaCoef);
-					text.remove();
-					textI++;
-					setReady(textI >= textToShow.size() - 1);
-					setIncr(true);
-					if (READY) {
-						TextMaster.render(alphaCoef);
-						return;
-					}
-					setText(textToShow.get(textI));
-					TextMaster.add(text);
-				}
-				TextMaster.render(alphaCoef);
+		RenderMethod renderMethod = () -> {
+			if (!READY) {
+				addToAC(incr ? SPD : -SPD);
+				if (alphaCoef >= 1.0)
+					setIncr(false);
+			} else {
+				addToAC(1.0f - alphaCoef);
 			}
+			if (alphaCoef <= 0.0f) {
+				addToAC(-alphaCoef);
+				text.remove();
+				textI++;
+				setReady(textI >= textToShow.size() - 1);
+				setIncr(true);
+				if (READY) {
+					TextMaster.render(alphaCoef);
+					return;
+				}
+				setText(textToShow.get(textI));
+				TextMaster.add(text);
+			}
+			TextMaster.render(alphaCoef);
 		};
 		GU.currentThread().finishLoading();
 		while (true) {

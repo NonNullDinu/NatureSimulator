@@ -1,14 +1,13 @@
 package ns.ui.shop;
 
-import java.util.List;
-
-import org.lwjgl.input.Mouse;
-
 import ns.components.BlueprintCreator;
 import ns.entities.Entity;
 import ns.ui.ComplexGUI;
 import ns.utils.GU;
 import ns.utils.MousePicker;
+import org.lwjgl.input.Mouse;
+
+import java.util.List;
 
 public class Shop {
 	private static final float SLIDE_OFFSET = 0.75f;

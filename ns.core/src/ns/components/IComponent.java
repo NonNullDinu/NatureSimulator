@@ -1,4 +1,4 @@
 package ns.components;
 
-public abstract interface IComponent {
+interface IComponent {
 }

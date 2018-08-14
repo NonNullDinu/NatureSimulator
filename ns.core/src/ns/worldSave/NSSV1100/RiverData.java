@@ -1,9 +1,8 @@
 package ns.worldSave.NSSV1100;
 
-import org.lwjgl.util.vector.Vector3f;
-
 import ns.rivers.River;
 import ns.worldSave.Data;
+import org.lwjgl.util.vector.Vector3f;
 
 public class RiverData extends Data {
 	private static final long serialVersionUID = -2850921767663909329L;

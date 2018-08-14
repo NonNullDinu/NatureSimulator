@@ -1,8 +1,7 @@
 package ns.ui;
 
-import org.lwjgl.util.vector.Vector2f;
-
 import ns.openglObjects.Texture;
+import org.lwjgl.util.vector.Vector2f;
 
 public class GUIButton extends Button {
 

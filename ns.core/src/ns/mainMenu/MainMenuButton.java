@@ -1,10 +1,9 @@
 package ns.mainMenu;
 
-import org.lwjgl.util.vector.Vector2f;
-
 import ns.interfaces.Action;
 import ns.openglObjects.Texture;
 import ns.ui.Button;
+import org.lwjgl.util.vector.Vector2f;
 
 public class MainMenuButton extends Button {
 	private Action action;

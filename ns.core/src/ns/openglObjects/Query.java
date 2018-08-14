@@ -1,10 +1,9 @@
 package ns.openglObjects;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
-
 import ns.parallelComputing.CreateQueryRequest;
 import ns.utils.GU;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL15;
 
 public class Query implements IOpenGLObject {
 	private int id;

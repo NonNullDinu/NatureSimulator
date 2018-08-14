@@ -1,9 +1,8 @@
 package ns.shaders;
 
+import ns.openglObjects.IOpenGLObject;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
-
-import ns.openglObjects.IOpenGLObject;
 
 public class Shader implements IOpenGLObject {
 	private String src;

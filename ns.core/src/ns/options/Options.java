@@ -1,14 +1,13 @@
 package ns.options;
 
-import java.util.List;
-
-import org.lwjgl.util.vector.Vector2f;
-
 import ns.interfaces.Action;
 import ns.interfaces.UIMenu;
 import ns.renderers.GUIRenderer;
 import ns.ui.GUIButton;
 import ns.utils.GU;
+import org.lwjgl.util.vector.Vector2f;
+
+import java.util.List;
 
 public class Options implements UIMenu {
 	private List<Option> options;

@@ -1,13 +1,12 @@
 package ns.rivers;
 
-import java.io.IOException;
-import java.io.Serializable;
-
+import ns.display.DisplayManager;
+import ns.terrain.Terrain;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import ns.display.DisplayManager;
-import ns.terrain.Terrain;
+import java.io.IOException;
+import java.io.Serializable;
 
 public class WaterParticle implements Serializable {
 	private static final long serialVersionUID = -5191206774216962023L;

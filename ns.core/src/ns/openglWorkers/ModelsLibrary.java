@@ -1,11 +1,11 @@
 package ns.openglWorkers;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import ns.customFileFormat.MdlFile;
 import ns.openglObjects.VAO;
 import obj.OBJLoader;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ModelsLibrary {
 	private static Map<String, VAO> models = new HashMap<>();

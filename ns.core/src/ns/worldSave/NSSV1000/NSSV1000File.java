@@ -1,11 +1,5 @@
 package ns.worldSave.NSSV1000;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import ns.entities.Entity;
 import ns.terrain.Terrain;
 import ns.world.World;
@@ -13,11 +7,17 @@ import ns.worldSave.EndObject;
 import ns.worldSave.EntityData;
 import ns.worldSave.NSSVFile;
 import ns.worldSave.TerrainData;
-import resources.Resource;
+import resources.In;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NSSV1000File extends NSSVFile {
 
-	public NSSV1000File(Resource resource) {
+	public NSSV1000File(In resource) {
 		super(resource);
 	}
 

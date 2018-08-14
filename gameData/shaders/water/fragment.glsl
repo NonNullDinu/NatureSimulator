@@ -23,7 +23,10 @@ uniform sampler2D depthTexture;
 uniform vec2 nearFarPlanes;
 uniform vec3 skyColor;
 
-#define toLinearDepth(depth) (2.0 * nearFarPlanes.x * nearFarPlanes.y / (nearFarPlanes.y + nearFarPlanes.x - (2.0 * depth - 1.0) * (nearFarPlanes.y - nearFarPlanes.x)))
+float toLinearDepth(float depth) {
+    return (2.0 * nearFarPlanes.x * nearFarPlanes.y / (nearFarPlanes.y + nearFarPlanes.x - (2.0 * depth - 1.0) *
+    (nearFarPlanes.y - nearFarPlanes.x)));
+}
 
 vec3 applyMurkiness(vec3 refractColour, float waterDepth) {
 	float murkyFactor = clamp(waterDepth / murkyDepth, 0.0, 1.0);

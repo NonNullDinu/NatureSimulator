@@ -1,11 +1,11 @@
 package ns.water;
 
-import java.util.Arrays;
-
 import ns.openglObjects.VAO;
 import ns.openglWorkers.VAOLoader;
 import ns.openglWorkers.VBOData;
 import ns.terrain.Terrain;
+
+import java.util.Arrays;
 
 public class WaterTile {
 	public static WaterTile tile;

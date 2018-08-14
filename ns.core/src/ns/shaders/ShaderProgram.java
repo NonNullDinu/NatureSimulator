@@ -1,8 +1,7 @@
 package ns.shaders;
 
-import org.lwjgl.opengl.GL20;
-
 import ns.openglObjects.IOpenGLObject;
+import org.lwjgl.opengl.GL20;
 
 public abstract class ShaderProgram implements IOpenGLObject {
 	private final int programId;

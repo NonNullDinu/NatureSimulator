@@ -1,16 +1,16 @@
 package ns.worldSave;
 
-import java.io.InputStream;
-
 import ns.customFileFormat.File;
 import ns.exceptions.LoadingException;
 import ns.world.World;
-import resources.Resource;
+import resources.In;
+
+import java.io.InputStream;
 
 public abstract class NSSVFile implements File {
-	private Resource resource;
-	
-	public NSSVFile(Resource resource) {
+	private In resource;
+
+	public NSSVFile(In resource) {
 		this.resource = resource;
 	}
 

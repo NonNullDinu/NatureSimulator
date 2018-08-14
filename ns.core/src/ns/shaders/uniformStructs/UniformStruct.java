@@ -1,9 +1,9 @@
 package ns.shaders.uniformStructs;
 
-import java.util.List;
-
 import ns.shaders.UniformLocator;
 import ns.shaders.UniformVar;
+
+import java.util.List;
 
 public abstract class UniformStruct extends UniformVar {
 

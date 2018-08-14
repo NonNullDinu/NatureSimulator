@@ -1,20 +1,19 @@
 package obj;
 
+import ns.utils.GU;
+import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
+import resources.In;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
-
-import ns.utils.GU;
-import resources.Resource;
-
 public class Materials extends ArrayList<Material> {
 	private static final long serialVersionUID = -4711987157168197781L;
 
-	public Materials(Resource resource) {
+	public Materials(In resource) {
 		BufferedReader reader = GU.open(resource);
 		String line;
 		Material current = null;

@@ -1,5 +1,14 @@
 package ns.openglWorkers;
 
+import ns.openglObjects.VAO;
+import ns.openglObjects.VBO;
+import ns.parallelComputing.*;
+import ns.parallelComputing.Thread;
+import ns.utils.GU;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL15;
+import org.lwjgl.opengl.GL30;
+
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -7,19 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL30;
-
-import ns.openglObjects.VAO;
-import ns.openglObjects.VBO;
-import ns.parallelComputing.CreateAndPackVAORequest;
-import ns.parallelComputing.CreateVAORequest;
-import ns.parallelComputing.VAOUpdateRequest;
-import ns.parallelComputing.VBORecreateAndReplaceRequest;
-import ns.parallelComputing.VBOUpdateRequest;
-import ns.utils.GU;
 
 public class VAOLoader {
 	private static final Map<Integer, Map<Integer, Integer>> vaos = new HashMap<>();
@@ -229,15 +225,15 @@ public class VAOLoader {
 	}
 
 	private static FloatBuffer storeDataInFloatBuffer(float[] data) {
-		return (FloatBuffer) BufferUtils.createFloatBuffer(data.length).put(data).flip();
+		return BufferUtils.createFloatBuffer(data.length).put(data).flip();
 	}
 
 	private static IntBuffer storeDataInIntBuffer(int[] data) {
-		return (IntBuffer) BufferUtils.createIntBuffer(data.length).put(data).flip();
+		return BufferUtils.createIntBuffer(data.length).put(data).flip();
 	}
 
 	private static ByteBuffer storeDataInByteBuffer(byte[] data) {
-		return (ByteBuffer) BufferUtils.createByteBuffer(data.length).put(data).flip();
+		return BufferUtils.createByteBuffer(data.length).put(data).flip();
 	}
 
 	public static void replace(VAO model, int attn, float[] data, List<Integer> changes, int dimensions) {

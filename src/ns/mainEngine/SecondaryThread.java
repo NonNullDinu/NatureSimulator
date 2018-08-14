@@ -1,8 +1,5 @@
 package ns.mainEngine;
 
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
-
 import data.GameData;
 import ns.customFileFormat.TexFile;
 import ns.derrivedOpenGLObjects.FlareTexture;
@@ -28,15 +25,18 @@ import ns.utils.GU;
 import ns.utils.GU.Random;
 import ns.water.WaterTile;
 import ns.world.WorldGenerator;
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
 
 public class SecondaryThread implements Runnable {
 	public static boolean READY = false;
 
 	@Override
 	public void run() {
-		GU.currentThread().waitForDisplayInit();
 		MasterRenderer.initStandardModels();
+		GU.currentThread().waitForGameDataInit();
 		StructLib.load(GameData.getResourceAt("shaders/structlib.glsl"));
+		GU.currentThread().waitForDisplayInit();
 		ShaderLib.loadAll();
 		ModelsLibrary.getModel("models/1000/tree.mdl");
 		ModelsLibrary.getModel("models/1001/tree.mdl");

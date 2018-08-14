@@ -1,12 +1,11 @@
 package ns.renderers;
 
-import org.lwjgl.opengl.GL11;
-
 import ns.exceptions.FBOAttachmentException;
 import ns.openglObjects.FBO;
 import ns.openglObjects.VAO;
 import ns.shaders.HBlurShader;
 import ns.shaders.VBlurShader;
+import org.lwjgl.opengl.GL11;
 
 public class Blurer extends EffectRenderer {
 

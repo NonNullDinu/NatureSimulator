@@ -1,10 +1,9 @@
 package ns.parallelComputing;
 
-import java.nio.ByteBuffer;
-
+import ns.openglObjects.Texture;
 import org.lwjgl.opengl.GL11;
 
-import ns.openglObjects.Texture;
+import java.nio.ByteBuffer;
 
 public class TextureCreateRequest extends Request {
 

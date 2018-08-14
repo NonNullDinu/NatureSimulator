@@ -1,11 +1,10 @@
 package ns.components;
 
-import org.lwjgl.util.vector.Vector3f;
-
 import ns.display.DisplayManager;
 import ns.entities.Entity;
 import ns.utils.GU;
 import ns.world.World;
+import org.lwjgl.util.vector.Vector3f;
 
 public class MovementComponent implements IComponent {
 

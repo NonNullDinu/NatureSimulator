@@ -1,5 +1,7 @@
 package ns.utils.natives;
 
+import ns.utils.GU;
+
 /**
  * Class that parses java objects into objects that can be used in native code
  * 
@@ -7,7 +9,7 @@ package ns.utils.natives;
  */
 public class NL /* NativeLibrary */ {
 	static {
-		// TODO Load library
+		System.load(GU.path + "lib/natives/libnl.so");
 	}
 
 	public static Object nativeCall(Method method, Object... objects) {
@@ -15,10 +17,11 @@ public class NL /* NativeLibrary */ {
 	}
 
 	public enum Method {
+		ADD((Object... o) -> _NL.add((int) o[0], (int) o[1])),
 		;
 		private MethodImpl implementation;
 
-		private Method(MethodImpl implementation) {
+		Method(MethodImpl implementation) {
 			this.implementation = implementation;
 		}
 
@@ -28,6 +31,6 @@ public class NL /* NativeLibrary */ {
 	}
 
 	private interface MethodImpl {
-		abstract Object call(Object[] args);
+		Object call(Object[] args);
 	}
 }

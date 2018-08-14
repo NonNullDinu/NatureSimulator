@@ -1,16 +1,15 @@
-package utils.config;
+package ns.config;
+
+import ns.utils.GU;
+import resources.Out;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
-import ns.utils.GU;
-import resources.WritingResource;
-
 public class ConfigWriter {
 
 	public static void main(String[] args) throws IOException {
-		OutputStream stream = new WritingResource().withLocation("gameData/config/gameConfiguration.config")
-				.create().asOutputStream();
+		OutputStream stream = Out.create("gameData/config/gameConfiguration.config").asOutputStream();
 		while (true) {
 			System.out.println("Full screen?Y/N");
 			int in = System.in.read();

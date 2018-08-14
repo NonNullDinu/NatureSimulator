@@ -1,16 +1,15 @@
 package ns.components;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.lwjgl.util.vector.Vector3f;
-
 import ns.entities.Entity;
 import ns.world.World;
 import ns.worldSave.BlueprintData;
 import ns.worldSave.SerializableWorldObject;
+import org.lwjgl.util.vector.Vector3f;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Blueprint implements SerializableWorldObject {
 
