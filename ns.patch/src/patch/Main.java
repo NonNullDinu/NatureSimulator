@@ -30,7 +30,7 @@ public class Main {
 			}
 			reader.close();
 		} else {
-			Process p = Runtime.getRuntime().exec("cd \"$(cat ~/.ns-install/target-dir)\" && wget -O update.sh https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/master/updates/latestUpdate.sh && sh update.sh");
+			Process p = Runtime.getRuntime().exec("cd \"$(cat ~/.ns-install/target-dir)\" && wget -O update.sh https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/master/updates/latestUpdate.sh && sh update.sh && rm update.sh");
 			try {
 				p.waitFor();
 			} catch (InterruptedException e) {
