@@ -1,3 +1,6 @@
+/**
+ * @author Dinu
+ */
 module ns.core {
 	requires java.xml;
 	requires java.desktop;

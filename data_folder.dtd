@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-		<!ELEMENT root_folder (version, description, root_tree)>
+<!ELEMENT root_folder (version, description, root_tree)>
 		<!ATTLIST root_folder name CDATA #REQUIRED path CDATA #IMPLIED>
 		<!ELEMENT version EMPTY>
 		<!ATTLIST version v CDATA #REQUIRED>

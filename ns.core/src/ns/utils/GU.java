@@ -57,6 +57,8 @@ public class GU {
 	private static ByteBuffer buffer = ByteBuffer.allocateDirect(4);
 	public static Vector2b mouseButtons;
 	public static DocumentBuilder documentBuilder;
+	public static final boolean OS_WINDOWS;
+	public static final boolean OS_LINUX;
 
 	static {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -68,6 +70,9 @@ public class GU {
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		}
+		String os = System.getProperty("os.name");
+		OS_WINDOWS = os.equals("Windows");
+		OS_LINUX = os.equals("Linux");
 	}
 
 	public static void init() {
