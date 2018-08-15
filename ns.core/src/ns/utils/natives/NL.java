@@ -1,7 +1,5 @@
 package ns.utils.natives;
 
-import ns.utils.GU;
-
 /**
  * Class that parses java objects into objects that can be used in native code
  * 
@@ -9,7 +7,7 @@ import ns.utils.GU;
  */
 public class NL /* NativeLibrary */ {
 	static {
-		System.load(GU.path + "lib/natives/libnl.so");
+//		System.load(GU.path + "lib/natives/libnl.so");
 	}
 
 	public static Object nativeCall(Method method, Object... objects) {

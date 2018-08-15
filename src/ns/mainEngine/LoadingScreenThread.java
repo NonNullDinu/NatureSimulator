@@ -53,17 +53,19 @@ public class LoadingScreenThread implements Runnable {
 				addToAC(1.0f - alphaCoef);
 			}
 			if (alphaCoef <= 0.0f) {
-				addToAC(-alphaCoef);
-				text.remove();
-				textI++;
-				setReady(textI >= textToShow.size() - 1);
-				setIncr(true);
 				if (READY) {
+					setText(textToShow.get(textI));
+					TextMaster.add(text);
 					TextMaster.render(alphaCoef);
-					return;
+				} else {
+					addToAC(-alphaCoef);
+					text.remove();
+					textI++;
+					setReady(textI == textToShow.size() - 1);
+					setIncr(true);
+					setText(textToShow.get(textI));
+					TextMaster.add(text);
 				}
-				setText(textToShow.get(textI));
-				TextMaster.add(text);
 			}
 			TextMaster.render(alphaCoef);
 		};

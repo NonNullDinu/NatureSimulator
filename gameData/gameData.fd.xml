@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE root_folder SYSTEM "./data_folder.dtd">
+<!DOCTYPE root_folder [
+		<!ELEMENT root_folder (version, description, root_tree)>
+		<!ATTLIST root_folder
+				name CDATA #REQUIRED
+				path CDATA #IMPLIED
+				>
+		<!ELEMENT version EMPTY>
+		<!ATTLIST version
+				v CDATA #REQUIRED
+				>
+		<!ELEMENT description (#PCDATA)>
+		<!ELEMENT root_tree (folder*, file*)>
+		<!ELEMENT folder (folder*, file*)>
+		<!ATTLIST folder
+				name CDATA #REQUIRED
+				>
+		<!ELEMENT file EMPTY>
+		<!ATTLIST file
+				name CDATA #REQUIRED
+				extension CDATA #REQUIRED
+				>
+		]>
 <root_folder name="gameData">
 	<version v="1.2"/>
 	<description>

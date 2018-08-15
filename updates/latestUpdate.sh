@@ -48,4 +48,5 @@ mv -uf ./* ${install_dir}/gameData
 cd ..
 
 cd ..
+rm -rf updateTmp
 cat temp-version > version

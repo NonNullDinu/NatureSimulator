@@ -25,8 +25,6 @@ public class ConfigInputStream {
 		Config config = null;
 		if (configType == 1) {
 			config = (conf == 0 ? Config.FALSE : Config.TRUE);
-		} else if (configType == 2) {
-			config = Config.VALUE;
 		}
 		return config;
 	}
