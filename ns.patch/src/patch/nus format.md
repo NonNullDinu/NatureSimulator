@@ -13,14 +13,14 @@ $METHOD_CODE<br>
 The <code>$METHOD_CODE</code> may be formatted with tabs
 <code>$METHOD_ARGS</code> can be accessed with <code>$0, $1, $2, $3</code> and so on
 
-###All scripts should define a main method like so:
+### All scripts should define a main method like so:
 <code>method main()<br>
 {<br>
 $CODE_HERE<br>
 }</code>
 
 # Conditions
-######Not implemented yet
+###### Not implemented yet
 Syntax will be same as in Linux BASH<br>
 <code>if [[ $CONDITION ]] ;<br>
 then $CODE<br>
