@@ -1,9 +1,6 @@
 package patch;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,12 +27,16 @@ public class Main {
 			}
 			reader.close();
 		} else {
-			Process p = Runtime.getRuntime().exec("cd \"$(cat ~/.ns-install/target-dir)\" && wget -O update.sh https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/master/updates/latestUpdate.sh && sh update.sh && rm update.sh");
+			byte[] bts = new FileInputStream(System.getProperty("user.home") + "/.ns-install/target-dir").readAllBytes();
+			String installDir = new String(bts, 0, bts.length - 1);
+			System.out.println(installDir);
+			Process p = Runtime.getRuntime().exec("sh " + System.getProperty("user.home") + "/.ns-install/update.sh");
 			try {
 				p.waitFor();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			System.out.println(new String(p.getInputStream().readAllBytes()));
 			if (p.exitValue() > 0) {
 				System.err.println(new String(p.getErrorStream().readAllBytes()));
 			}
