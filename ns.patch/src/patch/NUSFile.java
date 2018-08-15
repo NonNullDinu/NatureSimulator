@@ -1,9 +1,6 @@
 package patch;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class NUSFile {
 	private static final Map<String, MethodToken> LANGUAGE_METHODS = new HashMap<>();
@@ -29,7 +26,7 @@ public class NUSFile {
 	}
 
 	public void splitCode() {
-		List<Token> tockens = turnToTokens(code);
+		turnToTokens(code);
 	}
 
 	private List<Token> turnToTokens(String code) {
@@ -116,14 +113,6 @@ public class NUSFile {
 		}
 	}
 
-	private class MethodNameToken extends Token {
-		private String name;
-
-		public MethodNameToken(String name) {
-			this.name = name;
-		}
-	}
-
 	private class MethodArgToken extends Token {
 		private int id;
 		private String literal;
@@ -145,8 +134,68 @@ public class NUSFile {
 
 		@Override
 		public void execute(Token[] args) {
-			calledMethod.execute(this.args);
+			Token[] arg = Arrays.copyOf(args, args.length);
+			for (int i = 0; i < this.args.length; i++) {
+				MethodArgToken mthdArg = this.args[i];
+				if (mthdArg.literal.startsWith("$")) {
+					arg[i] = args[Integer.parseInt(mthdArg.literal.substring(1))];
+				} else {
+					arg[i] = mthdArg;
+				}
+			}
+			calledMethod.execute(arg);
 		}
+	}
+
+	private class IfStatementToken extends Token implements ExecutableToken {
+		private Condition condition;
+		private ConditionResultToken condition_true_token;
+		private ConditionResultToken condition_false_token;
+
+		public IfStatementToken(ConditionToken conditionToken, ConditionResultToken condition_true_token, ConditionResultToken condition_false_token) {
+			this.condition = conditionToken.turnToCondition();
+			this.condition_false_token = condition_false_token;
+			this.condition_true_token = condition_true_token;
+		}
+
+		@Override
+		public void execute(Token[] args) {
+			if (condition.check(args))
+				condition_true_token.execute(args);
+			else
+				condition_false_token.execute(args);
+		}
+	}
+
+	private class ConditionToken extends Token {
+		private String literal;
+
+		public ConditionToken(String literal) {
+			this.literal = literal;
+		}
+
+		public Condition turnToCondition() {
+			return null;
+		}
+	}
+
+
+	private class ConditionResultToken extends Token implements ExecutableToken {
+		private List<MethodCallToken> calls;
+
+		public ConditionResultToken(List<MethodCallToken> calls) {
+			this.calls = calls;
+		}
+
+		@Override
+		public void execute(Token[] args) {
+			for (MethodCallToken call : calls)
+				call.execute(args);
+		}
+	}
+
+	private interface Condition {
+		boolean check(Token[] args);
 	}
 
 	private List<Token> turnToTokensMethodBody(String code) {
@@ -154,7 +203,7 @@ public class NUSFile {
 		String[] lines = code.split("\n");
 		for (int i = 0; i < lines.length; i++) {
 			String line = lines[i];
-			while (line.startsWith("\t"))
+			if (line.startsWith("\t"))
 				line = line.replaceAll("\t", "");
 			if (isMethodCall(line)) {
 				tokens.add(getMethodCallToken(line));

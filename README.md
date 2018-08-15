@@ -1,4 +1,4 @@
-![Logo](https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/master/gameData/textures/logo.png)
+![Logo](https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/master/gameData/textures/ns_icon.png)
 
 # Description
 This application is an open-source attempt to simulate nature.
