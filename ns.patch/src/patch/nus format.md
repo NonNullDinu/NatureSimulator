@@ -9,7 +9,7 @@ a <code>WrongMethodTypeException</code> will be thrown
 {
 $METHOD_CODE
 }</pre>
-The <code>$METHOD_CODE</code> may be formatted with tabs
+The <code>$METHOD_CODE</code> may be formatted with tabs<br />
 <code>$METHOD_ARGS</code> can be accessed with <code>$0, $1, $2, $3</code> and so on
 
 ### All scripts should define a main method like so:
