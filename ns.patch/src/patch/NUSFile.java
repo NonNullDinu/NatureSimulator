@@ -6,6 +6,9 @@ public class NUSFile {
 	private static final Map<String, MethodToken> LANGUAGE_METHODS = new HashMap<>();
 	private Map<String, MethodToken> script_methods;
 	private String code;
+	private static final char FORMAT_SPACE_OR_TAB_OR_NOTHING = '`';
+
+	private static final Map<String, PatternToken> patterns = new HashMap<>();
 
 	static {
 		NUSFile fl = new NUSFile();
@@ -15,6 +18,12 @@ public class NUSFile {
 			}
 			System.out.println("Test remove");
 		}));
+		// TODO Add language methods here
+		PatternToken ifPattern = fl.new PatternToken("if [[ * ]]" + FORMAT_SPACE_OR_TAB_OR_NOTHING + ";" + FORMAT_SPACE_OR_TAB_OR_NOTHING);
+		System.out.println(ifPattern.isStringOfPattern("if [[ 1==2 ]];"));
+		patterns.put("LANG_IF", ifPattern);
+		patterns.put("LANG_METHOD_CALL", fl.new PatternToken("*_CALL *(*)"));
+		// TODO Add language patterns here
 	}
 
 	public NUSFile(String code) {
@@ -226,7 +235,7 @@ public class NUSFile {
 	private List<Token> turnToTokensMethodBody(String code) {
 		List<Token> tokens = new ArrayList<>();
 		String[] lines = code.split("\n");
-		for (int i = 0; i < lines.length; i++) {
+		for (int i = 1; i < lines.length - 1; i++) {
 			String line = lines[i];
 			if (line.startsWith("\t"))
 				line = line.replaceAll("\t", "");
@@ -241,7 +250,7 @@ public class NUSFile {
 	}
 
 	private IfStatementToken getIfStatementToken(int i, String line, String[] lines) {
-		String condition = line.substring(6, line.length() - 6);
+		String condition = line.substring(6, line.lastIndexOf(']') - 2);
 		ConditionToken conditionToken = new ConditionToken(condition);
 		i++;
 		line = lines[i];
@@ -275,8 +284,64 @@ public class NUSFile {
 		return new IfStatementToken(conditionToken, result_true, result_false);
 	}
 
+	private class PatternToken {
+		private String format;
+
+		public PatternToken(String format) {
+			this.format = format;
+		}
+
+		public boolean isStringOfPattern(String string) {
+			System.out.println(string);
+			char[] str = string.toCharArray();
+			char[] pattern = format.toCharArray();
+			int add = 0;
+			for (int i = 0; i < pattern.length; i++) {
+				if (pattern[i] == '*') {
+					if (i == pattern.length - 2)
+						return str[str.length - 1] == pattern[i + 1];
+					else if (i == pattern.length - 1)
+						return true;
+					else {
+						if (pattern[i + 2] != '*' && pattern[i + 2] != FORMAT_SPACE_OR_TAB_OR_NOTHING) {
+							for (; !(pattern[i + 1] == str[i + add] && pattern[i + 2] == str[i + add + 1]); add++) {
+								if (i + add + 1 == str.length - 1) {/*Reached the end but still not found the next chars in pattern*/
+									return false;
+								}
+							}
+							add--;
+						} else {
+							for (; pattern[i + 1] != str[i + add]; add++) {
+								if (i + add == str.length - 1) {/*Reached the end but still not found the next char in pattern*/
+									return false;
+								}
+							}
+							add--;
+						}
+					}
+				} else if (pattern[i] == FORMAT_SPACE_OR_TAB_OR_NOTHING) {
+					if (i + add == str.length) {
+						return true;
+					}
+					if (!(str[i + add] == ' ' || str[i + add] == '\t')) {
+						add--;
+						continue;
+					}
+				} else {
+					if (pattern[i] != str[i + add]) {
+						System.out.println(i + " " + (i + add) + " " + format + " " + string);
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+	}
+
 	private boolean isIfStatement(String line) {
-		return line.startsWith("if [[ ") && line.endsWith(" ]] ; ");
+		boolean res = patterns.get("LANG_IF").isStringOfPattern(line);
+		System.out.println(line + " is if(" + res + ")");
+		return res;
 	}
 
 	private MethodCallToken getMethodCallToken(String line) {
@@ -302,7 +367,10 @@ public class NUSFile {
 	}
 
 	public boolean isMethodCall(String code) {
-		return code.startsWith("NUS_CALL ") || code.startsWith("SCR_CALL ");
+		boolean res = patterns.get("LANG_METHOD_CALL").isStringOfPattern(code);
+		System.out.println(code + " is method call(" + res + ")");
+		return res;
+//		return code.startsWith("NUS_CALL ") || code.startsWith("SCR_CALL ");
 	}
 
 	public void executeScript() {

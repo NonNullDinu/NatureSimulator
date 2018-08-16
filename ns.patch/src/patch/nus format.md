@@ -1,5 +1,6 @@
-# Methods
-## Call
+# Language
+## Method
+### Call
 <code>$TYPE_CALL ${METHOD_NAME}(${METHOD_ARGS})</code>, where $TYPE_CALL can be one of the two: SCR_CALL,
 for a method within the script, or NUS_CALL, for a call to a method of the language. If it is neither of these,
 a <code>WrongMethodTypeException</code> will be thrown
@@ -18,14 +19,23 @@ The <code>$METHOD_CODE</code> may be formatted with tabs<br />
 $CODE_HERE
 }</pre>
 
-# If statements
+## If statements
 ###### Basic implementation(Only == for String and Integer types. Combining them will result the condition evaluated to false). Can be nested, but that might crash
 Syntax will be same as in Linux BASH<br />
 <pre>if [[ $CONDITION ]] ; 
 then $CODE
 else $CODE
 fi</pre>
-### Remember this: after the ';' on the second line, there should ALWAYS be a ' ' (space). If it isn't the condition won't be evaluated properly
+Can also be defined as:
+<pre>if [[ $CONDITION ]];
+then $CODE
+else $CODE
+fi</pre>
+or
+<pre>if [[ $CONDITION ]] ;
+then $CODE
+else $CODE
+fi</pre>
 
 # Interpreter syntax analyze mechanism
 ###### This section is made so that you can understand better how the interpreter works if you want to commit to it, or simply to look and see how this interpreter does his job
