@@ -21,10 +21,11 @@ $CODE_HERE
 # If statements
 ###### Basic implementation(Only == for String and Integer types. Combining them will result the condition evaluated to false). Can be nested, but that might crash
 Syntax will be same as in Linux BASH<br />
-<pre>if [[ $CONDITION ]] ;
+<pre>if [[ $CONDITION ]] ; 
 then $CODE
 else $CODE
 fi</pre>
+### Remember this: after the ';' on the second line, there should ALWAYS be a ' ' (space). If it isn't the condition won't be evaluated properly
 
 # Interpreter syntax analyze mechanism
 ###### This section is made so that you can understand better how the interpreter works if you want to commit to it, or simply to look and see how this interpreter does his job
@@ -50,6 +51,8 @@ This is how an if statement looks like:
 then $CODE
 else $CODE
 fi</pre>
+
+
 
 This is how the interpreter sees it:
 <pre>$DECLARATION_OF_IF_STATEMENT(if) $CONDITION_BEGIN([[) $CONDITION $CONDITION_END(]]) ;

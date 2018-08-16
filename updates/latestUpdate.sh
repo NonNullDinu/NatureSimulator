@@ -19,10 +19,10 @@ if [[ -d updateTmp ]] ; #Updated before
 then #Clean up
 echo "Older update found, cleaning"
 for file in updateTmp/*; do
-	if [[ -d ${file} ]] ; then
-		rm -r ${file}
+	if [[ -d "$file" ]] ; then
+		rm -r "$file"
 	else
-		rm ${file}
+		rm "$file"
 	fi
 done
 else
@@ -36,8 +36,35 @@ cd toJar
 wget -O toJar.tar.gz https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/updates/toJar.tar.gz
 tar -xvzf toJar.tar.gz
 rm toJar.tar.gz
-jar uf ${install_dir}/NatureSimulator.jar ./* ./*/* ./*/*/* ./*/*/*/* #Best attempt Ive come up with, but, i know,
-																	  #its not good to do it like this
+mv -uf jr.jar "$install_dir"/NatureSimulator.jar
+
+#For bigger jars (10MB+)
+#wget -O toJar.tar.gz https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/updates/toJar.tar.gz
+#tar -xvzf toJar.tar.gz
+#rm toJar.tar.gz
+#unset JAR_UPDATE_FILES
+#for fl in ./*; do
+#	if [[ -d "$fl" ]] ;
+#	then cd "$fl"
+#		for fl2 in ./*; do
+#			if [[ -d "$fl2" ]] ;
+#			then cd "$fl2"
+#
+#				for fl3 in ./*; do
+#					if [[ -d "$fl3" ]] ;
+#					then cd "$fl3"
+#
+#					else JAR_UPDATE_FILES="$JAR_UPDATE_FILES $fl/$fl2/$fl3"
+#					fi
+#				done
+#			else JAR_UPDATE_FILES="$JAR_UPDATE_FILES $fl/$fl2"
+#			fi
+#		done
+#	else JAR_UPDATE_FILES="$JAR_UPDATE_FILES $fl"
+#	fi
+#done
+#jar uf ${install_dir}/NatureSimulator.jar ${JAR_UPDATE_FILES}
+
 cd ..
 
 cd toGameData
