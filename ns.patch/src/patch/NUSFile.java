@@ -134,16 +134,18 @@ public class NUSFile {
 
 		@Override
 		public void execute(Token[] args) {
-			Token[] arg = Arrays.copyOf(args, args.length);
-			for (int i = 0; i < this.args.length; i++) {
-				MethodArgToken mthdArg = this.args[i];
-				if (mthdArg.literal.startsWith("$")) {
-					arg[i] = args[Integer.parseInt(mthdArg.literal.substring(1))];
-				} else {
-					arg[i] = mthdArg;
+			if (args != null) {
+				Token[] arg = Arrays.copyOf(args, args.length);
+				for (int i = 0; i < this.args.length; i++) {
+					MethodArgToken mthdArg = this.args[i];
+					if (mthdArg.literal.startsWith("$")) {
+						arg[i] = args[Integer.parseInt(mthdArg.literal.substring(1))];
+					} else {
+						arg[i] = mthdArg;
+					}
 				}
-			}
-			calledMethod.execute(arg);
+				calledMethod.execute(arg);
+			} else calledMethod.execute(this.args);
 		}
 	}
 
@@ -162,7 +164,7 @@ public class NUSFile {
 		public void execute(Token[] args) {
 			if (condition.check(args))
 				condition_true_token.execute(args);
-			else
+			else if (condition_false_token != null)
 				condition_false_token.execute(args);
 		}
 	}
@@ -175,21 +177,42 @@ public class NUSFile {
 		}
 
 		public Condition turnToCondition() {
+			if (literal.contains("==")) {
+				String[] literalParts = literal.split("==");
+				String leftLiteral = literalParts[0];
+				if (leftLiteral.contains(" "))
+					leftLiteral = leftLiteral.replaceAll(" ", "");
+				String rightLiteral = literalParts[1];
+				if (rightLiteral.contains(" "))
+					rightLiteral = rightLiteral.replaceAll(" ", "");
+				final String fleftliteral = leftLiteral;
+				final String frightliteral = rightLiteral;
+				return (Token[] tokens) -> {
+					String a = fleftliteral;
+					String b = frightliteral;
+					if (tokens != null)
+						for (int i = tokens.length - 1; i >= 0; i--) {
+							a = a.replaceAll("$" + i, ((MethodArgToken) tokens[i]).literal);
+							b = b.replaceAll("$" + i, ((MethodArgToken) tokens[i]).literal);
+						}
+					return a.equals(b);
+				};
+			}
 			return null;
 		}
 	}
 
 
 	private class ConditionResultToken extends Token implements ExecutableToken {
-		private List<MethodCallToken> calls;
+		private List<ExecutableToken> calls;
 
-		public ConditionResultToken(List<MethodCallToken> calls) {
+		public ConditionResultToken(List<ExecutableToken> calls) {
 			this.calls = calls;
 		}
 
 		@Override
 		public void execute(Token[] args) {
-			for (MethodCallToken call : calls)
+			for (ExecutableToken call : calls)
 				call.execute(args);
 		}
 	}
@@ -197,6 +220,8 @@ public class NUSFile {
 	private interface Condition {
 		boolean check(Token[] args);
 	}
+
+	private int parseIndexIfStatementReached;
 
 	private List<Token> turnToTokensMethodBody(String code) {
 		List<Token> tokens = new ArrayList<>();
@@ -207,9 +232,51 @@ public class NUSFile {
 				line = line.replaceAll("\t", "");
 			if (isMethodCall(line)) {
 				tokens.add(getMethodCallToken(line));
+			} else if (isIfStatement(line)) {
+				tokens.add(getIfStatementToken(i, line, lines));
+				i = parseIndexIfStatementReached;
 			}
 		}
 		return tokens;
+	}
+
+	private IfStatementToken getIfStatementToken(int i, String line, String[] lines) {
+		String condition = line.substring(6, line.length() - 6);
+		ConditionToken conditionToken = new ConditionToken(condition);
+		i++;
+		line = lines[i];
+		line = line.replaceAll("\t", "");
+		if (!line.startsWith("then ")) throw new IfSyntaxError("Expected to find \"then\" on line:" + line);
+		List<ExecutableToken> statements = new ArrayList<>();
+		List<ExecutableToken> statementsFalse = null;
+		for (; !lines[i].endsWith("fi"); i++) {
+			line = lines[i];
+			if (line.startsWith("\t"))
+				line = line.replaceAll("\t", "");
+			if (line.startsWith("then "))
+				line = line.replaceFirst("then ", "");
+			if (line.startsWith("else")) {
+				statementsFalse = new ArrayList<>();
+				line = line.replaceFirst("else ", "");
+			}
+			if (isMethodCall(line)) {
+				if (statementsFalse != null) {
+					statementsFalse.add(getMethodCallToken(line));
+				} else statements.add(getMethodCallToken(line));
+			} else if (isIfStatement(line)) {
+				if (statementsFalse != null) statementsFalse.add(getIfStatementToken(i, line, lines));
+				else statements.add(getIfStatementToken(i, line, lines));
+				i = parseIndexIfStatementReached;
+			}
+		}
+		ConditionResultToken result_true = new ConditionResultToken(statements);
+		ConditionResultToken result_false = (statementsFalse != null ? new ConditionResultToken(statementsFalse) : null);
+		parseIndexIfStatementReached = i;
+		return new IfStatementToken(conditionToken, result_true, result_false);
+	}
+
+	private boolean isIfStatement(String line) {
+		return line.startsWith("if [[ ") && line.endsWith(" ]] ; ");
 	}
 
 	private MethodCallToken getMethodCallToken(String line) {
@@ -235,7 +302,7 @@ public class NUSFile {
 	}
 
 	public boolean isMethodCall(String code) {
-		return code.startsWith("NUS_CALL ");
+		return code.startsWith("NUS_CALL ") || code.startsWith("SCR_CALL ");
 	}
 
 	public void executeScript() {
@@ -255,6 +322,12 @@ public class NUSFile {
 	private class WrongMethodTypeException extends RuntimeException {
 		public WrongMethodTypeException(String line) {
 			super(line);
+		}
+	}
+
+	private class IfSyntaxError extends RuntimeException {
+		public IfSyntaxError(String s) {
+			super(s);
 		}
 	}
 }

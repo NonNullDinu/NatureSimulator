@@ -29,7 +29,7 @@ Get the .nus file and run patch.jar with the name of the .nus file as the argume
 # OS dependent features
 
 | Feature                                | Linux x32_64     | macOS x64                     | Windows 7+ x64            |
-|----------------------------------------|------------------|-------------------------------|---------------------------|
+|----------------------------------------|:----------------:|:-----------------------------:|:-------------------------:|
 | **N**S<br />**U**pdate<br />**S**cript | ✓                | ✓                             | ✓                         |
 | BASH-based update                      | ✓ 4.1+           |   Need linux "wget"           |                           |
 | WinCMD-based update                    |                  |                               | ✓                         |

@@ -19,7 +19,7 @@ $CODE_HERE
 }</pre>
 
 # If statements
-###### Not implemented yet
+###### Basic implementation(Only == for String and Integer types. Combining them will result the condition evaluated to false). Can be nested, but that might crash
 Syntax will be same as in Linux BASH<br />
 <pre>if [[ $CONDITION ]] ;
 then $CODE
@@ -52,7 +52,7 @@ else $CODE
 fi</pre>
 
 This is how the interpreter sees it:
-<pre>$DECLARATION_OF_IF_STATEMENT(if) $CONDITION_BEGIN([[) $CONDITION(*) $CONDITION_END(]]) ;
+<pre>$DECLARATION_OF_IF_STATEMENT(if) $CONDITION_BEGIN([[) $CONDITION $CONDITION_END(]]) ;
 then $CONDITION_TRUE_TOKEN
 else $CONDITION_FALSE_TOKEN
 $END_DECLARATION(fi)</pre>
