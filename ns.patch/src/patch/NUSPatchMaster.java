@@ -1,5 +1,6 @@
 package patch;
 
+@Deprecated
 public class NUSPatchMaster {
 	public static void main(String[] args) {
 		NUSFile nusFile = new NUSFile( // This is just a test

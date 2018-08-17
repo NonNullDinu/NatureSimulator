@@ -2,6 +2,7 @@ package patch;
 
 import java.util.*;
 
+@Deprecated
 public class NUSFile {
 	private static final Map<String, MethodToken> LANGUAGE_METHODS = new HashMap<>();
 	private Map<String, MethodToken> script_methods;
@@ -20,7 +21,6 @@ public class NUSFile {
 		}));
 		// TODO Add language methods here
 		PatternToken ifPattern = fl.new PatternToken("if [[ * ]]" + FORMAT_SPACE_OR_TAB_OR_NOTHING + ";" + FORMAT_SPACE_OR_TAB_OR_NOTHING);
-		System.out.println(ifPattern.isStringOfPattern("if [[ 1==2 ]];"));
 		patterns.put("LANG_IF", ifPattern);
 		patterns.put("LANG_METHOD_CALL", fl.new PatternToken("*_CALL *(*)"));
 		// TODO Add language patterns here
@@ -292,7 +292,6 @@ public class NUSFile {
 		}
 
 		public boolean isStringOfPattern(String string) {
-			System.out.println(string);
 			char[] str = string.toCharArray();
 			char[] pattern = format.toCharArray();
 			int add = 0;
@@ -329,7 +328,6 @@ public class NUSFile {
 					}
 				} else {
 					if (pattern[i] != str[i + add]) {
-						System.out.println(i + " " + (i + add) + " " + format + " " + string);
 						return false;
 					}
 				}
@@ -340,7 +338,6 @@ public class NUSFile {
 
 	private boolean isIfStatement(String line) {
 		boolean res = patterns.get("LANG_IF").isStringOfPattern(line);
-		System.out.println(line + " is if(" + res + ")");
 		return res;
 	}
 
@@ -368,7 +365,6 @@ public class NUSFile {
 
 	public boolean isMethodCall(String code) {
 		boolean res = patterns.get("LANG_METHOD_CALL").isStringOfPattern(code);
-		System.out.println(code + " is method call(" + res + ")");
 		return res;
 //		return code.startsWith("NUS_CALL ") || code.startsWith("SCR_CALL ");
 	}

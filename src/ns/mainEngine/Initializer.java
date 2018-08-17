@@ -17,7 +17,7 @@ import java.util.Date;
 import static java.lang.System.getProperty;
 
 /**
- * @version 1.3.2
+ * @version 1.3.2.sh
  */
 public class Initializer {
 	public static void main(String[] args) {

@@ -299,7 +299,7 @@ public class Installer {
 			BufferedWriter wr = new BufferedWriter(new FileWriter(f));
 			wr.write("[Desktop Entry]\nType=Application\nExec=java -jar " + installDir.getAbsolutePath()
 					+ "/NatureSimulator.jar "
-					+ installDir.getAbsolutePath() + "\nEncoding=UTF-8\nName=Nature Simulator");
+					+ installDir.getAbsolutePath() + "\nEncoding=UTF-8\nName=Nature Simulator\nIcon=" + installDir.getAbsolutePath() + "/gameData/textures/ns_icon.png");
 			wr.close();
 		} catch (IOException e) {
 			e.printStackTrace();

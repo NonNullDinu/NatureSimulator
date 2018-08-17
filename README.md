@@ -15,7 +15,9 @@ Only requires JRE 10.0.2 or later to be installed to run
 #### Updates will be available from v.1.3.3-alpha.
 ### Linux
 On Linux, just run the following and the application will update:<br />
-<code>sh ~/.ns-install/update.sh</code><br />
+```bash
+sh ~/.ns-install/update.sh
+```
 I would suggest doing it this way, but, it can be updated through .nus files as well
 
 ### MacOS 
