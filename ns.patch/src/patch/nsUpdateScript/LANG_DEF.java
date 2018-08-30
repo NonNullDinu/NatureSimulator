@@ -5,28 +5,29 @@ import java.util.Map;
 
 public class LANG_DEF {
 	public static final char FORMAT_SPACE_OR_TAB_OR_NOTHING = '`';
+	public static final Map<String, Method> NUS_METHODS = new HashMap<>();
 
-	protected static final Map<String, TokenPattern> patterns = new HashMap<>();
+	protected static final int METHOD_DECLARATION = 0;
+	protected static final int METHOD_CALL = 1;
+	protected static final int CONDITION_DECLARATION = 2;
+	protected static final Pattern[] LANG_PATTERNS = {
+			pattern("method *()"),
+			pattern("*_CALL *(*)"),
+			pattern("CONDITION(*)"),
+	};
 
 	static {
-		patterns.put("LANG_CODE_BLOCK_OPEN_BRACKET_TOKEN", new TokenPattern("{"));// CodeBlockOpenBracketToken
-		patterns.put("LANG_CODE_BLOCK_CLOSE_BRACKET_TOKEN", new TokenPattern("}"));// CodeBlockCloseBracketToken
-		patterns.put("LANG_CODE_BLOCK_TOKEN", new TokenPattern("${LANG_CODE_BLOCK_OPEN_BRACKET_TOKEN}*${LANG_CODE_BLOCK_CLOSE_BRACKET_TOKEN}"));// CodeBlockToken
-		patterns.put("LANG_IF_DECLARATION", new TokenPattern("if" + FORMAT_SPACE_OR_TAB_OR_NOTHING + "(*)" + FORMAT_SPACE_OR_TAB_OR_NOTHING + "${LANG_CODE_BLOCK_TOKEN}"));
-		//Method call
-		patterns.put("LANG_METHOD_CALL_ARGUMENTS_OPEN_DECLARATION_TOKEN", new TokenPattern("("));
-		patterns.put("LANG_METHOD_CALL_ARGUMENTS_CLOSE_DECLARATION_TOKEN", new TokenPattern(")"));
-		patterns.put("LANG_METHOD_CALL_ARGUMENT_TOKEN", new TokenPattern("*"));
-		patterns.put("LANG_METHOD_CALL_ARGUMENTS_TOKEN", new TokenPattern("${LANG_METHOD_CALL_ARGUMENT_TOKEN}...\",\""));
-		patterns.put("LANG_METHOD_CALL_NAME_TOKEN", new TokenPattern("*"));
-		patterns.put("LANG_METHOD_CALL_TYPE_TOKEN", new TokenPattern("*_CALL"));
-		patterns.put("LANG_METHOD_CALL_TOKEN", new TokenPattern("${LANG_METHOD_CALL_TYPE_TOKEN} ${LANG_METHOD_CALL_NAME_TOKEN}${LANG_METHOD_CALL_ARGUMENTS_OPEN_DECLARATION_TOKEN}${LANG_METHOD_CALL_ARGUMENTS_TOKEN}${LANG_METHOD_CALL_ARGUMENTS_CLOSE_DECLARATION_TOKEN}"));
+		NUS_METHODS.put("rm", new Method("rm", (String[] args) -> {
+			for (String arg : args)
+				System.out.println(arg);
+		}));
+		NUS_METHODS.put("runtime_cmd_exec", new Method("cmd_exec", (String[] args) -> {
 
-		//Method declaration
-		patterns.put("LANG_METHOD_NAME_DECLARATION_TOKEN", new TokenPattern("*"));
-		patterns.put("LANG_METHOD_DECLARATION_TOKEN", new TokenPattern("method ${LANG_METHOD_NAME_DECLARATION_TOKEN}()"));
-		patterns.put("LANG_METHOD_BODY_TOKEN", new TokenPattern("{*}"));
-		patterns.put("LANG_METHOD_TOKEN", new TokenPattern("${LANG_METHOD_DECLARATION_TOKEN}${LANG_METHOD_BODY_TOKEN}"));
+		}));
+	}
+
+	private static Pattern pattern(String pattern) {
+		return new Pattern(pattern);
 	}
 
 	public static MethodDeclarationToken breakToTokensMDT(String string) {

@@ -1,23 +1,16 @@
 package patch.nsUpdateScript;
 
-public class TokenPattern {
-	protected String replaced;
-	protected String format;
+public class Pattern {
+	private String patt;
 
-	public TokenPattern(String format) {
-		this.format = format;
-		this.replaced = format;
-		if (this.format.contains("$")) {
-			for (String key : LANG_DEF.patterns.keySet()) {
-				this.replaced = this.replaced.replaceAll(key, LANG_DEF.patterns.get(key).replaced);
-			}
-		}
+	public Pattern(String pattern) {
+		this.patt = pattern;
 	}
 
 	public boolean isStringOfPattern(String string) {
 		System.out.println(string);
 		char[] str = string.toCharArray();
-		char[] pattern = replaced.toCharArray();
+		char[] pattern = patt.toCharArray();
 		int add = 0;
 		for (int i = 0; i < pattern.length; i++) {
 			if (pattern[i] == '*') {
@@ -52,7 +45,6 @@ public class TokenPattern {
 				}
 			} else {
 				if (pattern[i] != str[i + add]) {
-					System.out.println(i + " " + (i + add) + " " + replaced + " " + string);
 					return false;
 				}
 			}

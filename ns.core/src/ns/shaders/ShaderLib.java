@@ -6,6 +6,7 @@ import resources.In;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,25 +37,19 @@ public class ShaderLib {
 	}
 
 	private static void addDeclarations(List<In> shaders) {
-		shaders.add(GameData.getResourceAt("shaders/standard/vertexShader.glsl"));
-		shaders.add(GameData.getResourceAt("shaders/standard/fragmentShader.glsl")); // Entity (standard)
-		shaders.add(GameData.getResourceAt("shaders/terrain/terrainVertex.glsl"));
-		shaders.add(GameData.getResourceAt("shaders/terrain/terrainFragment.glsl")); // Terrain
-		shaders.add(GameData.getResourceAt("shaders/water/vertex.glsl"));
-		shaders.add(GameData.getResourceAt("shaders/water/fragment.glsl")); // Water
-		shaders.add(GameData.getResourceAt("shaders/guis/guiVertex.glsl"));
-		shaders.add(GameData.getResourceAt("shaders/guis/guiFragment.glsl")); // GUI
-		shaders.add(GameData.getResourceAt("shaders/menuDNA/vertexShader.glsl"));
-		shaders.add(GameData.getResourceAt("shaders/menuDNA/fragmentShader.glsl")); // MenuDNA
-		shaders.add(GameData.getResourceAt("shaders/quad/quadVertex.glsl"));
-		shaders.add(GameData.getResourceAt("shaders/quad/quadFragment.glsl")); // Color Quad
-		shaders.add(GameData.getResourceAt("shaders/blur/fshader.glsl"));
-		shaders.add(GameData.getResourceAt("shaders/blur/vvshader.glsl"));
-		shaders.add(GameData.getResourceAt("shaders/blur/vhshader.glsl")); // Gaussian blur
-		shaders.add(GameData.getResourceAt("shaders/font/fontVertex.glsl"));
-		shaders.add(GameData.getResourceAt("shaders/font/fontFragment.glsl")); // Font
-		shaders.add(GameData.getResourceAt("shaders/river/riverVertex.glsl"));
-		shaders.add(GameData.getResourceAt("shaders/river/riverFragment.glsl")); // River
+		BufferedReader reader = new BufferedReader(new InputStreamReader(GameData.getResourceAt("shaders/shaders.dir").asInputStream()));
+		String fld = "";
+		String line;
+		try {
+			while ((line = reader.readLine()) != null) {
+				if (line.startsWith("./"))
+					shaders.add(GameData.getResourceAt("shaders/" + fld + line.substring(1)));
+				else
+					fld = line;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static String getSource(String shaderName) {

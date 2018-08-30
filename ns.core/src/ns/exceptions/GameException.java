@@ -15,6 +15,6 @@ public abstract class GameException extends RuntimeException {
 	
 	@Override
 	public StackTraceElement[] getStackTrace() {
-		return stackTrace;
+		return stackTrace == null ? super.getStackTrace() : stackTrace;
 	}
 }

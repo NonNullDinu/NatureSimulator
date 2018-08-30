@@ -1,11 +1,13 @@
 package ns.shaders;
 
+import ns.exceptions.ShaderValidationException;
 import ns.openglObjects.IOpenGLObject;
 import org.lwjgl.opengl.GL20;
 
 public abstract class ShaderProgram implements IOpenGLObject {
+	private static final ShaderValidator validator = new ShaderValidator();
 	private final int programId;
-//	private int vertexShaderId;
+	//	private int vertexShaderId;
 //	private int fragmentShaderId;
 	protected StringBuffer src;
 	protected UniformLocator locator = new UniformLocator(this);
@@ -25,11 +27,13 @@ public abstract class ShaderProgram implements IOpenGLObject {
 //		postLink();
 //		created = true;
 //	}
-	
+
 	public ShaderProgram(Shader... shaderStages) {
+		if (!validator.validate(shaderStages))
+			throw new ShaderValidationException("Internal shader validation error:" + validator.getError());
 		programId = GL20.glCreateProgram();
 		src = new StringBuffer();
-		for(Shader sh : shaderStages) {
+		for (Shader sh : shaderStages) {
 			sh.create().bindToProgram(this);
 			src.append(sh.getSource());
 		}
@@ -61,26 +65,26 @@ public abstract class ShaderProgram implements IOpenGLObject {
 			return -1;
 		String type = declarationLine.split(" ")[declarationLine.split(" ").length - 2];
 		switch (type) {
-		case "float":
-			return UniformVar.TYPE_FLOAT;
-		case "vec2":
-			return UniformVar.TYPE_VEC2;
-		case "vec3":
-			return UniformVar.TYPE_VEC3;
-		case "vec4":
-			return UniformVar.TYPE_VEC4;
-		case "mat4":
-			return UniformVar.TYPE_MAT4;
-		case "int":
-			return UniformVar.TYPE_INT;
-		case "bool":
-			return UniformVar.TYPE_BOOL;
-		case "sampler2D":
-			return UniformVar.TYPE_SAMPLER_2D;
-		case "Light":
-			return UniformVar.TYPE_LIGHT;
-		default:
-			return -1;
+			case "float":
+				return UniformVar.TYPE_FLOAT;
+			case "vec2":
+				return UniformVar.TYPE_VEC2;
+			case "vec3":
+				return UniformVar.TYPE_VEC3;
+			case "vec4":
+				return UniformVar.TYPE_VEC4;
+			case "mat4":
+				return UniformVar.TYPE_MAT4;
+			case "int":
+				return UniformVar.TYPE_INT;
+			case "bool":
+				return UniformVar.TYPE_BOOL;
+			case "sampler2D":
+				return UniformVar.TYPE_SAMPLER_2D;
+			case "Light":
+				return UniformVar.TYPE_LIGHT;
+			default:
+				return -1;
 		}
 	}
 
@@ -114,32 +118,32 @@ public abstract class ShaderProgram implements IOpenGLObject {
 
 	public void cleanUp() {
 		stop();
-		for(Shader s : shaders) {
+		for (Shader s : shaders) {
 			GL20.glDetachShader(programId, s.getID());
 			s.delete();
 		}
 		GL20.glDeleteProgram(programId);
 		created = false;
 	}
-	
+
 	public ShaderProgram create() {
 		return this;
 	}
-	
+
 	public void delete() {
 		cleanUp();
 	}
-	
+
 	public int getID() {
 		return programId;
 	}
-	
+
 	public boolean isCreated() {
 		return created;
 	}
-	
+
 	public void storeUniforms(UniformVar... vars) {
-		for(UniformVar var : vars) {
+		for (UniformVar var : vars) {
 			var.loadLocation(locator);
 		}
 	}

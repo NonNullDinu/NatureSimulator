@@ -61,7 +61,7 @@ public class In {
 		if (asInputStream != null)
 			return asInputStream;
 		else
-			throw new NullPointerException("File at " + location + " could not be found");
+			throw new NullPointerException("File at " + location.relativeLocation() + " could not be found");
 	}
 
 	public boolean exists() {

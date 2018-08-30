@@ -6,6 +6,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class Installer {
+	private static final String RUN_COMMAND = "java -jar NatureSimulator.jar -p %s";
 
 	public static void main(String[] args) {
 		JFileChooser chooser = new JFileChooser();
@@ -28,7 +29,6 @@ public class Installer {
 		writeExecutable(executable);
 		writeLibFolder(new File(installDir.getAbsolutePath() + "/lib"));
 		writeLicense(new File(installDir.getAbsolutePath() + "/LICENSE"));
-		writeReadme(new File(installDir.getAbsolutePath() + "/README"));
 		writeVersion(new File(installDir.getAbsolutePath() + "/version"));
 		try {
 			writeResources(installDir);
@@ -48,7 +48,7 @@ public class Installer {
 		} else if (System.getProperty("os.name").equals("Windows")) {
 			System.out.println("Vesions for operating systems other than Linux may or may not work as intended");
 			String[] yn = new String[]{"Yes", "No"};
-			int ans = JOptionPane.showOptionDialog(null, "Create menu shortcut?", "Create shortcut",
+			int ans = JOptionPane.showOptionDialog(null, "Create desktop shortcut?", "Create shortcut",
 					JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, yn, null);
 			if (ans == 0) {
 				// TODO Change the windows .bat file with a windows .lnk file
@@ -102,9 +102,7 @@ public class Installer {
 		try {
 			file.createNewFile();
 			FileOutputStream out = new FileOutputStream(file);
-			out.write(("java -jar " + installDir.getAbsolutePath()
-					+ "/NatureSimulator.jar "
-					+ installDir.getAbsolutePath() + "\n").getBytes());
+			out.write((String.format(RUN_COMMAND, installDir.getAbsolutePath())).getBytes());
 			out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -301,36 +299,6 @@ public class Installer {
 					+ "/NatureSimulator.jar "
 					+ installDir.getAbsolutePath() + "\nEncoding=UTF-8\nName=Nature Simulator\nIcon=" + installDir.getAbsolutePath() + "/gameData/textures/ns_icon.png");
 			wr.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private static void writeReadme(File file) {
-		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-			writer.write("# Description\n" +
-					"This application is an open-source attempt to simulate nature.\n" +
-					"Still has a long way to go before the objective is reached\n" +
-					"\n" +
-					"# System requirements\n" +
-					"Only requires JRE 10.0.2 or later to be installed to run\n" +
-					"\n" +
-					"###### Developed on Fedora 28\n" +
-					"\n" +
-					"# How to update?\n" +
-					"\n" +
-					"###### This is still under development. \n" +
-					"#### Updates will be available from v.1.3.3-alpha\n" +
-					"\n" +
-					"# OS dependent features\n" +
-					"\n" +
-					"| Feature                            | Linux x32_64     | macOS x64                     | Windows 7+ x64            |\n" +
-					"|------------------------------------|------------------|-------------------------------|---------------------------|\n" +
-					"| **N**S<br>**U**pdate **S**cript    | ✓                | ✓                             | ✓                         |\n" +
-					"| BASH-based update                  | ✓ 4.1+           |   Need linux \"wget\"         |                           |\n" +
-					"| Dependency native libraries        | ✓                |   @FIXME                      | ✓                         |\n");
-			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

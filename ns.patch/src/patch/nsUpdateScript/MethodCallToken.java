@@ -1,9 +1,11 @@
 package patch.nsUpdateScript;
 
 public class MethodCallToken extends Token {
-	public static final TokenPattern PATTERN = LANG_DEF.patterns.get("LANG_METHOD_CALL_TOKEN");
+	private final MethodCallArgumentsToken arg;
+	private final Method methodToCall;
 
-	public MethodCallToken() {
-		super(PATTERN);
+	public MethodCallToken(Method methodToCall, MethodCallArgumentsToken argumentsToken) {
+		this.methodToCall = methodToCall;
+		this.arg = argumentsToken;
 	}
 }

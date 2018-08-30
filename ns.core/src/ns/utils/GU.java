@@ -19,6 +19,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -37,6 +38,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class GU {
 	public static final Random random = new Random();
@@ -151,6 +153,22 @@ public class GU {
 		fbo.setTextureNull();
 		FBO.unbind();
 		fbo.delete();
+	}
+
+	public static String getGL20Type(int type) {
+		Field[] fields = GL20.class.getFields();
+		for (Field field : fields) {
+			if (field.getType() == int.class) {
+				try {
+					int i = (int) field.get(null);
+					if (i == type)
+						return field.getName();
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
 	}
 
 	public static class Random {
@@ -350,5 +368,9 @@ public class GU {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static boolean isStringOfPattern(String string, String pattern) {
+		return Pattern.compile(pattern).matcher(string).matches();
 	}
 }

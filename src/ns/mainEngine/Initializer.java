@@ -17,11 +17,13 @@ import java.util.Date;
 import static java.lang.System.getProperty;
 
 /**
- * @version 1.3.2.sh
+ * @version 1.3.2
  */
 public class Initializer {
 	public static void main(String[] args) {
-		GU.path = (args.length == 0 ? System.getProperty("user.dir") : args[0]) + "/";
+		processArgs(args);
+		if (GU.path == null)
+			GU.path = System.getProperty("user.dir") + "/";
 		System.setProperty("org.lwjgl.librarypath", GU.path + "lib/natives");
 		UncaughtExceptionHandler handler = (Thread t, Throwable e) -> {
 			String msg = "";
@@ -84,5 +86,14 @@ public class Initializer {
 		thread = ThreadMaster.createThread(new ThirdThread(), "third thread");
 		thread.setUncaughtExceptionHandler(handler);
 		thread.start();
+	}
+
+	private static void processArgs(String[] args) {
+		for (int i = 0; i < args.length; i++) {
+			if (args[i].equals("-p") || args[i].equals("--path")) {
+				i++;
+				GU.path = args[i];
+			}
+		}
 	}
 }

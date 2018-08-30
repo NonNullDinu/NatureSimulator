@@ -38,7 +38,7 @@ tar -xvzf toJar.tar.gz
 rm toJar.tar.gz
 mv -uf jr.jar "$install_dir"/NatureSimulator.jar
 
-#For bigger jars (10MB+)
+#For bigger jars
 #wget -O toJar.tar.gz https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/updates/toJar.tar.gz
 #tar -xvzf toJar.tar.gz
 #rm toJar.tar.gz
@@ -71,7 +71,7 @@ cd toGameData
 wget -O toGameData.tar.gz https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/updates/toGameData.tar.gz
 tar -xvzf toGameData.tar.gz
 rm toGameData.tar.gz
-mv -uf ./* ${install_dir}/gameData
+mv -uf ./* "$install_dir"/gameData
 cd ..
 
 cd ..

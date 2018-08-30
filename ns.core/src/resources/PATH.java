@@ -1,7 +1,5 @@
 package resources;
 
-import ns.utils.GU;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -19,7 +17,7 @@ public class PATH {
 	public PATH(_File file) {
 		this.file = file;
 		this.loc = file.getAbsolutePath();
-		this.relativeLocation = file.getAbsolutePath().replaceFirst(GU.path, "");
+		this.relativeLocation = file.locGiven;
 	}
 
 	public FileInputStream openInput() throws FileNotFoundException {
