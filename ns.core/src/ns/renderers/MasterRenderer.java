@@ -75,7 +75,7 @@ public class MasterRenderer {
 	}
 
 	private StaticShader shader = new StaticShader();
-	private Renderer renderer;
+	private EntityRenderer renderer;
 
 	private TerrainShader terrainShader = new TerrainShader();
 	private TerrainRenderer terrainRenderer;
@@ -88,7 +88,7 @@ public class MasterRenderer {
 	private boolean inc;
 
 	public MasterRenderer(ICamera camera) {
-		renderer = new Renderer(shader, camera.getProjectionMatrix());
+		renderer = new EntityRenderer(shader, camera.getProjectionMatrix());
 		terrainRenderer = new TerrainRenderer(terrainShader, camera.getProjectionMatrix());
 		instance = this;
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
@@ -124,6 +124,19 @@ public class MasterRenderer {
 
 	public void render(ICamera camera, Light sun, Vector4f clipPlane, boolean updateTime) {
 		Matrix4f viewMatrix = camera.getViewMatrix();
+
+		if (terrain != null) {
+			terrainShader.start();
+			terrainShader.skyColor.load(new Vector3f(RED, GREEN, BLUE));
+			terrainShader.fogValues.load(FOG_VALUES);
+			terrainShader.light.load(sun);
+			terrainShader.viewMatrix.load(viewMatrix);
+			terrainShader.clipPlane.load(clipPlane);
+			terrainRenderer.render(terrain);
+			terrainShader.stop();
+			terrain = null;
+		}
+
 		shader.start();
 		if (updateTime) {
 			time += TIME_SPEED * DisplayManager.getFrameTimeSeconds() * (inc ? 1f : -1f);
@@ -137,18 +150,6 @@ public class MasterRenderer {
 		renderer.render(entities);
 		shader.stop();
 		entities.clear();
-		
-		if (terrain != null) {
-			terrainShader.start();
-			terrainShader.skyColor.load(new Vector3f(RED, GREEN, BLUE));
-			terrainShader.fogValues.load(FOG_VALUES);
-			terrainShader.light.load(sun);
-			terrainShader.viewMatrix.load(viewMatrix);
-			terrainShader.clipPlane.load(clipPlane);
-			terrainRenderer.render(terrain);
-			terrainShader.stop();
-			terrain = null;
-		}
 	}
 
 	public void cleanUp() {

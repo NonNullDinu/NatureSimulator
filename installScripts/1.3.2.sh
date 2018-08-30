@@ -20,7 +20,7 @@ rm install_fld.tar.xz
 echo -n "Create desktop shortcut?y/n:"
 read desktop_short
 if [[ "$desktop_short" = "y" || "$desktop_short" = "Y" ]] ;
-then printf "[Desktop Entry]\nExec=java -jar $install_dir/NatureSimulator.jar $install_dir\nEncoding=UTF-8\nType=Application\nName=Nature Simulator\nIcon=$install_dir$install_dir/gameData/textures/ns_icon.png\nTerminal=false" > "$HOME"/.local/share/applications/NatureSimulator.desktop
+then printf "[Desktop Entry]\nExec=java -jar $install_dir/NatureSimulator.jar $install_dir\nEncoding=UTF-8\nType=Application\nName=Nature Simulator\nIcon=$install_dir/gameData/textures/ns_icon.png\nTerminal=false" > "$HOME"/.local/share/applications/NatureSimulator.desktop
 fi
 
 if [[ ! -d "$HOME/.ns-install" ]] ;

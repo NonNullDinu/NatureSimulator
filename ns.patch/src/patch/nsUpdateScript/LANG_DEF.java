@@ -1,5 +1,6 @@
 package patch.nsUpdateScript;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +23,11 @@ public class LANG_DEF {
 				System.out.println(arg);
 		}));
 		NUS_METHODS.put("runtime_cmd_exec", new Method("cmd_exec", (String[] args) -> {
-
+			try {
+				Runtime.getRuntime().exec(args);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}));
 	}
 

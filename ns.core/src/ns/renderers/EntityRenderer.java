@@ -7,6 +7,7 @@ import ns.entities.Light;
 import ns.openglObjects.VAO;
 import ns.shaders.StaticShader;
 import ns.utils.Maths;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -15,11 +16,11 @@ import org.lwjgl.util.vector.Vector4f;
 import java.util.List;
 import java.util.Map;
 
-public class Renderer {
+public class EntityRenderer {
 
 	private StaticShader shader;
 
-	public Renderer(StaticShader shader, Matrix4f projectionMatrix) {
+	public EntityRenderer(StaticShader shader, Matrix4f projectionMatrix) {
 		this.shader = shader;
 		shader.start();
 		shader.projectionMatrix.load(projectionMatrix);
@@ -27,10 +28,15 @@ public class Renderer {
 	}
 
 	public void render(Map<VAO, List<Entity>> entities) {
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		for (VAO vao : entities.keySet()) {
 			vao.bind(0, 1, 2, 3, 4, 5);
 			for (Entity e : entities.get(vao)) {
 				shader.transformationMatrix.load(Maths.createTreansformationMatrix(e));
+				if (e.getLifeComponent() != null && e.getLifeComponent().isDead())
+					shader.alpha.load(e.getAlpha());
+				else shader.alpha.load(e.getAlpha());
 				CustomColorsComponent customColors = e.getCustomColors();
 				if (customColors != null)
 					for (int i = 0; i < customColors.getColors().size(); i++) {
@@ -40,6 +46,7 @@ public class Renderer {
 			}
 			vao.unbind();
 		}
+		GL11.glDisable(GL11.GL_BLEND);
 	}
 
 	public void render(Blueprint blueprint, Vector3f position) {

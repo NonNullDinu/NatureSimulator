@@ -17,6 +17,8 @@ public class Blueprint implements SerializableWorldObject {
 	protected static final int BIOME_SPREAD = 1;
 	protected static final int MOVEMENT = 2;
 	protected static final int CUSTOM_COLORS = 3;
+	protected static final int FOOD = 4;
+	protected static final int LIFE = 5;
 
 	private Map<Integer, IComponent> components = new HashMap<>();
 	private String objectName;
@@ -52,6 +54,10 @@ public class Blueprint implements SerializableWorldObject {
 
 	public MovementComponent getMovement() {
 		return (MovementComponent) components.get(MOVEMENT);
+	}
+
+	protected Blueprint withFoodComponent(FoodComponent component) {
+		return withComponent(FOOD, component);
 	}
 
 	public void move(Entity e, World w) {
@@ -94,33 +100,45 @@ public class Blueprint implements SerializableWorldObject {
 
 	public int flags(int i) {
 		switch (i) {
-		case 0: // Model
-			int front = Integer.parseInt(objectName) - 999;
-			return front;
-		case 1: // Movement and biome spread 1
-			MovementComponent mvm = getMovement();
-			int front2 = 0;
-			if (mvm != null)
-				front2 = mvm.getConfig();
-			BiomeSpreadComponent comp = getBiomeSpread();
-			int back = 0;
-			if (comp != null)
-				back = comp.getBiome().getId();
-			return (front2 << 4) | back;
-		case 2: // Biome spread part 2
-			BiomeSpreadComponent comp2 = getBiomeSpread();
-			if (comp2 != null) {
-				return (int) comp2.getMinMax().x;
-			}
-			return 0;
-		case 3: // Biome spread part 3
-			BiomeSpreadComponent comp3 = getBiomeSpread();
-			if (comp3 != null) {
-				return (int) comp3.getMinMax().y;
-			}
-			return 0;
-		default:
-			return 0;
+			case 0: // Model
+				int front = Integer.parseInt(objectName) - 999;
+				return front;
+			case 1: // Movement and biome spread 1
+				MovementComponent mvm = getMovement();
+				int front2 = 0;
+				if (mvm != null)
+					front2 = mvm.getConfig();
+				BiomeSpreadComponent comp = getBiomeSpread();
+				int back = 0;
+				if (comp != null)
+					back = comp.getBiome().getId();
+				return (front2 << 4) | back;
+			case 2: // Biome spread part 2
+				BiomeSpreadComponent comp2 = getBiomeSpread();
+				if (comp2 != null) {
+					return (int) comp2.getMinMax().x;
+				}
+				return 0;
+			case 3: // Biome spread part 3
+				BiomeSpreadComponent comp3 = getBiomeSpread();
+				if (comp3 != null) {
+					return (int) comp3.getMinMax().y;
+				}
+				return 0;
+			default:
+				return 0;
 		}
+	}
+
+	public FoodComponent getFoodComponent() {
+		return (FoodComponent) components.get(FOOD);
+	}
+
+	public LifeComponent getLifeComponent() {
+		return (LifeComponent) components.get(LIFE);
+	}
+
+	public Blueprint withLife(LifeComponent component) {
+		return withComponent(LIFE, component);
 	}
 }

@@ -8,9 +8,11 @@ out vec4 frag_Color;
 
 uniform sampler2D tex;
 uniform vec3 skyColor;
+uniform float alpha;
 
 void main(void)
 {
 	frag_Color = (in_cc.w == 0 ? texture(tex, in_texCoords) : vec4(in_cc.xyz, 1.0));
 	frag_Color = mix(vec4(skyColor, 1.0), frag_Color, in_visibility);
+	frag_Color.a = alpha;
 }

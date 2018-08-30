@@ -9,7 +9,7 @@ else
 	installed_version="$(cat version)"
 fi
 wget -O temp-version https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/version
-if [[ ${installed_version} == "$(cat temp-version)" ]] ;
+if [[ "$installed_version" = "$(cat temp-version)" ]] ;
 then
 	echo "Nothing to update, latest version found"
 	exit 0
@@ -77,3 +77,4 @@ cd ..
 cd ..
 rm -rf updateTmp
 cat temp-version > version
+rm temp-version
