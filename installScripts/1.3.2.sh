@@ -29,4 +29,4 @@ fi
 
 cd "$HOME/.ns-install"
 printf "$install_dir" > target-dir
-wget -O update.sh https://raw.githubusercontent.com/NonNullDinu/master/install/update.sh
+wget -O update.sh https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/master/install/update.sh
