@@ -33,17 +33,19 @@ mkdir toJar
 mkdir toGameData
 
 cd toJar
-wget -O toJar.tar.gz https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/updates/jar.tar.xz
+wget -O toJar.tar.gz https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/master/updates/jar.tar.xz
 tar -xJf toJar.tar.xz
 rm toJar.tar.xz
 mv -uf jr.jar "$install_dir"/NatureSimulator.jar
 cd ..
 
 cd toGameData
-wget -O toGameData.tar.xz https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/updates/gameData.tar.xz
+wget -O toGameData.tar.xz https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/master/updates/gameData.tar.xz
 tar -xJf toGameData.tar.xz
 rm toGameData.tar.xz
-mv -uf ./* "$install_dir"/gameData
+for fl in ./* ; do
+mv -uf "$fl" "$install_dir"/gameData
+done
 cd ..
 
 cd ..
