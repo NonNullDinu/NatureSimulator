@@ -43,8 +43,8 @@ cd toGameData
 wget -O toGameData.tar.xz https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/master/updates/gameData.tar.xz
 tar -xJf toGameData.tar.xz
 rm toGameData.tar.xz
-for fl in ./* ; do
 rm -rf "$install_dir"/gameData/*
+for fl in ./* ; do
 mv -uf "$fl" "$install_dir"/gameData
 done
 cd ..
