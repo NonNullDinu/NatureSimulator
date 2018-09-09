@@ -44,6 +44,7 @@ wget -O toGameData.tar.xz https://raw.githubusercontent.com/NonNullDinu/NatureSi
 tar -xJf toGameData.tar.xz
 rm toGameData.tar.xz
 for fl in ./* ; do
+rm -rf "$install_dir"/gameData/*
 mv -uf "$fl" "$install_dir"/gameData
 done
 cd ..
