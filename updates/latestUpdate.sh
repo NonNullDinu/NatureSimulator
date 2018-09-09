@@ -1,6 +1,6 @@
 #!/bin/bash
-#This will be ran from the NS install dir
-install_dir="$(pwd)"
+install_dir="$(cat ~/.ns-install/target-dir)"
+cd "$install_dir"
 if [[ ! -f version ]] ;
 then
 	echo "version not found"
@@ -33,44 +33,16 @@ mkdir toJar
 mkdir toGameData
 
 cd toJar
-wget -O toJar.tar.gz https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/updates/toJar.tar.gz
-tar -xvzf toJar.tar.gz
-rm toJar.tar.gz
+wget -O toJar.tar.gz https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/updates/jar.tar.xz
+tar -xJf toJar.tar.xz
+rm toJar.tar.xz
 mv -uf jr.jar "$install_dir"/NatureSimulator.jar
-
-#For bigger jars
-#wget -O toJar.tar.gz https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/updates/toJar.tar.gz
-#tar -xvzf toJar.tar.gz
-#rm toJar.tar.gz
-#unset JAR_UPDATE_FILES
-#for fl in ./*; do
-#	if [[ -d "$fl" ]] ;
-#	then cd "$fl"
-#		for fl2 in ./*; do
-#			if [[ -d "$fl2" ]] ;
-#			then cd "$fl2"
-#
-#				for fl3 in ./*; do
-#					if [[ -d "$fl3" ]] ;
-#					then cd "$fl3"
-#
-#					else JAR_UPDATE_FILES="$JAR_UPDATE_FILES $fl/$fl2/$fl3"
-#					fi
-#				done
-#			else JAR_UPDATE_FILES="$JAR_UPDATE_FILES $fl/$fl2"
-#			fi
-#		done
-#	else JAR_UPDATE_FILES="$JAR_UPDATE_FILES $fl"
-#	fi
-#done
-#jar uf ${install_dir}/NatureSimulator.jar ${JAR_UPDATE_FILES}
-
 cd ..
 
 cd toGameData
-wget -O toGameData.tar.gz https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/updates/toGameData.tar.gz
-tar -xvzf toGameData.tar.gz
-rm toGameData.tar.gz
+wget -O toGameData.tar.xz https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/updates/gameData.tar.xz
+tar -xJf toGameData.tar.xz
+rm toGameData.tar.xz
 mv -uf ./* "$install_dir"/gameData
 cd ..
 

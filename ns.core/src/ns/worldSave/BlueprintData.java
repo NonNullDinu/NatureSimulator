@@ -10,7 +10,7 @@ public class BlueprintData extends Data {
 	private Blueprint blueprint;
 
 	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 6; i++)
 			out.writeByte(blueprint.flags(i));
 	}
 

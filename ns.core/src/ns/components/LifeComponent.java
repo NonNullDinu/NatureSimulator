@@ -22,4 +22,8 @@ public class LifeComponent implements IComponent {
 	public boolean isDead() {
 		return dead;
 	}
+
+	public float getRemainingLifespan() {
+		return lifespanRemaining;
+	}
 }

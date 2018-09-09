@@ -14,8 +14,8 @@ public class BlueprintInputStream {
 	}
 
 	public Blueprint read() throws IOException {
-		byte[] data = new byte[4];
-		in.read(data, 0, 4);
+		byte[] data = new byte[6];
+		in.read(data);
 
 		int dataIn = data[0];
 		String enFolder = Integer.toString(999 + dataIn);
@@ -51,13 +51,16 @@ public class BlueprintInputStream {
 		}
 		Blueprint blueprint = new Blueprint(enFolder);
 		blueprint.withModel(new ModelComponent(
-				ModelsLibrary.getModel("models/" + enFolder + "/" + modelName + (dataIn < 6 ? ".mdl" : ".obj"))));
+				ModelsLibrary.getModel("models/" + enFolder + "/" + modelName + ".mdl")));
 		if (data[1] >> 4 != 0) {
 			blueprint.withMovement(new MovementComponent(data[1] >> 4));
 		}
 		if ((data[1] & 15) != 0) {
 			blueprint.withBiomeSpread(
 					new BiomeSpreadComponent().withBiome(Biome.get(data[1] & 15)).withMinMaxRange(data[2], data[3]));
+		}
+		if (data[4] != 0) {
+			blueprint.withLife(new LifeComponent(data[4] << 8 + data[5]));
 		}
 		blueprint.withDefaultCustomColors();
 		return blueprint;

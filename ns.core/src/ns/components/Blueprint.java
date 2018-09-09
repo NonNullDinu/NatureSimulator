@@ -115,16 +115,16 @@ public class Blueprint implements SerializableWorldObject {
 				return (front2 << 4) | back;
 			case 2: // Biome spread part 2
 				BiomeSpreadComponent comp2 = getBiomeSpread();
-				if (comp2 != null) {
-					return (int) comp2.getMinMax().x;
-				}
-				return 0;
+				return comp2 != null ? (int) comp2.getMinMax().x : 0;
 			case 3: // Biome spread part 3
 				BiomeSpreadComponent comp3 = getBiomeSpread();
-				if (comp3 != null) {
-					return (int) comp3.getMinMax().y;
-				}
-				return 0;
+				return comp3 != null ? (int) comp3.getMinMax().y : 0;
+			case 4: // Life part 1
+				LifeComponent comp4 = getLifeComponent();
+				return comp4 != null ? (((int) comp4.getRemainingLifespan()) & 0xFF00) >> 8 : 0;
+			case 5: // Life part 2
+				LifeComponent comp5 = getLifeComponent();
+				return comp5 != null ? ((int) comp5.getRemainingLifespan()) & 0xFF : 0;
 			default:
 				return 0;
 		}

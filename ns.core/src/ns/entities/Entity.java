@@ -1,9 +1,6 @@
 package ns.entities;
 
-import ns.components.BiomeSpreadComponent;
-import ns.components.Blueprint;
-import ns.components.CustomColorsComponent;
-import ns.components.LifeComponent;
+import ns.components.*;
 import ns.display.DisplayManager;
 import ns.openglObjects.VAO;
 import ns.utils.GU;
@@ -122,8 +119,8 @@ public class Entity implements SerializableWorldObject {
 		return data;
 	}
 
-	public float getFoodAmount() {
-		return blueprint.getFoodComponent().amount;
+	public FoodComponent getFoodComp() {
+		return blueprint.getFoodComponent();
 	}
 
 	public float getAlpha() {

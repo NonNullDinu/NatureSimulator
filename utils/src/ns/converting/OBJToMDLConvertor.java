@@ -24,9 +24,9 @@ public class OBJToMDLConvertor {
 		for (int i = 0; i < len - 1; i++)
 			location += (char) buf[i];
 		if (location.equals("UPDATE ALL")) {
-			write(new File("gameData/models"));
+			write(new File("../gameData/models"));
 		} else {
-			File target = new File("gameData/models/" + location);
+			File target = new File("../gameData/models/" + location);
 			write(target);
 		}
 	}

@@ -27,7 +27,9 @@ public class AnimalLifeComponent extends LifeComponent {
 
 	public void eat(Entity food) {
 		if (cooldown <= 0) {
-			hungerPoints -= food.getFoodAmount();
+			float dif = Math.min(food.getFoodComp().amount, 15f);
+			hungerPoints -= dif;
+			food.getFoodComp().eat(dif);
 			cooldown = 50;
 		}
 	}
