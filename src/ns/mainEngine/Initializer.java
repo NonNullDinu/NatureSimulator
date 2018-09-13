@@ -12,12 +12,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 import static java.lang.System.getProperty;
 
 /**
- * @version 1.3.2
+ * @version 1.3.2-alpha
  */
 public class Initializer {
 	public static void main(String[] args) {
@@ -32,15 +33,18 @@ public class Initializer {
 					msg += elem.getModuleName() + "/" + elem.getClassName() + "." + elem.getMethodName() + "("
 							+ elem.getFileName() + ":" + elem.getLineNumber() + ")\n	";
 				}
-				String props = "sun.desktop:" + getProperty("sun.desktop") + "\n" + "java.specification.version:"
-						+ getProperty("java.specification.version") + "\n" + "os.name:" + getProperty("os.name") + "\n"
-						+ "java.vm.specification.version:" + getProperty("java.vm.specification.version") + "\n"
-						+ "java.runtime.version:" + getProperty("java.runtime.version") + "\n" + "os.version:"
-						+ getProperty("os.version") + "\n" + "java.runtime.name:" + getProperty("java.runtime.name")
-						+ "\n" + "java.vm.name:" + getProperty("java.vm.name") + "\n" + "java.version:"
-						+ getProperty("java.version") + "\n" + "os.arch:" + getProperty("os.arch") + "\n"
-						+ "java.vm.version:" + getProperty("java.vm.version") + "\n" + "java.class.version:"
-						+ getProperty("java.class.version") + "\n";
+				String props = "sun.desktop:" + getProperty("sun.desktop") + "\n" //
+						+ "java.specification.version:" + getProperty("java.specification.version") + "\n"//
+						+ "os.name:" + getProperty("os.name") + "\n"//
+						+ "java.vm.specification.version:" + getProperty("java.vm.specification.version") + "\n" //
+						+ "java.runtime.version:" + getProperty("java.runtime.version") + "\n"  //
+						+ "os.version:" + getProperty("os.version") + "\n" //
+						+ "java.runtime.name:" + getProperty("java.runtime.name") + "\n" //
+						+ "java.vm.name:" + getProperty("java.vm.name") + "\n" //
+						+ "java.version:" + getProperty("java.version") + "\n" //
+						+ "os.arch:" + getProperty("os.arch") + "\n" //
+						+ "java.vm.version:" + getProperty("java.vm.version") + "\n" //
+						+ "java.class.version:" + getProperty("java.class.version") + "\n";
 				File f = new File(
 						GU.path + "err" + new SimpleDateFormat("hh mm ss dd MM yyyy").format(new Date()) + ".log");
 				System.err.println(e.getClass().getName() + ":\"" + e.getMessage() + "\" in  thread \"" + t.getName()
@@ -68,10 +72,12 @@ public class Initializer {
 							+ "\"\nError while saving world:\nAt:" + msg);
 					new File(GU.path + "saveData/save0." + GU.WORLD_SAVE_FILE_FORMAT).delete();
 				}
-			System.exit(-1);
+			System.exit(hashCode(e));
 		};
 
 		ns.parallelComputing.Thread thread;
+
+		GU.init();
 
 		thread = ThreadMaster.createThread(new MainGameLoop(), GU.MAIN_THREAD_NAME);
 		thread.setUncaughtExceptionHandler(handler);
@@ -88,6 +94,15 @@ public class Initializer {
 		thread = ThreadMaster.createThread(new ThirdThread(), "third thread");
 		thread.setUncaughtExceptionHandler(handler);
 		thread.start();
+	}
+
+	private static int hashCode(Throwable e) {
+		String s = e.getLocalizedMessage();
+		for (StackTraceElement ste : e.getStackTrace()) {
+			s += "\n" + ste.getFileName() + " " + ste.getClassName() + " " + ste.getMethodName() + " " + ste.getModuleName() +
+				" " + ste.getLineNumber();
+		}
+		return Arrays.hashCode(s.getBytes());
 	}
 
 	private static void processArgs(String[] args) {

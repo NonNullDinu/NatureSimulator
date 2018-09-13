@@ -158,15 +158,14 @@ public class MainGameLoop implements Runnable {
 
 	public void run() {
 		GU.init();
-		SetRequest.init(new PAction() {
-			public void pexecute(Object... o) {
-				set(o[0]);
-			}
-		});
+		SetRequest.init((Object... o) -> {
+					set(o[0]);
+				}
+		);
 		VAO.init(() -> {
 			requestExecuteRequests();
 		});
-		UILoader.init(new Action[] { () -> {
+		UILoader.init(new Action[]{() -> {
 			MainGameLoop.state = GS.GAME;
 		}, () -> {
 			MainGameLoop.state = GS.OPTIONS;
@@ -174,7 +173,7 @@ public class MainGameLoop implements Runnable {
 			MainGameLoop.state = GS.EXIT;
 		}, () -> {
 			MainGameLoop.state = GS.MENU;
-		}, });
+		},});
 		DisplayManager.createDisplay();
 		TextMaster.init();
 		executeRequests();
@@ -212,7 +211,7 @@ public class MainGameLoop implements Runnable {
 		GU.rn_update();
 		camera.update(world);
 		int err;
-		while (!Display.isCloseRequested()) {
+		while (!DisplayManager.isCloseRequested()) {
 			if (state == GS.EXIT)
 				break;
 			runLogicAndRender();
@@ -221,7 +220,6 @@ public class MainGameLoop implements Runnable {
 			while ((err = GL11.glGetError()) != GL11.GL_NO_ERROR)
 				System.err.println("GL error " + err + "(" + GU.getGLErrorType(err) + ")");
 		}
-		GU.currentThread().checkpoint();
 		state = GS.CLOSING;
 		VAOLoader.cleanUp();
 		renderer.cleanUp();

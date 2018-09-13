@@ -30,11 +30,10 @@ Get the .nus file and run patch.jar with the name of the .nus file as the argume
 
 # OS dependent features
 
-| Feature                                | Linux x32_64     | macOS x64                     | Windows 7+ x64            |
+| Feature                                | Linux x86_64     | macOS x64                     | Windows 7+ x64            |
 |----------------------------------------|:----------------:|:-----------------------------:|:-------------------------:|
 | **N**S<br />**U**pdate<br />**S**cript | ✓                | ✓                             | ✓                         |
 | BASH-based update                      | ✓ 4.1+           |   Need linux "wget"           |                           |
-| WinCMD-based update                    |                  |                               | ✓                         |
 | Dependency native libraries            | ✓                |   @FIXME                      | ✓                         |
 
 # Update log
@@ -43,6 +42,11 @@ Get the .nus file and run patch.jar with the name of the .nus file as the argume
 		* Downloads update script
 		* Runs update script
 		* After it's done, deletes the update script
+		* Update script contains the following instructions:
+		    * Compare current version to version in cloud. If it is the same exit
+		    * Download the patch data
+		    * Apply the patch
+		    * Delete the patch data
 	
 	* NUS-based updating engine v.1.0
 		* Runs the .nus file

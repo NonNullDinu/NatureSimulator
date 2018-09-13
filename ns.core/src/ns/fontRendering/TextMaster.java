@@ -7,6 +7,7 @@ import ns.openglObjects.VAO;
 import ns.openglWorkers.VAOLoader;
 import ns.openglWorkers.VBOData;
 import ns.renderers.FontRenderer;
+import ns.utils.GU;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,5 +75,10 @@ public class TextMaster {
 
 	public static void delete(GUIText text) {
 		text.getMesh().delete();
+	}
+
+	public static void loadTextIfNotLoadedAlready(GUIText t) {
+		if(t.getMesh() == null && !GU.hasVaoCreateRequestInMainThread(t.getMesh()))
+			load(t);
 	}
 }

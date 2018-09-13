@@ -5,9 +5,12 @@ import data.SaveData;
 import ns.components.Blueprint;
 import ns.components.BlueprintCreator;
 import ns.display.DisplayManager;
+import ns.exceptions.GameException;
 import ns.fontMeshCreator.FontType;
 import ns.openglObjects.FBO;
 import ns.openglObjects.Texture;
+import ns.openglObjects.VAO;
+import ns.parallelComputing.CreateVAORequest;
 import ns.parallelComputing.Request;
 import ns.parallelComputing.Thread;
 import ns.parallelComputing.ThreadMaster;
@@ -38,6 +41,10 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class GU {
@@ -52,7 +59,6 @@ public class GU {
 	public static final int CURRENT_WORLD_FILE_VERSION = 3;
 	public static final String WORLD_SAVE_FILE_FORMAT = "nssv";
 	public static final String MAIN_THREAD_NAME = "main thread";
-	public static final IntBuffer tempibuffer = BufferUtils.createIntBuffer(1);
 	public static FontType Z003;
 	public static FontType caladea;
 	public static String path;
@@ -61,6 +67,8 @@ public class GU {
 	public static DocumentBuilder documentBuilder;
 	public static final boolean OS_WINDOWS;
 	public static final boolean OS_LINUX;
+	public static final Logger logger;
+	private static FileOutputStream logFile;
 
 	static {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -70,16 +78,72 @@ public class GU {
 		try {
 			documentBuilder = factory.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
+			throw new GameException(e.getMessage(), e.getStackTrace());
 		}
 		String os = System.getProperty("os.name");
 		OS_WINDOWS = os.equals("Windows");
 		OS_LINUX = os.equals("Linux");
+		logger = Logger.getGlobal();
+		Handler[] handlers = logger.getHandlers();
+		for (int i = 0; i < handlers.length; i++)
+			logger.removeHandler(handlers[i]);
+		logger.setUseParentHandlers(false);
+		logger.setLevel(Level.ALL);
+		logger.addHandler(new Handler() {
+			@Override
+			public void publish(LogRecord record) {
+				Throwable thrown = record.getThrown();
+				String msg = "";
+				if (thrown != null) {
+					msg =
+							thrown.getClass().getName() + ": \"" + thrown.getMessage() + "\" in " + Thread.currentThread().getName();
+					for (StackTraceElement elem : thrown.getStackTrace()) {
+						msg += "\n\t" + elem.getModuleName() + "/" + elem.getClassName() + "." + elem.getMethodName() + "(" + elem.getFileName() + ":" + elem.getLineNumber() + ")";
+					}
+				} else msg = record.getMessage() + (msg = record.getSourceClassName()) != null ?
+						(msg + " " + record.getSourceMethodName()) : "";
+				try {
+					logFile.write(msg.getBytes());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			public void flush() {
+				logger.entering("GU", "logger.handler$1.flush");
+				try {
+					logFile.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				logger.exiting("GU", "logger.handler$1.flush");
+			}
+
+			@Override
+			public void close() throws SecurityException {
+				logger.entering("GU", "logger.handler$1.close");
+				try {
+					logFile.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				logger.exiting("GU", "logger.handler$1.close");
+			}
+		});
 	}
 
 	public static void init() {
 		GameData.init();
 		SaveData.init();
+		try {
+			File f = new File(path + "lastLog.log");
+			if (!f.exists())
+				f.createNewFile();
+			logFile = new FileOutputStream(f);
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, e.getLocalizedMessage(), e);
+		}
 	}
 
 	public static BufferedReader open(In resource) {
@@ -91,11 +155,14 @@ public class GU {
 	}
 
 	public static void rn_update() {
+		logger.entering("GU", "rn_update");
 		mouseDelta = new Vector3f(Mouse.getDX(), Mouse.getDY(), Mouse.getDWheel());
 		mouseButtons = new Vector2b(Mouse.isButtonDown(0), Mouse.isButtonDown(1));
+		logger.exiting("GU", "rn_update");
 	}
 
 	public static void update() {
+		logger.entering("GU", "update");
 		prevFrameClicked = Mouse.isButtonDown(0);
 		for (Key k : Key.values())
 			k.setKeyPressedPrevFrame(k.isPressed());
@@ -105,23 +172,28 @@ public class GU {
 		lastFramesLengths = 0;
 		for (float l : mouseLengths)
 			lastFramesLengths += l;
+		logger.exiting("GU", "update");
 	}
 
 	public static void updateWireFrame() {
+		logger.entering("GU", "updateWireFrame");
 		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, (Key.KEY_W.isPressed() ? GL11.GL_LINE : GL11.GL_FILL)); // Press
-																											// key 'W'
-																											// on
-																											// the
-																											// keyboard
-																											// for
-																											// wire-frame
+		// key 'W'
+		// on
+		// the
+		// keyboard
+		// for
+		// wire-frame
+		logger.exiting("GU", "updateWireFrame");
 	}
 
 	public static void sendRequestToMainThread(Request r) {
+		logger.entering("GU", "sendRequestToMainThread");
 		Thread th = ThreadMaster.getThread(MAIN_THREAD_NAME);
 		while (th.isExecutingRequests)
 			java.lang.Thread.yield();
 		th.setToCarryOutRequest(r);
+		logger.exiting("GU", "sendRequestToMainThread");
 	}
 
 	public static ns.parallelComputing.Thread currentThread() {
@@ -129,14 +201,17 @@ public class GU {
 	}
 
 	public static void setMouseCursor(Cursor cursor) {
+		logger.entering("GU", "setMouseCursor");
 		try {
 			Mouse.setNativeCursor(cursor);
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 		}
+		logger.exiting("GU", "setMouseCursor");
 	}
 
 	public static final synchronized void initMouseCursors(MasterRenderer renderer) {
+		logger.entering("GU", "initMouseCursors");
 		FBO fbo = new FBO(64, 64, (FBO.COLOR_TEXTURE | FBO.DEPTH_RENDERBUFFER)).create();
 		fbo.bind();
 		GL11.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
@@ -153,22 +228,38 @@ public class GU {
 		fbo.setTextureNull();
 		FBO.unbind();
 		fbo.delete();
+		logger.exiting("GU", "initMouseCursors");
 	}
 
 	public static String getGL20Type(int type) {
+		logger.entering("GU", "getGL20Type");
 		Field[] fields = GL20.class.getFields();
 		for (Field field : fields) {
 			if (field.getType() == int.class) {
 				try {
 					int i = (int) field.get(null);
-					if (i == type)
+					if (i == type) {
+						logger.exiting("GU", "getGL20Type");
 						return field.getName();
+					}
 				} catch (IllegalArgumentException | IllegalAccessException e) {
-					e.printStackTrace();
+					logger.log(Level.WARNING, e.getMessage(), e);
 				}
 			}
 		}
+		logger.exiting("GU", "getGL20Type");
 		return null;
+	}
+
+	public static boolean hasVaoCreateRequestInMainThread(VAO vao) {
+		logger.entering("GU", "hasVaoCreateRequestInMainThread");
+		for (CreateVAORequest req : currentThread().vaoCreateRequests)
+			if (req.vao == vao) {
+				logger.exiting("GU", "hasVaoCreateRequestInMainThread");
+				return true;
+			}
+		logger.exiting("GU", "hasVaoCreateRequestInMainThread");
+		return false;
 	}
 
 	public static class Random {
@@ -211,33 +302,47 @@ public class GU {
 	}
 
 	public static Cursor createCursor(int xHotspot, int yHotspot, int nrOfFrames, IntBuffer textures,
-			IntBuffer delays) {
+	                                  IntBuffer delays) {
+		logger.entering("GU", "createCursor");
 		try {
-			return new Cursor(64, 64, xHotspot, yHotspot, nrOfFrames, textures, delays);
+			Cursor c = new Cursor(64, 64, xHotspot, yHotspot, nrOfFrames, textures, delays);
+			logger.exiting("GU", "createCursor");
+			return c;
 		} catch (LWJGLException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage(), e);
+			logger.exiting("GU", "createCursor");
 			return null;
 		}
 	}
 
 	public static IntBuffer getMouseTexture(String modelFolder, int sub) {
+		logger.entering("GU", "getMouseTexture");
 		int idx = Integer.parseInt(modelFolder) - 1000;
-		return textures.get(idx).getAsIntBuffer(sub, textureBuffers.get(idx));
+		IntBuffer buf = textures.get(idx).getAsIntBuffer(sub, textureBuffers.get(idx));
+		logger.exiting("GU", "getMouseTexture");
+		return buf;
 	}
 
 	public static Cursor createCursor(int xHotspot, int yHotspot, int nrOfFrames, IntBuffer textures, IntBuffer delays,
-			int sub) {
+	                                  int sub) {
+		logger.entering("GU", "createCursor2");
 		try {
-			return new Cursor(64 - sub, 64 - sub, xHotspot, yHotspot - sub, nrOfFrames, textures, delays);
+			Cursor c = new Cursor(64 - sub, 64 - sub, xHotspot, yHotspot - sub, nrOfFrames, textures, delays);
+			logger.exiting("GU", "createCursor2");
+			return c;
 		} catch (LWJGLException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage(), e);
+			logger.exiting("GU", "createCursor2");
 			return null;
 		}
 	}
 
 	public static int binaryInt(String string) {
+		logger.entering("GU", "binaryInt");
 		string = string.replaceAll(" ", "");
-		return Integer.parseInt(string, 2);
+		int i = Integer.parseInt(string, 2);
+		logger.exiting("GU", "binaryInt");
+		return i;
 	}
 
 	public static int sizeof(int gl_type) {
@@ -263,6 +368,7 @@ public class GU {
 	}
 
 	public static Vector2f normalizedMousePos() {
+		logger.entering("GU", "normalizedMousePos");
 		double normalizedX = -1.0 + 2.0 * (double) Mouse.getX() / Display.getWidth();
 		double normalizedY = -(1.0 - 2.0 * (double) Mouse.getY() / Display.getHeight());
 		return new Vector2f((float) normalizedX, (float) normalizedY);
@@ -301,7 +407,7 @@ public class GU {
 		projectionMatrix.m23 = -1;
 		projectionMatrix.m32 = -((2 * NEAR_PLANE * FAR_PLANE) / frustum_length);
 		projectionMatrix.m33 = 0;
-		
+
 		return projectionMatrix;
 	}
 
@@ -348,7 +454,7 @@ public class GU {
 		buffer.clear();
 		buffer.putFloat(f);
 		buffer.flip();
-		byte[] bytes = new byte[] { buffer.get(), buffer.get(), buffer.get(), buffer.get() };
+		byte[] bytes = new byte[]{buffer.get(), buffer.get(), buffer.get(), buffer.get()};
 		return bytes;
 	}
 

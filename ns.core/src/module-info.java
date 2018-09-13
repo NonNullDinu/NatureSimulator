@@ -6,6 +6,7 @@ module ns.core {
 	requires java.desktop;
 	requires lwjgl;
 	requires lwjgl.util;
+	requires java.logging;
 
 	exports data;
 	exports obj;

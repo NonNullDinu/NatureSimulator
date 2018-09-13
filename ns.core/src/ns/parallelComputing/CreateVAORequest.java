@@ -6,7 +6,7 @@ import ns.openglWorkers.VBOData;
 
 public class CreateVAORequest extends Request {
 
-	private VAO vao;
+	public VAO vao;
 	private VBOData[] data;
 	public CreateVAORequest(VAO vao, VBOData[] args) {
 		this.vao = vao;

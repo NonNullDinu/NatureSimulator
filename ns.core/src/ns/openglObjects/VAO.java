@@ -21,9 +21,9 @@ public class VAO implements IOpenGLObject, IRenderable {
 	private boolean hasIndices;
 
 	private boolean created = false;
-	
+
 	private static Action executeRequests;
-	
+
 	public static void init(Action action) {
 		executeRequests = action;
 	}
@@ -110,6 +110,7 @@ public class VAO implements IOpenGLObject, IRenderable {
 
 	@Override
 	public VAO create() {
+		created = true;
 		return this;
 	}
 

@@ -6,4 +6,5 @@ update () {
 	return 0
 };
 cd "$(cat ~/.ns-install/target-dir)" || exit 1
-exit update
+update
+exit $?

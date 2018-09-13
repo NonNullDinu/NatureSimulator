@@ -95,7 +95,7 @@ public class SecondaryThread implements Runnable {
 		}
 		GU.sendRequestToMainThread(new SetRequest(riverList));
 
-		Runtime.getRuntime().gc();
+//		Runtime.getRuntime().gc();
 		READY = true;
 		GU.currentThread().finishLoading();
 		GU.currentThread().finishExecution();

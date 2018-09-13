@@ -2,6 +2,7 @@ package ns.mainEngine;
 
 import data.GameData;
 import ns.customFileFormat.TexFile;
+import ns.display.DisplayManager;
 import ns.fontMeshCreator.FontType;
 import ns.fontMeshCreator.GUIText;
 import ns.fontRendering.TextMaster;
@@ -40,8 +41,7 @@ public class LoadingScreenThread implements Runnable {
 		textToShow.add(new GUIText("NonNullDinu", 3f, caladea, new Vector2f(0.0f, 0.0f), 0.4f, true));
 		textToShow.add(new GUIText("Loading...", 2f, z003, new Vector2f(0.0f, 0.0f), 0.2f, true));
 		text = textToShow.get(textI);
-		for (GUIText t : textToShow)
-			TextMaster.loadText(t);
+		TextMaster.loadText(text);
 		text.setColour(0f, 0f, 0f);
 		TextMaster.add(text);
 		RenderMethod renderMethod = () -> {
@@ -70,11 +70,14 @@ public class LoadingScreenThread implements Runnable {
 			TextMaster.render(alphaCoef);
 		};
 		GU.currentThread().finishLoading();
+		DisplayManager.setWindowVisible();
 		while (true) {
 			GU.sendRequestToMainThread(
 					new GLClearRequest(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, new Vector3f(1, 1, 1)));
 			GU.sendRequestToMainThread(new GLRenderRequest(renderMethod));
 			GU.sendRequestToMainThread(new UpdateDisplayRequest());
+			for (int i = textI + 1; i < textToShow.size(); i++)
+				TextMaster.loadTextIfNotLoadedAlready(textToShow.get(i));
 			try {
 				Thread.sleep(0, 50);
 			} catch (InterruptedException e) {

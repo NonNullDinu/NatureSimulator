@@ -1,6 +1,6 @@
 package ns.exceptions;
 
-public abstract class GameException extends RuntimeException {
+public class GameException extends RuntimeException {
 	private static final long serialVersionUID = 2404478978308821651L;
 	private StackTraceElement[] stackTrace;
 
