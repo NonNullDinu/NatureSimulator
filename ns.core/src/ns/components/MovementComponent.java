@@ -26,8 +26,8 @@ public class MovementComponent implements IComponent {
 		this.vel = new Vector3f();
 	}
 
-	public void update(Vector3f position, Entity e, Blueprint blueprint, World world) {
-		if ((config & MOVE) != 0) {
+	public void update(Vector3f position, Entity e, Blueprint blueprint, World world, boolean ableToMove) {
+		if ((config & MOVE) != 0 && ableToMove) {
 			e.rotate(0, GU.random.genFloat() * 10f - 5f, 0);
 
 			float radyrot = (float) Math.toRadians(e.getRotY() + 180);
@@ -36,7 +36,7 @@ public class MovementComponent implements IComponent {
 			position.x += vel.x;
 			position.z += vel.z;
 		}
-		if ((config & JUMP) != 0) {
+		if ((config & JUMP) != 0 && ableToMove) {
 			float th = world.getTerrain().getHeight(position.x, position.z);
 			if (position.y < th) {
 				position.y = th;

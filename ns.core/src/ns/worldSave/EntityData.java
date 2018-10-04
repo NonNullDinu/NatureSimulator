@@ -8,6 +8,7 @@ public class EntityData extends Data {
 	
 	private BlueprintData blueprintData;
 	private Vector3f position;
+	private Vector3f rotation;
 
 	public void setBlueprintData(BlueprintData blueprintData) {
 		this.blueprintData = blueprintData;
@@ -17,8 +18,14 @@ public class EntityData extends Data {
 		this.position = position;
 	}
 
+	public void setRotation(Vector3f rotation) {
+		this.rotation = rotation;
+	}
+
 	@Override
 	public Entity asInstance() {
-		return new Entity(blueprintData.asInstance(), position);
+		Entity e = new Entity(blueprintData.asInstance(), position);
+		e.rotate(rotation.x, rotation.y, rotation.z);
+		return e;
 	}
 }

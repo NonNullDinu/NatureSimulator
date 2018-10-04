@@ -15,6 +15,8 @@ import ns.parallelComputing.Request;
 import ns.parallelComputing.Thread;
 import ns.parallelComputing.ThreadMaster;
 import ns.renderers.MasterRenderer;
+import ns.time.DayNightCycle;
+import ns.time.Time;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Cursor;
@@ -37,14 +39,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class GU {
@@ -67,8 +66,7 @@ public class GU {
 	public static DocumentBuilder documentBuilder;
 	public static final boolean OS_WINDOWS;
 	public static final boolean OS_LINUX;
-	public static final Logger logger;
-	private static FileOutputStream logFile;
+	public static final Time time;
 
 	static {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -83,52 +81,51 @@ public class GU {
 		String os = System.getProperty("os.name");
 		OS_WINDOWS = os.equals("Windows");
 		OS_LINUX = os.equals("Linux");
-		logger = Logger.getGlobal();
-		Handler[] handlers = logger.getHandlers();
-		for (int i = 0; i < handlers.length; i++)
-			logger.removeHandler(handlers[i]);
-		logger.setUseParentHandlers(false);
-		logger.setLevel(Level.ALL);
-		logger.addHandler(new Handler() {
+		time = new Time(new DayNightCycle() {
 			@Override
-			public void publish(LogRecord record) {
-				Throwable thrown = record.getThrown();
-				String msg = "";
-				if (thrown != null) {
-					msg =
-							thrown.getClass().getName() + ": \"" + thrown.getMessage() + "\" in " + Thread.currentThread().getName();
-					for (StackTraceElement elem : thrown.getStackTrace()) {
-						msg += "\n\t" + elem.getModuleName() + "/" + elem.getClassName() + "." + elem.getMethodName() + "(" + elem.getFileName() + ":" + elem.getLineNumber() + ")";
-					}
-				} else msg = record.getMessage() + (msg = record.getSourceClassName()) != null ?
-						(msg + " " + record.getSourceMethodName()) : "";
-				try {
-					logFile.write(msg.getBytes());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+			public boolean isDay(float t) {
+				float h = (t / H_S_DURATION) % 24f;
+				return h >= 8f && h < 17f;
 			}
 
 			@Override
-			public void flush() {
-				logger.entering("GU", "logger.handler$1.flush");
-				try {
-					logFile.flush();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				logger.exiting("GU", "logger.handler$1.flush");
+			public boolean isNight(float t) {
+				float h = (t / H_S_DURATION) % 24f;
+				return (h >= 21f && h < 24f) || (h >= 0f && h < 5f);
 			}
 
 			@Override
-			public void close() throws SecurityException {
-				logger.entering("GU", "logger.handler$1.close");
-				try {
-					logFile.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				logger.exiting("GU", "logger.handler$1.close");
+			public boolean isMorning(float t) {
+				float h = (t / H_S_DURATION) % 24f;
+				return h >= 5f && h < 8f;
+			}
+
+			@Override
+			public boolean isEvening(float t) {
+				float h = (t / H_S_DURATION) % 24f;
+				return h >= 17f && h < 21f;
+			}
+
+			@Override
+			public float dayFactor(float t) {
+				if (isDay(t))
+					return 1;
+				else if (isEvening(t)) {
+					return 1.0f - (t / H_S_DURATION % 24f - 17f) / 4f;
+				} else if (isMorning(t)) {
+					return (t / H_S_DURATION % 24f - 5f) / 3f;
+				} else return 0f;
+			}
+
+			@Override
+			public float nightFactor(float t) {
+				if (isNight(t))
+					return 1;
+				else if (isEvening(t)) {
+					return ((t / H_S_DURATION) % 24f - 17f) / 4f;
+				} else if (isMorning(t)) {
+					return 1.0f - ((t / H_S_DURATION) % 24f - 5f) / 3f;
+				} else return 0f;
 			}
 		});
 	}
@@ -136,14 +133,6 @@ public class GU {
 	public static void init() {
 		GameData.init();
 		SaveData.init();
-		try {
-			File f = new File(path + "lastLog.log");
-			if (!f.exists())
-				f.createNewFile();
-			logFile = new FileOutputStream(f);
-		} catch (IOException e) {
-			logger.log(Level.SEVERE, e.getLocalizedMessage(), e);
-		}
 	}
 
 	public static BufferedReader open(In resource) {
@@ -155,14 +144,12 @@ public class GU {
 	}
 
 	public static void rn_update() {
-		logger.entering("GU", "rn_update");
 		mouseDelta = new Vector3f(Mouse.getDX(), Mouse.getDY(), Mouse.getDWheel());
 		mouseButtons = new Vector2b(Mouse.isButtonDown(0), Mouse.isButtonDown(1));
-		logger.exiting("GU", "rn_update");
+		time.update();
 	}
 
 	public static void update() {
-		logger.entering("GU", "update");
 		prevFrameClicked = Mouse.isButtonDown(0);
 		for (Key k : Key.values())
 			k.setKeyPressedPrevFrame(k.isPressed());
@@ -172,11 +159,9 @@ public class GU {
 		lastFramesLengths = 0;
 		for (float l : mouseLengths)
 			lastFramesLengths += l;
-		logger.exiting("GU", "update");
 	}
 
 	public static void updateWireFrame() {
-		logger.entering("GU", "updateWireFrame");
 		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, (Key.KEY_W.isPressed() ? GL11.GL_LINE : GL11.GL_FILL)); // Press
 		// key 'W'
 		// on
@@ -184,16 +169,13 @@ public class GU {
 		// keyboard
 		// for
 		// wire-frame
-		logger.exiting("GU", "updateWireFrame");
 	}
 
 	public static void sendRequestToMainThread(Request r) {
-		logger.entering("GU", "sendRequestToMainThread");
 		Thread th = ThreadMaster.getThread(MAIN_THREAD_NAME);
 		while (th.isExecutingRequests)
 			java.lang.Thread.yield();
 		th.setToCarryOutRequest(r);
-		logger.exiting("GU", "sendRequestToMainThread");
 	}
 
 	public static ns.parallelComputing.Thread currentThread() {
@@ -201,17 +183,14 @@ public class GU {
 	}
 
 	public static void setMouseCursor(Cursor cursor) {
-		logger.entering("GU", "setMouseCursor");
 		try {
 			Mouse.setNativeCursor(cursor);
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 		}
-		logger.exiting("GU", "setMouseCursor");
 	}
 
 	public static final synchronized void initMouseCursors(MasterRenderer renderer) {
-		logger.entering("GU", "initMouseCursors");
 		FBO fbo = new FBO(64, 64, (FBO.COLOR_TEXTURE | FBO.DEPTH_RENDERBUFFER)).create();
 		fbo.bind();
 		GL11.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
@@ -228,37 +207,30 @@ public class GU {
 		fbo.setTextureNull();
 		FBO.unbind();
 		fbo.delete();
-		logger.exiting("GU", "initMouseCursors");
 	}
 
 	public static String getGL20Type(int type) {
-		logger.entering("GU", "getGL20Type");
 		Field[] fields = GL20.class.getFields();
 		for (Field field : fields) {
 			if (field.getType() == int.class) {
 				try {
 					int i = (int) field.get(null);
 					if (i == type) {
-						logger.exiting("GU", "getGL20Type");
 						return field.getName();
 					}
 				} catch (IllegalArgumentException | IllegalAccessException e) {
-					logger.log(Level.WARNING, e.getMessage(), e);
+					e.printStackTrace();
 				}
 			}
 		}
-		logger.exiting("GU", "getGL20Type");
 		return null;
 	}
 
 	public static boolean hasVaoCreateRequestInMainThread(VAO vao) {
-		logger.entering("GU", "hasVaoCreateRequestInMainThread");
 		for (CreateVAORequest req : currentThread().vaoCreateRequests)
 			if (req.vao == vao) {
-				logger.exiting("GU", "hasVaoCreateRequestInMainThread");
 				return true;
 			}
-		logger.exiting("GU", "hasVaoCreateRequestInMainThread");
 		return false;
 	}
 
@@ -303,45 +275,33 @@ public class GU {
 
 	public static Cursor createCursor(int xHotspot, int yHotspot, int nrOfFrames, IntBuffer textures,
 	                                  IntBuffer delays) {
-		logger.entering("GU", "createCursor");
 		try {
 			Cursor c = new Cursor(64, 64, xHotspot, yHotspot, nrOfFrames, textures, delays);
-			logger.exiting("GU", "createCursor");
 			return c;
 		} catch (LWJGLException e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
-			logger.exiting("GU", "createCursor");
 			return null;
 		}
 	}
 
 	public static IntBuffer getMouseTexture(String modelFolder, int sub) {
-		logger.entering("GU", "getMouseTexture");
 		int idx = Integer.parseInt(modelFolder) - 1000;
 		IntBuffer buf = textures.get(idx).getAsIntBuffer(sub, textureBuffers.get(idx));
-		logger.exiting("GU", "getMouseTexture");
 		return buf;
 	}
 
 	public static Cursor createCursor(int xHotspot, int yHotspot, int nrOfFrames, IntBuffer textures, IntBuffer delays,
 	                                  int sub) {
-		logger.entering("GU", "createCursor2");
 		try {
 			Cursor c = new Cursor(64 - sub, 64 - sub, xHotspot, yHotspot - sub, nrOfFrames, textures, delays);
-			logger.exiting("GU", "createCursor2");
 			return c;
 		} catch (LWJGLException e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
-			logger.exiting("GU", "createCursor2");
 			return null;
 		}
 	}
 
 	public static int binaryInt(String string) {
-		logger.entering("GU", "binaryInt");
 		string = string.replaceAll(" ", "");
 		int i = Integer.parseInt(string, 2);
-		logger.exiting("GU", "binaryInt");
 		return i;
 	}
 
@@ -368,7 +328,6 @@ public class GU {
 	}
 
 	public static Vector2f normalizedMousePos() {
-		logger.entering("GU", "normalizedMousePos");
 		double normalizedX = -1.0 + 2.0 * (double) Mouse.getX() / Display.getWidth();
 		double normalizedY = -(1.0 - 2.0 * (double) Mouse.getY() / Display.getHeight());
 		return new Vector2f((float) normalizedX, (float) normalizedY);
@@ -428,48 +387,54 @@ public class GU {
 	}
 
 	public static float readFloat(byte b1, byte b2, byte b3, byte b4) {
-		buffer.flip();
-		buffer.clear();
-		buffer.put(b1);
-		buffer.put(b2);
-		buffer.put(b3);
-		buffer.put(b4);
-		buffer.flip();
-		return buffer.getFloat();
+//		buffer.flip();
+//		buffer.clear();
+//		buffer.put(b1);
+//		buffer.put(b2);
+//		buffer.put(b3);
+//		buffer.put(b4);
+//		buffer.flip();
+//		float result = buffer.getFloat();
+		float result = ByteBuffer.wrap(new byte[]{b1, b2, b3, b4}).order(ByteOrder.BIG_ENDIAN).getFloat();
+		return result;
 	}
 
 	public static int readInt(byte b1, byte b2, byte b3, byte b4) {
-		buffer.flip();
-		buffer.clear();
-		buffer.put(b1);
-		buffer.put(b2);
-		buffer.put(b3);
-		buffer.put(b4);
-		buffer.flip();
-		return buffer.getInt();
+//		buffer.flip();
+//		buffer.clear();
+//		buffer.put(b1);
+//		buffer.put(b2);
+//		buffer.put(b3);
+//		buffer.put(b4);
+//		buffer.flip();
+//		int result = buffer.getInt();
+		int result = ByteBuffer.wrap(new byte[]{b1, b2, b3, b4}).order(ByteOrder.BIG_ENDIAN).getInt();
+		return result;
 	}
 
 	public static byte[] getBytes(float f) {
-		buffer.flip();
+//		buffer.flip();
+//		buffer.clear();
+//		buffer.putFloat(f);
+//		buffer.flip();
 		buffer.clear();
 		buffer.putFloat(f);
-		buffer.flip();
-		byte[] bytes = new byte[]{buffer.get(), buffer.get(), buffer.get(), buffer.get()};
+		byte[] bytes = buffer.array();
+//		byte[] bytes = new byte[]{buffer.get(), buffer.get(), buffer.get(), buffer.get()};
 		return bytes;
 	}
 
 	public static byte[] getBytes(int i) {
-		buffer.flip();
 		buffer.clear();
 		buffer.putInt(i);
-		buffer.flip();
-		byte[] bytes = new byte[]{buffer.get(), buffer.get(), buffer.get(), buffer.get()};
+		byte[] bytes = buffer.array();
 		return bytes;
 	}
 
 	public static Document getDocument(InputStream in) {
 		try {
-			return documentBuilder.parse(in);
+			Document doc = documentBuilder.parse(in);
+			return doc;
 		} catch (IOException | SAXException e) {
 			e.printStackTrace();
 		}
@@ -477,6 +442,12 @@ public class GU {
 	}
 
 	public static boolean isStringOfPattern(String string, String pattern) {
-		return Pattern.compile(pattern).matcher(string).matches();
+		boolean result = Pattern.compile(pattern).matcher(string).matches();
+		return result;
+	}
+
+	public static Vector3f mix(Vector3f a, Vector3f b, float blend) {
+		return new Vector3f(a.x * (1.0f - blend) + b.x * blend, a.y * (1.0f - blend) + b.y * blend,
+				a.z * (1.0f - blend) + b.z * blend);
 	}
 }

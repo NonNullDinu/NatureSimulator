@@ -1,6 +1,5 @@
 package obj;
 
-import ns.utils.GU;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
@@ -13,6 +12,15 @@ public class Material {
 	private String name;
 	private Vector4f data;
 	private byte index;
+	private static BytesFunc btsFunc;
+
+	public interface BytesFunc {
+		byte[] getBytes(float f);
+	}
+
+	public static void init(BytesFunc func) {
+		btsFunc = func;
+	}
 
 	protected Material(byte index) {
 		this.index = index;
@@ -55,21 +63,25 @@ public class Material {
 	}
 
 	public List<Byte> getBytes() {
-		byte[][] data = new byte[][] { GU.getBytes(this.color.x), GU.getBytes(this.color.y),
-				GU.getBytes(this.color.z) };
+		byte[][] data = new byte[][]{bytesFunc(this.color.x), bytesFunc(this.color.y),
+				bytesFunc(this.color.z)};
 		List<Byte> bytes = new ArrayList<>();
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 4; j++)
 				bytes.add(data[i][j]);
-		data = new byte[][] { GU.getBytes(this.indicators.x), GU.getBytes(this.indicators.y),
-				GU.getBytes(this.indicators.z) };
+		data = new byte[][]{bytesFunc(this.indicators.x), bytesFunc(this.indicators.y),
+				bytesFunc(this.indicators.z)};
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 4; j++)
 				bytes.add(data[i][j]);
-		data = new byte[][] { GU.getBytes(this.data.x) };
+		data = new byte[][]{bytesFunc(this.data.x)};
 		for (int i = 0; i < 1; i++)
 			for (int j = 0; j < 4; j++)
 				bytes.add(data[i][j]);
 		return bytes;
+	}
+
+	private byte[] bytesFunc(float f) {
+		return btsFunc.getBytes(f);
 	}
 }

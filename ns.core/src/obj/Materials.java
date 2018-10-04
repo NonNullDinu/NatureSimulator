@@ -14,7 +14,11 @@ public class Materials extends ArrayList<Material> {
 	private static final long serialVersionUID = -4711987157168197781L;
 
 	public Materials(In resource) {
-		BufferedReader reader = GU.open(resource);
+		this(GU.open(resource));
+	}
+
+
+	public Materials(BufferedReader reader) {
 		String line;
 		Material current = null;
 		try {

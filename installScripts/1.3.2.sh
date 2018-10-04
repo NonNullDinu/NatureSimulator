@@ -3,12 +3,11 @@
 install_dir="$1"
 shift
 if [[ "$install_dir" == "" ]] ;
-then
-echo -n "Specify a location for installation:"
-read install_dir
+then	echo -n "Specify a location for installation:"
+	read install_dir
 fi
 if [[ ! -d "$install_dir" ]] ; then
-mkdir "$install_dir"
+	mkdir "$install_dir"
 fi
 
 cd "$install_dir"
@@ -20,13 +19,22 @@ rm install_fld.tar.xz
 echo -n "Create desktop shortcut?y/n:"
 read desktop_short
 if [[ "$desktop_short" = "y" || "$desktop_short" = "Y" ]] ;
-then printf "[Desktop Entry]\nExec=java -jar $install_dir/NatureSimulator.jar $install_dir\nEncoding=UTF-8\nType=Application\nName=Nature Simulator\nIcon=$install_dir/gameData/textures/ns_icon.png\nTerminal=false" > "$HOME"/.local/share/applications/NatureSimulator.desktop
+then	printf "[Desktop Entry]\nExec=java -jar $install_dir/NatureSimulator.jar $install_dir\nEncoding=UTF-8\nType=Application\nName=Nature Simulator\nIcon=$install_dir/gameData/textures/ns_icon.png\nTerminal=false" > "$HOME"/.local/share/applications/NatureSimulator.desktop
 fi
 
 if [[ ! -d "$HOME/.ns-install" ]] ;
-then mkdir "$HOME/.ns-install"
+then	mkdir "$HOME/.ns-install"
 fi
 
 cd "$HOME/.ns-install"
 printf "$install_dir" > target-dir
 wget -O update.sh https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/master/install/update.sh
+
+echo -n "Make a command to use for CLI?y/n:"
+read make_command
+if [[ "$make_command" = "y" || "$make_command" = "Y" ]] ;
+then	cd "$HOME"
+	if [[ ! -d bin ]] ; then mkdir bin fi
+	cd bin
+	wget -O ns https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/master/.data/ns-script.sh
+fi

@@ -16,8 +16,9 @@ public class TerrainShader extends ShaderProgram {
 	public UniformMat4 projectionMatrix = new UniformMat4("projectionMatrix");
 	public UniformMat4 transformationMatrix = new UniformMat4("transformationMatrix");
 	public UniformMat4 viewMatrix = new UniformMat4("viewMatrix");
-	
-	public UniformLight light = new UniformLight("light", locator);
+
+	public UniformLight sun = new UniformLight("sun", locator);
+	public UniformLight moon = new UniformLight("moon", locator);
 	
 	public UniformVec4 clipPlane = new UniformVec4("clipPlane");
 	
@@ -29,7 +30,7 @@ public class TerrainShader extends ShaderProgram {
 	
 	public TerrainShader() {
 		super(new Shader(VERTEX_SHADER, GL20.GL_VERTEX_SHADER), new Shader(FRAGMENT_SHADER, GL20.GL_FRAGMENT_SHADER));
-		storeUniforms(projectionMatrix, transformationMatrix, viewMatrix, light, clipPlane, skyColor, fogValues);
+		storeUniforms(projectionMatrix, transformationMatrix, viewMatrix, sun, moon, clipPlane, skyColor, fogValues);
 	}
 	
 	@Override

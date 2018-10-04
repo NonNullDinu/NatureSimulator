@@ -75,11 +75,13 @@ public class BlueprintCreator {
 		} else if (entityFolder.equals("1011")) {
 			blueprint.withModel(new ModelComponent(ModelsLibrary.getModel("models/1011/snowman.mdl")))
 					.withMovement(new MovementComponent(MovementComponent.MOVE))
-					.withLife(new LifeComponent(MIN_TO_SECONDS(50)));
+					.withLife(new AnimalLifeComponent(MIN_TO_SECONDS(50)));
 		} else if (entityFolder.equals("1012")) {
 			blueprint.withModel(new ModelComponent(ModelsLibrary.getModel("models/1012/sheep.mdl")))
 					.withMovement(new MovementComponent(MovementComponent.MOVE | MovementComponent.JUMP))
-					.withLife(new LifeComponent(MIN_TO_SECONDS(0.1f)));
+					.withLife(new AnimalLifeComponent(MIN_TO_SECONDS(0.1f)));
+		} else if (entityFolder.equals("1013")) {
+			blueprint.withModel(new ModelComponent(ModelsLibrary.getModel("models/1013/meat.mdl")));
 		}
 		return blueprint;
 	}
@@ -120,6 +122,8 @@ public class BlueprintCreator {
 			blueprint.withModel(new ModelComponent(ModelsLibrary.getModel("models/1011/snowman.mdl")));
 		} else if (entityFolder.equals("1012")) {
 			blueprint.withModel(new ModelComponent(ModelsLibrary.getModel("models/1012/sheep.mdl")).shouldScaleTrue());
+		} else if (entityFolder.equals("1013")) {
+			blueprint.withModel(new ModelComponent(ModelsLibrary.getModel("models/1013/meat.mdl")));
 		}
 		return blueprint;
 	}

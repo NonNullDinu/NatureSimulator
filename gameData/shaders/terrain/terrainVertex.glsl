@@ -15,7 +15,8 @@ uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 
 #Struct_Lib.Light
-uniform Light light;
+uniform Light sun;
+uniform Light moon;
 
 #Struct_Lib.FogValues
 uniform FogValues fogValues;
@@ -28,9 +29,12 @@ layout(std430, binding = 0) buffer colors
 };
 
 void calculateDiffuse(in vec3 normal, out vec3 diffuse) {
-	float dot1 = dot(normalize(-light.direction), normal);
+	float dot1 = dot(normalize(-sun.direction), normal);
+	float dot2 = dot(normalize(-moon.direction), normal);
 	dot1 = max(dot1, 0.0);
-	diffuse = (light.color * light.bias.x) + (dot1 * light.color * light.bias.y);
+	dot2 = max(dot2, 0.0);
+	diffuse = (sun.color * sun.bias.x) + (dot1 * sun.color * sun.bias.y) +
+			(moon.color * moon.bias.x) + (dot2 * moon.color * moon.bias.y);
 }
 
 void calculateColor(inout vec3 color, in vec3 normal) {

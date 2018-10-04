@@ -1,7 +1,6 @@
 package ns.parallelComputing;
 
 import data.GameData;
-import ns.interfaces.Condition;
 import org.lwjgl.opengl.Display;
 
 import java.util.ArrayList;
@@ -78,32 +77,8 @@ public class Thread extends java.lang.Thread {
 		this.state = state;
 	}
 
-	public void checkpoint() {
-		ThreadMaster.checkpoint(this);
-	}
-
-	public void _stop() {
-		state = ThreadState.WAITING;
-		while (state != ThreadState.RUNNING)
-			Thread.yield();
-	}
-
-	public void _stop(Condition c) {
-		special_loop_executing = true;
-		state = ThreadState.WAITING;
-		while (c.value()) {
-			Thread.yield();
-		}
-		state = ThreadState.RUNNING;
-		special_loop_executing = false;
-	}
-
-	public void _resume() {
-		if (!special_loop_executing)
-			state = ThreadState.RUNNING;
-	}
-
 	public void finishExecution() {
+		System.out.println(getName() + " finished execution");
 		state = ThreadState.FINISHED;
 	}
 }

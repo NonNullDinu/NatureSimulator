@@ -29,3 +29,6 @@ terrain
 water
 ./fragment.glsl
 ./vertex.glsl
+movingEntity
+./movingEntitySpotFragment.glsl
+./movingEntitySpotVertex.glsl

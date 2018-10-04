@@ -3,7 +3,8 @@ package ns.mainEngine;
 import data.GameData;
 import ns.customFileFormat.TexFile;
 import ns.derrivedOpenGLObjects.FlareTexture;
-import ns.entities.Light;
+import ns.entities.Moon;
+import ns.entities.Sun;
 import ns.flares.FlareManager;
 import ns.mainMenu.MainMenu;
 import ns.mainMenu.MenuMaster;
@@ -43,8 +44,10 @@ public class SecondaryThread implements Runnable {
 		ModelsLibrary.getModel("models/1002/tree.mdl");
 		ModelsLibrary.getModel("models/1003/mushroom.mdl");
 		ModelsLibrary.getModel("models/1004/tree.mdl");
-		Light sun = new Light(new Vector3f(0.5f, -0.15f, 0), new Vector3f(1, 1, 1), new Vector2f(0.5f, 0.5f));
+		Sun sun = new Sun(new Vector3f(0.5f, 0f, 0), new Vector3f(1, 1, 1), new Vector2f(0.1f, 0.5f));
 		GU.sendRequestToMainThread(new SetRequest(sun));
+		Moon moon = new Moon(new Vector3f(0.5f, 0f, 0), new Vector3f(0.5f, 0.5f, 0.5f), new Vector2f(0.1f, 0.5f));
+		GU.sendRequestToMainThread(new SetRequest(moon));
 		Options options = OptionsMaster.createOptions();
 		GU.sendRequestToMainThread(new SetRequest(options));
 
@@ -63,7 +66,7 @@ public class SecondaryThread implements Runnable {
 				new TexFile("textures/lensFlare/tex2.tex").load(), new TexFile("textures/lensFlare/tex3.tex").load(),
 				new TexFile("textures/lensFlare/tex4.tex").load(), new TexFile("textures/lensFlare/tex5.tex").load(),
 				new TexFile("textures/lensFlare/tex6.tex").load(), new TexFile("textures/lensFlare/tex7.tex").load(),
-				new TexFile("textures/lensFlare/tex8.tex").load(), };
+				new TexFile("textures/lensFlare/tex8.tex").load()};
 		FlareManager flareManager = new FlareManager(new TexFile("textures/lensFlare/sun.tex").load(),
 				new FlareTexture(flareTextures[7], 0.5f, 35f), new FlareTexture(flareTextures[5], 0.2f),
 				new FlareTexture(flareTextures[1], 0.2f), new FlareTexture(flareTextures[2], 0.1f),

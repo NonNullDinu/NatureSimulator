@@ -14,7 +14,7 @@ layout(location = 0) out vec4 pass_clipSpaceGrid;
 layout(location = 1) out vec4 pass_clipSpaceReal;
 layout(location = 2) flat out vec3 pass_normal;
 layout(location = 3) out vec3 pass_toCameraVector;
-layout(location = 4) out vec3 pass_specular;
+layout(location = 4) flat out vec3 pass_specular;
 layout(location = 5) out vec3 pass_diffuse;
 layout(location = 6) out float out_visibility;
 
@@ -27,24 +27,32 @@ uniform mat4 viewMatrix;
 
 #Struct_Lib.Light
 
-uniform Light light;
+uniform Light sun;
+uniform Light moon;
 
 #Struct_Lib.FogValues
 
 uniform FogValues fogValues;
 
-vec3 calcSpecularLighting(vec3 toCamVector, vec3 toLightVector, vec3 normal) {
+vec3 calcSpecularLighting(vec3 toCamVector, vec3 toLightVector, vec3 normal, vec3 toLightVector2) {
 	vec3 reflectedLightDirection = reflect(-toLightVector, normal);
 	float specularFactor = dot(reflectedLightDirection, toCamVector);
 	specularFactor = max(specularFactor, 0.0);
 	specularFactor = pow(specularFactor, shineDamper);
-	return specularFactor * specularReflectivity * light.color;
+	vec3 reflectedLightDirection2 = reflect(-toLightVector2, normal);
+	float specularFactor2 = dot(reflectedLightDirection2, toCamVector);
+	specularFactor2 = max(specularFactor2, 0.0);
+	specularFactor2 = pow(specularFactor2, shineDamper);
+	return specularFactor * specularReflectivity * sun.color + specularFactor2 * specularReflectivity * moon.color;
 }
 
-vec3 calculateDiffuseLighting(vec3 toLightVector, vec3 normal) {
+vec3 calculateDiffuseLighting(vec3 toLightVector, vec3 normal, vec3 toLightVector2) {
 	float brightness = max(dot(toLightVector, normal), 0.0);
-	return (light.color * light.bias.x)
-			+ (brightness * light.color * light.bias.y);
+	float brightness2 = max(dot(toLightVector2, normal), 0.0);
+	return (sun.color * sun.bias.x)
+			+ (brightness * sun.color * sun.bias.y)
+			+ (moon.color * moon.bias.x)
+			+ (brightness2 * moon.color * moon.bias.y);
 }
 
 vec3 calcNormal(vec3 vertex0, vec3 vertex1, vec3 vertex2) {
@@ -100,10 +108,11 @@ void main(void) {
 
 	pass_toCameraVector = normalize(cameraPos - currentVertex);
 
-	vec3 toLightVector = -normalize(light.direction);
+	vec3 toLightVector = -normalize(sun.direction);
+	vec3 toLightVector2 = -normalize(moon.direction);
 	pass_specular = calcSpecularLighting(pass_toCameraVector, toLightVector,
-			pass_normal);
-	pass_diffuse = calculateDiffuseLighting(toLightVector, pass_normal);
+			pass_normal, toLightVector2);
+	pass_diffuse = calculateDiffuseLighting(toLightVector, pass_normal, toLightVector2);
 
 	float distance = length(posRelativeToCamera.xyz);
 	out_visibility = exp(

@@ -4,8 +4,8 @@ import java.util.Random;
 
 public class HeightsGenerator {
 	private static final float AMPLITUDE = 300f;
-	private static final int OCTAVES = 5;
-	private static final float ROUGHNESS = 0.25f;
+	private static final int OCTAVES = 4;
+	private static final float ROUGHNESS = 0.1f;
 
 	private Random random = new Random();
 	private int seed;
@@ -62,7 +62,7 @@ public class HeightsGenerator {
 		random.setSeed(x * 49632 + z * 325176 + seed);
 		return random.nextFloat() * 2f - 1f;
 	}
-	
+
 	public int getSeed() {
 		return seed;
 	}

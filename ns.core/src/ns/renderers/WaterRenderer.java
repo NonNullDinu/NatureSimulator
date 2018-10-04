@@ -9,7 +9,6 @@ import ns.water.WaterTile;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
 
 public class WaterRenderer {
 	private static final float WAVE_SPEED = 0.003f;
@@ -27,16 +26,17 @@ public class WaterRenderer {
 		shader.stop();
 	}
 
-	public void render(WaterTile water, ICamera camera, WaterFBOs fbos, Light sun) {
+	public void render(WaterTile water, ICamera camera, WaterFBOs fbos, Light sun, Light moon) {
 		shader.start();
 
 		waveTime += WAVE_SPEED;
 		shader.waveTime.load(waveTime);
 
-		shader.skyColor.load(new Vector3f(MasterRenderer.RED, MasterRenderer.GREEN, MasterRenderer.BLUE));
+		shader.skyColor.load(MasterRenderer.CLEAR_COLOR);
 		shader.fogValues.load(MasterRenderer.FOG_VALUES);
 
-		shader.light.load(sun);
+		shader.sun.load(sun);
+		shader.moon.load(moon);
 
 		shader.viewMatrix.load(camera.getViewMatrix());
 		shader.cameraPosition.load(camera.getPosition());
@@ -53,16 +53,17 @@ public class WaterRenderer {
 		shader.stop();
 	}
 
-	public void renderBlured(WaterTile water, ICamera camera, WaterFBOs fbos, Light sun) {
+	public void renderBlured(WaterTile water, ICamera camera, WaterFBOs fbos, Light sun, Light moon) {
 		shader.start();
 
 		waveTime += WAVE_SPEED;
 		shader.waveTime.load(waveTime);
 
-		shader.skyColor.load(new Vector3f(MasterRenderer.RED, MasterRenderer.GREEN, MasterRenderer.BLUE));
+		shader.skyColor.load(MasterRenderer.CLEAR_COLOR);
 		shader.fogValues.load(MasterRenderer.FOG_VALUES);
 
-		shader.light.load(sun);
+		shader.sun.load(sun);
+		shader.moon.load(moon);
 
 		shader.viewMatrix.load(camera.getViewMatrix());
 		shader.cameraPosition.load(camera.getPosition());

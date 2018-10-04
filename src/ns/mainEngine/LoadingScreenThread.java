@@ -26,6 +26,7 @@ public class LoadingScreenThread implements Runnable {
 	public static boolean READY = false;
 	private GUIText text;
 	private boolean incr = true;
+	private boolean toBreak;
 
 	@Override
 	public void run() {
@@ -61,7 +62,8 @@ public class LoadingScreenThread implements Runnable {
 					addToAC(-alphaCoef);
 					text.remove();
 					textI++;
-					setReady(textI == textToShow.size() - 1);
+					setReady(textI >= textToShow.size() - 1);
+					setBreak(READY);
 					setIncr(true);
 					setText(textToShow.get(textI));
 					TextMaster.add(text);
@@ -79,14 +81,18 @@ public class LoadingScreenThread implements Runnable {
 			for (int i = textI + 1; i < textToShow.size(); i++)
 				TextMaster.loadTextIfNotLoadedAlready(textToShow.get(i));
 			try {
-				Thread.sleep(0, 50);
+				Thread.sleep(10);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			if (MainGameLoop.state != GS.LOADING)
+			if (MainGameLoop.state != GS.LOADING || toBreak)
 				break;
 		}
 		GU.currentThread().finishExecution();
+	}
+
+	private void setBreak(boolean b) {
+		this.toBreak = b;
 	}
 
 	protected void setIncr(boolean b) {

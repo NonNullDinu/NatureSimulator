@@ -21,33 +21,36 @@ public class BlueprintInputStream {
 		String enFolder = Integer.toString(999 + dataIn);
 		String modelName = "";
 		switch (dataIn) {
-		case 1:
-		case 2:
-		case 3:
-		case 5:
-		case 6:
-		case 7:
-		case 11:
-			modelName = "tree";
-			break;
-		case 4:
-			modelName = "mushroom";
-			break;
-		case 8:
-			modelName = "grass";
-			break;
-		case 9:
-			modelName = "stone";
-			break;
-		case 10:
-			modelName = "seaWeed";
-			break;
-		case 12:
-			modelName = "snowman";
-			break;
-		case 13:
-			modelName = "sheep";
-			break;
+			case 1:
+			case 2:
+			case 3:
+			case 5:
+			case 6:
+			case 7:
+			case 11:
+				modelName = "tree";
+				break;
+			case 4:
+				modelName = "mushroom";
+				break;
+			case 8:
+				modelName = "grass";
+				break;
+			case 9:
+				modelName = "stone";
+				break;
+			case 10:
+				modelName = "seaWeed";
+				break;
+			case 12:
+				modelName = "snowman";
+				break;
+			case 13:
+				modelName = "sheep";
+				break;
+			case 14:
+				modelName = "meat";
+				break;
 		}
 		Blueprint blueprint = new Blueprint(enFolder);
 		blueprint.withModel(new ModelComponent(

@@ -22,14 +22,15 @@ public class WaterShader extends ShaderProgram {
 	public UniformVec2 nearFarPlanes = new UniformVec2("nearFarPlanes");
 	public UniformVec3 skyColor = new UniformVec3("skyColor");
 
-	public UniformLight light = new UniformLight("light", locator);
+	public UniformLight sun = new UniformLight("sun", locator);
+	public UniformLight moon = new UniformLight("moon", locator);
 
 	public UniformFogValues fogValues = new UniformFogValues("fogValues", locator);
 
 	public WaterShader() {
 		super(new Shader(VERTEX_SHADER, GL20.GL_VERTEX_SHADER), new Shader(FRAGMENT_SHADER, GL20.GL_FRAGMENT_SHADER));
 		storeUniforms(projectionMatrix, viewMatrix, waveTime, one, reflectionTexture, refractionTexture, depthTexture,
-				cameraPosition, nearFarPlanes, skyColor, light, fogValues);
+				cameraPosition, nearFarPlanes, skyColor, sun, moon, fogValues);
 	}
 
 	public void connectTextureUnits() {

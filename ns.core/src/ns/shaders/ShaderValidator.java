@@ -43,7 +43,7 @@ public class ShaderValidator {
 				if (s.contains("out ")) {
 					if (s.startsWith("out "))
 						vs_outputs.add(s.substring(4, s.length() - 1));
-					else if (s.startsWith("layout")) {
+					else if (s.startsWith("layout") && s.substring(6, s.lastIndexOf(' ')).contains("out")) {
 						int loc = Integer.parseInt(s.substring(s.indexOf('=') + 1, s.indexOf(')')).replaceAll(" ", ""));
 						vs_layout_defined_outputs.add(loc);
 					}
@@ -59,7 +59,7 @@ public class ShaderValidator {
 				if (s.contains("in")) {
 					if (s.startsWith("in"))
 						fs_inputs.add(s.substring(3, s.length() - 1));
-					else if (s.startsWith("layout")) {
+					else if (s.startsWith("layout") && s.substring(6, s.lastIndexOf(' ')).contains("in")) {
 						int loc = Integer.parseInt(s.substring(s.indexOf('=') + 1, s.indexOf(')')).replaceAll(" ", ""));
 						fs_layout_defined_inputs.add(loc);
 					}
@@ -109,7 +109,8 @@ public class ShaderValidator {
 				fs_layout_defined_inputs.remove((Object) loc); // Remove instance rather than remove instance at index
 				i--;
 			} else {
-				error = "Could not find vertex shader output at location " + loc + "'s counterpart in " + (hasGeometryShader ? "other pipeline stages" : "the fragment shader");
+				error =
+						"Could not find vertex shader output at location " + loc + "'s counterpart in " + (hasGeometryShader ? "other pipeline stages" : "the fragment shader");
 				return false;
 			}
 		}

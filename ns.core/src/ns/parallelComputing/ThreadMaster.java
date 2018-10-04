@@ -1,7 +1,5 @@
 package ns.parallelComputing;
 
-import ns.parallelComputing.Thread.ThreadState;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,22 +14,5 @@ public class ThreadMaster {
 		Thread th = new Thread(name, runnable);
 		threads.put(name, th);
 		return th;
-	}
-
-	public static void checkpoint(Thread thread) {
-		boolean finished = true;
-		for (Thread t : threads.values()) {
-			if (!thread.equals(t)) {
-				finished = finished && t.state() != ThreadState.RUNNING;
-			}
-		}
-		if (!finished) {
-			thread._stop();
-		} else {
-			for (Thread th : threads.values()) {
-				if (th.state() == ThreadState.WAITING)
-					th._resume();
-			}
-		}
 	}
 }

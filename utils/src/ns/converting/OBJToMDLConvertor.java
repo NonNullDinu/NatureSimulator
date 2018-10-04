@@ -1,28 +1,23 @@
 package ns.converting;
 
-import ns.utils.GU;
 import obj.Material;
 import obj.Materials;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
-import resources.In;
-import resources.Out;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
 public class OBJToMDLConvertor {
 	public static void main(String[] args) throws IOException {
-		GU.path = System.getProperty("user.dir") + "/";
 		byte[] buf = new byte[50];
 		int len = System.in.read(buf);
 		String location = "";
 		for (int i = 0; i < len - 1; i++)
 			location += (char) buf[i];
+		Material.init(f -> getBytes(f));
 		if (location.equals("UPDATE ALL")) {
 			write(new File("../gameData/models"));
 		} else {
@@ -40,15 +35,12 @@ public class OBJToMDLConvertor {
 		} else {
 			File target = new File(file.getPath().replace(".obj", ".mdl"));
 			target.createNewFile();
-			Out output = Out.create(target.getPath());
-			System.out.println(target.getPath());
-			In asResource = In.create(file.getPath());
-			BufferedReader reader = GU.open(asResource);
+			BufferedReader reader = new BufferedReader(new FileReader(file));
 			Materials materials = null;
 			{
-				In materialsResource = In.create(file.getPath().replace(".obj", ".mtl"));
+				File materialsResource = new File(file.getPath().replace(".obj", ".mtl"));
 				if (materialsResource.exists())
-					materials = new Materials(materialsResource);
+					materials = new Materials(new BufferedReader(new FileReader(materialsResource)));
 			}
 			String line;
 			ArrayList<Vector3f> vertices = new ArrayList<>();
@@ -69,9 +61,9 @@ public class OBJToMDLConvertor {
 					if (line.startsWith("mtllib") && materials == null) {
 						String[] filepcs = file.getPath().split("/");
 						String mtlFile = file.getPath().replace(filepcs[filepcs.length - 1], currentLine[1]);
-						In materialsResource = In.create(mtlFile);
+						File materialsResource = new File(mtlFile);
 						if (materialsResource.exists())
-							materials = new Materials(materialsResource);
+							materials = new Materials(new BufferedReader(new FileReader(materialsResource)));
 					}
 					if (line.startsWith("v ")) {
 						Vector3f vertex = new Vector3f(Float.parseFloat(currentLine[1]),
@@ -134,13 +126,13 @@ public class OBJToMDLConvertor {
 			for (int i = 0; i < indices.size(); i++) {
 				indicesArray[i] = indices.get(i);
 			}
-			OutputStream outStr = output.asOutputStream();
+			OutputStream outStr = new FileOutputStream(target);
 			int version = 1;
-			output.writeVersion(version);
+			outStr.write(version);
 			if (version == 1) {
 				int size = vertices.size(), vertexCount = indices.size();
-				outStr.write(GU.getBytes(size));
-				outStr.write(GU.getBytes(vertexCount));
+				outStr.write(getBytes(size));
+				outStr.write(getBytes(vertexCount));
 				if (materials != null) {
 					outStr.write(0x7F);
 					List<Byte> bts = materials.asByteMaterials();
@@ -149,19 +141,19 @@ public class OBJToMDLConvertor {
 					outStr.write(0x7F);
 				}
 				for (int i = 0; i < verticesArray.length; i++) {
-					outStr.write(GU.getBytes(verticesArray[i]));
+					outStr.write(getBytes(verticesArray[i]));
 				}
 				for (int i = 0; i < normalsArray.length; i++) {
-					outStr.write(GU.getBytes(normalsArray[i]));
+					outStr.write(getBytes(normalsArray[i]));
 				}
 				for (int i = 0; i < texturesArray.length; i++) {
-					outStr.write(GU.getBytes(texturesArray[i]));
+					outStr.write(getBytes(texturesArray[i]));
 				}
 //				for (int i = 0; i < materialsArray.length; i++) {
 				outStr.write(materialsArray);
 //				}
 				for (int i = 0; i < indicesArray.length; i++) {
-					outStr.write(GU.getBytes(indicesArray[i]));
+					outStr.write(getBytes(indicesArray[i]));
 				}
 			}
 		}
@@ -185,5 +177,21 @@ public class OBJToMDLConvertor {
 		} else if (material != null) {
 			materialsArray[currentVertexPointer] = material.getIndex();
 		}
+	}
+
+	private static final ByteBuffer buffer = ByteBuffer.allocate(4);
+
+	public static byte[] getBytes(float f) {
+		buffer.clear();
+		buffer.putFloat(f);
+		byte[] bytes = buffer.array();
+		return bytes;
+	}
+
+	public static byte[] getBytes(int i) {
+		buffer.clear();
+		buffer.putInt(i);
+		byte[] bytes = buffer.array();
+		return bytes;
 	}
 }

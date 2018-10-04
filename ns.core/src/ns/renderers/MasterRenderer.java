@@ -11,6 +11,7 @@ import ns.openglWorkers.VBOData;
 import ns.shaders.StaticShader;
 import ns.shaders.TerrainShader;
 import ns.terrain.Terrain;
+import ns.utils.GU;
 import ns.world.World;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL32;
@@ -28,6 +29,7 @@ public class MasterRenderer {
 	public static final float FAR_PLANE = 1000f;
 	protected static final float RED = 0.435f, GREEN = 0.812f, BLUE = 1.0f;
 	protected static final Vector2f FOG_VALUES = new Vector2f(0.0018f, 5.0f);
+	protected static Vector3f CLEAR_COLOR;
 
 	private static final float TIME_SPEED = 0.15f;
 
@@ -92,20 +94,33 @@ public class MasterRenderer {
 		terrainRenderer = new TerrainRenderer(terrainShader, camera.getProjectionMatrix());
 		instance = this;
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		CLEAR_COLOR = new Vector3f();
 	}
 
 	public static void prepare() {
-		GL11.glClearColor(RED, GREEN, BLUE, 1.0f);
+		Vector3f color = GU.mix(new Vector3f(RED, GREEN, BLUE), new Vector3f(0f, 0f, 0.2f), GU.time.nightFactor());
+		GL11.glClearColor(color.x, color.y, color.z, 1.0f);
+		CLEAR_COLOR = color;
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		GL32.glProvokingVertex(GL32.GL_FIRST_VERTEX_CONVENTION);
 	}
 
-	public void renderScene(World world, ICamera camera, Light light, Vector4f clipPlane, boolean updateTime) {
+	public static void disableBackfaceCulling() {
+		GL11.glDisable(GL11.GL_CULL_FACE);
+	}
+
+	public static void enableBackfaceCulling() {
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glCullFace(GL11.GL_BACK);
+	}
+
+	public void renderScene(World world, ICamera camera, Light sun, Light moon, Vector4f clipPlane,
+	                        boolean updateTime) {
 		prepare();
 		for (int i = 0; i < world.getEntities().size(); i++)
 			process(world.getEntities().get(i));
 		process(world.getTerrain());
-		render(camera, light, clipPlane, updateTime);
+		render(camera, sun, moon, clipPlane, updateTime);
 	}
 
 	public void process(Entity e) {
@@ -122,14 +137,15 @@ public class MasterRenderer {
 		this.terrain = terrain;
 	}
 
-	public void render(ICamera camera, Light sun, Vector4f clipPlane, boolean updateTime) {
+	public void render(ICamera camera, Light sun, Light moon, Vector4f clipPlane, boolean updateTime) {
 		Matrix4f viewMatrix = camera.getViewMatrix();
 
 		if (terrain != null) {
 			terrainShader.start();
-			terrainShader.skyColor.load(new Vector3f(RED, GREEN, BLUE));
+			terrainShader.skyColor.load(CLEAR_COLOR);
 			terrainShader.fogValues.load(FOG_VALUES);
-			terrainShader.light.load(sun);
+			terrainShader.sun.load(sun);
+			terrainShader.moon.load(moon);
 			terrainShader.viewMatrix.load(viewMatrix);
 			terrainShader.clipPlane.load(clipPlane);
 			terrainRenderer.render(terrain);
@@ -142,9 +158,10 @@ public class MasterRenderer {
 			time += TIME_SPEED * DisplayManager.getFrameTimeSeconds() * (inc ? 1f : -1f);
 			shader.time.load(time);
 		}
-		shader.skyColor.load(new Vector3f(RED, GREEN, BLUE));
+		shader.skyColor.load(CLEAR_COLOR);
 		shader.fogValues.load(FOG_VALUES);
-		shader.light.load(sun);
+		shader.sun.load(sun);
+		shader.moon.load(moon);
 		shader.viewMatrix.load(viewMatrix);
 		shader.clipPlane.load(clipPlane);
 		renderer.render(entities);

@@ -17,7 +17,9 @@ uniform mat4 projectionMatrix;
 
 #Struct_Lib.Light
 
-uniform Light light;
+uniform Light sun;
+uniform Light moon;
+
 uniform vec4 clipPlane;
 
 uniform vec3 customColors[3];
@@ -34,8 +36,10 @@ const float amplitude = 0.8;
 const float PI = 3.1415926535897932384626433832795;
 
 vec3 calculateDiffuse(vec3 normal) {
-	float dot1 = max(dot(-normalize(light.direction), normal), 0.0);
-	return (light.color * light.bias.x) + (dot1 * light.color * light.bias.y);
+	float dot1 = max(dot(-normalize(sun.direction), normal), 0.0);
+	float dot2 = max(dot(-normalize(moon.direction), normal), 0.0);
+	return (sun.color * sun.bias.x) + (dot1 * sun.color * sun.bias.y)+
+			(moon.color * moon.bias.x) + (dot2 * moon.color * moon.bias.y);
 }
 
 vec3 customColor(vec3 normal) {

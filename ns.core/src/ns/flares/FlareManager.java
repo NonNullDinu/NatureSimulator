@@ -16,7 +16,7 @@ import org.lwjgl.util.vector.Vector4f;
 
 public class FlareManager {
 	private static final float DIST = 0.2f;
-	private static final Vector2f CENTER = new Vector2f(0.5f, 0.5f);
+	public static final Vector2f CENTER = new Vector2f(0.5f, 0.5f);
 	private static final int TOTAL_SAMPLES = 44476;
 
 	private FlareTexture[] textures;

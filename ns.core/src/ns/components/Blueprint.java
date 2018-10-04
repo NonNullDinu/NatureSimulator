@@ -19,6 +19,7 @@ public class Blueprint implements SerializableWorldObject {
 	protected static final int CUSTOM_COLORS = 3;
 	protected static final int FOOD = 4;
 	protected static final int LIFE = 5;
+	private static final Integer HEIGHT_LIMITS = 6;
 
 	private Map<Integer, IComponent> components = new HashMap<>();
 	private String objectName;
@@ -60,10 +61,10 @@ public class Blueprint implements SerializableWorldObject {
 		return withComponent(FOOD, component);
 	}
 
-	public void move(Entity e, World w) {
+	public void move(Entity e, World w, boolean ableToMove) {
 		MovementComponent moveC = getMovement();
 		if (moveC != null) {
-			moveC.update(e.getPosition(), e, this, w);
+			moveC.update(e.getPosition(), e, this, w, ableToMove);
 		}
 	}
 
@@ -140,5 +141,13 @@ public class Blueprint implements SerializableWorldObject {
 
 	public Blueprint withLife(LifeComponent component) {
 		return withComponent(LIFE, component);
+	}
+
+	public HeightLimitsComponent getHeightLimits() {
+		return (HeightLimitsComponent) components.get(HEIGHT_LIMITS);
+	}
+
+	public Blueprint withHeightLimits(HeightLimitsComponent limits) {
+		return withComponent(HEIGHT_LIMITS, limits);
 	}
 }

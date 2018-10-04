@@ -21,9 +21,9 @@ import java.util.Map;
 
 public class Terrain implements SerializableWorldObject {
 	public static final float SIZE = 4800;
-	public static final float SIZE_DIV_2 = SIZE / 2;
+	public static final float SIZE_DIV_2 = SIZE / 2f;
 	public static final int VERTEX_COUNT = (int) (256f * (SIZE / 2400f));
-	private static final int GRID_SCL = 50;
+	private static final int GRID_SCL = 20;
 	public static final int GRID_VERTEX_COUNT = VERTEX_COUNT / GRID_SCL;
 	private static final Vector3f DEFAULT_COLOR = new Vector3f(0.71f, 0.478f, 0.0f);
 	private VAO model;

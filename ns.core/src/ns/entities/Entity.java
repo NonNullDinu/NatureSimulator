@@ -79,24 +79,27 @@ public class Entity implements SerializableWorldObject {
 
 	public void update(World w) {
 		LifeComponent lc = getLifeComponent();
+		boolean ableToMove = true;
 		if (lc != null) {
 			if (lc.isDead()) {
+				ableToMove = false;
 				rotate(DEAD_ROT_AXIS, 30f * DisplayManager.getFrameTimeSeconds());
-				if (Math.abs(rotX) >= 90f || Math.abs(rotZ) >= 90f) {
-					alpha -= 0.2f * DisplayManager.getFrameTimeSeconds();
-					if (alpha <= 0f) {
-						w.remove(this);
-						// TODO make folder 1013 with meat model and create blueprint for it. Uncomment when done
-//						if (lc instanceof AnimalLifeComponent) {
-//							w.add(new Entity(BlueprintCreator.createBlueprintFor("1013"), new Vector3f(position.x, w.getTerrain().getHeight(position.x, position.z), position.z)));
-//						}
+				alpha -= 0.4f * DisplayManager.getFrameTimeSeconds();
+				if ((Math.abs(rotX) >= 75f || Math.abs(rotZ) >= 75f) && alpha <= 0f) {
+					w.remove(this);
+					if (lc instanceof AnimalLifeComponent) {
+						Entity meatLeftBehind = new Entity(BlueprintCreator.createBlueprintFor("1013"),
+								new Vector3f(position.x,
+										w.getTerrain().getHeight(position.x, position.z), position.z));
+						meatLeftBehind.rotate(0f, 360f * GU.random.genFloat(), 0f);
+						w.add(meatLeftBehind);
 					}
 				}
 			} else {
 				lc.update();
 			}
 		}
-		blueprint.move(this, w);
+		blueprint.move(this, w, ableToMove);
 	}
 
 	public LifeComponent getLifeComponent() {
@@ -116,6 +119,7 @@ public class Entity implements SerializableWorldObject {
 		EntityData data = new EntityData();
 		data.setPosition(position);
 		data.setBlueprintData(blueprint.asData());
+		data.setRotation(new Vector3f(rotX, rotY, rotZ));
 		return data;
 	}
 
@@ -125,5 +129,10 @@ public class Entity implements SerializableWorldObject {
 
 	public float getAlpha() {
 		return alpha;
+	}
+
+	public boolean isHeightWithinLimits(float y) {
+		HeightLimitsComponent limitsComponent = blueprint.getHeightLimits();
+		return limitsComponent == null || limitsComponent.isWithinLimits(y);
 	}
 }

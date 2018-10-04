@@ -13,7 +13,8 @@ public class StaticShader extends ShaderProgram {
 	public UniformMat4 viewMatrix = new UniformMat4("viewMatrix");
 	public UniformMat4 transformationMatrix = new UniformMat4("transformationMatrix");
 
-	public UniformLight light = new UniformLight("light", locator);
+	public UniformLight sun = new UniformLight("sun", locator);
+	public UniformLight moon = new UniformLight("moon", locator);
 
 	public UniformVec4 clipPlane = new UniformVec4("clipPlane");
 	//	public UniformVec3[] customColors = { new UniformVec3("customColors[0]"), new UniformVec3("customColors[1]"),
@@ -29,7 +30,7 @@ public class StaticShader extends ShaderProgram {
 
 	public StaticShader() {
 		super(new Shader(VERTEX_SHADER, GL20.GL_VERTEX_SHADER), new Shader(FRAGMENT_SHADER, GL20.GL_FRAGMENT_SHADER));
-		storeUniforms(projectionMatrix, viewMatrix, transformationMatrix, light, clipPlane, customColors[0],
+		storeUniforms(projectionMatrix, viewMatrix, transformationMatrix, sun, moon, clipPlane, customColors[0],
 				customColors[1], customColors[2], skyColor, fogValues, time, alpha);
 	}
 }

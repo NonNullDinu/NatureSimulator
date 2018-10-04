@@ -1,30 +1,23 @@
 package ns.converting;
 
-import ns.utils.GU;
-import resources.In;
-import resources.Out;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.*;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PngToTexConvertor {
+public class PngToTexConverter {
 	public static void main(String[] args) throws IOException {
 		byte[] buf = new byte[50];
 		int len = System.in.read(buf);
-		GU.path = System.getProperty("user.dir") + "/";
 		String location = "";
 		for (int i = 0; i < len - 1; i++)
 			location += (char) buf[i];
 //		if (location.equals("UPDATE ALL")) {
 //			write(new File("gameData"));
 //		} else {
-		File target = new File(// "gameData/" +
+		File target = new File("../gameData/textures/" +
 				location);
 		write(target);
 //		}
@@ -39,23 +32,14 @@ public class PngToTexConvertor {
 		} else {
 			File target = new File(f.getPath().replace(".png", ".tex"));
 			target.createNewFile();
-			Out output = Out.create(target.getPath());
-			OutputStream outStr = output.asOutputStream();
-			BufferedImage img = ImageIO.read(In.create(f.getPath().replace("gameData/", "")).asInputStream());
+			OutputStream outStr = new FileOutputStream(target);
+			BufferedImage img = ImageIO.read(new FileInputStream(f));
 			int width = img.getWidth();
 			int height = img.getHeight();
 			int version = 4;
-//			if (target.getName().equals("sun.tex") || target.getName().equals("tex4.tex")
-//					|| target.getName().equals("tex6.tex") || target.getName().equals("tex8.tex")
-//					|| target.getName().equals("mainMenu_Start.tex") || target.getName().equals("Z003.tex")
-//					|| target.getName().equals("Caladea.tex")) // The ones mentioned here
-//				// still
-//				// have
-//				// bugs with the .tex version 3
-//				version = 4;
-			output.writeVersion(version);
+			outStr.write(version);
 			if (version == 1) {
-				PrintWriter writer = GU.open(output);
+				PrintWriter writer = new PrintWriter(outStr);
 				writer.write(width + " " + height + "\n");
 				for (int y = height - 1; y >= 0; y--) {
 					for (int x = 0; x < width; x++) {
@@ -103,12 +87,12 @@ public class PngToTexConvertor {
 					outStr.write(mb);
 				} else {
 					outStr.write(-1);
-					mbArray = new Byte[] { 0, 1 };
+					mbArray = new Byte[]{0, 1};
 				}
-				outStr.write(GU.getBytes(width));
-				outStr.write(GU.getBytes(height));
+				outStr.write(getBytes(width));
+				outStr.write(getBytes(height));
 				List<Byte> compressedData = new ArrayList<>();
-				for (int i = 0; i < intData.size();) {
+				for (int i = 0; i < intData.size(); ) {
 					int cdata = intData.get(i);
 					int startI = i;
 					i++;
@@ -132,8 +116,8 @@ public class PngToTexConvertor {
 					outStr.write(b);
 				outStr.close();
 			} else if (version == 4) {
-				outStr.write(GU.getBytes(width));
-				outStr.write(GU.getBytes(height));
+				outStr.write(getBytes(width));
+				outStr.write(getBytes(height));
 				for (int y = height - 1; y >= 0; y--) {
 					for (int x = 0; x < width; x++) {
 						int pixel = img.getRGB(x, y);
@@ -146,5 +130,14 @@ public class PngToTexConvertor {
 				outStr.close();
 			}
 		}
+	}
+
+	private static final ByteBuffer buffer = ByteBuffer.allocate(4);
+
+	private static byte[] getBytes(int i) {
+		buffer.clear();
+		buffer.putInt(i);
+		byte[] bytes = buffer.array();
+		return bytes;
 	}
 }

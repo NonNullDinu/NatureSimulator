@@ -16,7 +16,10 @@ public class UniformLight extends UniformStruct {
 	}
 
 	public void load(Light light) {
-		super.load(new UniformValue(light.dir), new UniformValue(light.color), new UniformValue(light.bias));
+		while (light == null)
+			Thread.yield();
+		super.load(new UniformValue(
+				light.dir), new UniformValue(light.color), new UniformValue(light.bias));
 	}
 
 	private static List<UniformVar> getAttributes(String name, UniformLocator locator) {

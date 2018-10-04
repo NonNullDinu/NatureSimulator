@@ -1,9 +1,5 @@
 package ns.display;
 
-import data.GameData;
-import ns.configuration.Config;
-import ns.configuration.GameConfig;
-import ns.utils.GU;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
@@ -13,70 +9,63 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.PixelFormat;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.io.File;
-import java.io.IOException;
-
 public class DisplayManager {
 
 	private static long lastFrameTime;
 	private static float delta;
 	public static final int WIDTH = 1200;
 	public static final int HEIGHT = 800;
-	private static JFrame window;
-	private static Canvas canvas;
-	private static boolean closeRequested;
+//	private static JFrame window;
+//	private static Canvas canvas;
+//	private static boolean closeRequested;
 
 	public static void createDisplay() {
 		try {
-			window = new JFrame();
-			window.addWindowListener(new WindowListener() {
-				@Override
-				public void windowOpened(WindowEvent e) {}
-
-				@Override
-				public void windowClosing(WindowEvent e) {
-					closeRequested = true;
-				}
-
-				@Override
-				public void windowClosed(WindowEvent e) {
-					closeRequested = true;
-				}
-
-				@Override
-				public void windowIconified(WindowEvent e) {}
-
-				@Override
-				public void windowDeiconified(WindowEvent e) {}
-
-				@Override
-				public void windowActivated(WindowEvent e) {
-					System.out.println("Activated " + System.nanoTime());
-				}
-
-				@Override
-				public void windowDeactivated(WindowEvent e) {
-					System.out.println("Deactivated " + System.nanoTime());
-				}
-			});
-			window.setSize(0, 0);
-			window.setLocationRelativeTo(null);
-			try {
-				window.setIconImage(ImageIO.read(GameData.getResourceAt("textures/ns_icon.png").asInputStream()));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			canvas = new Canvas();
-			window.getContentPane().add(canvas);
-			window.setVisible(true);
-			window.setResizable(false);
-			window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-			Display.setParent(canvas);
+//			window = new JFrame();
+//			window.addWindowListener(new WindowListener() {
+//				@Override
+//				public void windowOpened(WindowEvent e) {}
+//
+//				@Override
+//				public void windowClosing(WindowEvent e) {
+//					closeRequested = true;
+//				}
+//
+//				@Override
+//				public void windowClosed(WindowEvent e) {
+//					closeRequested = true;
+//				}
+//
+//				@Override
+//				public void windowIconified(WindowEvent e) {}
+//
+//				@Override
+//				public void windowDeiconified(WindowEvent e) {}
+//
+//				@Override
+//				public void windowActivated(WindowEvent e) {
+//					System.out.println("Activated " + System.nanoTime());
+//				}
+//
+//				@Override
+//				public void windowDeactivated(WindowEvent e) {
+//					System.out.println("Deactivated " + System.nanoTime());
+//				}
+//			});
+//			window.setSize(0, 0);
+//			window.setLocationRelativeTo(null);
+//			try {
+//				window.setIconImage(ImageIO.read(GameData.getResourceAt("textures/ns_icon.png").asInputStream()));
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			canvas = new Canvas();
+//			window.getContentPane().add(canvas);
+//			window.setVisible(true);
+//			window.setResizable(false);
+//			window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+//			Display.setParent(canvas);
+			Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
 			Display.setVSyncEnabled(true);
 			Display.create(new PixelFormat(), new ContextAttribs(4, 3).withForwardCompatible(true).withProfileCore(true));
 			Mouse.create();
@@ -100,7 +89,7 @@ public class DisplayManager {
 		Mouse.destroy();
 		Keyboard.destroy();
 		Display.destroy();
-		window.dispose();
+//		window.dispose();
 	}
 
 	private static long getCurrentTime() {
@@ -112,11 +101,11 @@ public class DisplayManager {
 	}
 
 	public static boolean isCloseRequested() {
-		return closeRequested;
+		return Display.isCloseRequested();
 	}
 
 	public static void setWindowVisible(){
-		window.setSize(WIDTH, HEIGHT);
-		window.setVisible(true);
+//		window.setSize(WIDTH, HEIGHT);
+//		window.setVisible(true);
 	}
 }

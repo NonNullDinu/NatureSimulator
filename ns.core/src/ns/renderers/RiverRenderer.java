@@ -24,6 +24,8 @@ public class RiverRenderer {
 		shader.start();
 		shader.viewMatrix.load(camera.getViewMatrix());
 		shader.color.load(new Vector3f(0.6f, 0.9f, 0.9f));
+		shader.skyColor.load(MasterRenderer.CLEAR_COLOR);
+		shader.fogValues.load(MasterRenderer.FOG_VALUES);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		for (River river : rivers) {

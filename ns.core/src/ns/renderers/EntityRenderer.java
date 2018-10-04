@@ -56,7 +56,8 @@ public class EntityRenderer {
 		shader.viewMatrix.load(new Matrix4f());
 		shader.transformationMatrix.load(Maths.createTransformationMatrix(position, 0, 0, 0, 1));
 		shader.clipPlane.load(new Vector4f(0, 0, 0, 0));
-		shader.light.load(new Light(new Vector3f(0.5f, 0, -0.5f), new Vector3f(1, 1, 1), new Vector2f(0.5f, 0.5f)));
+		shader.sun.load(new Light(new Vector3f(0.5f, 0, -0.5f), new Vector3f(1, 1, 1), new Vector2f(0.5f, 0.5f)));
+		shader.moon.load(new Light(new Vector3f(0.5f, 0, -0.5f), new Vector3f(1, 1, 1), new Vector2f(0, 0)));
 		CustomColorsComponent customColors = blueprint.getCustomColors();
 		if (customColors != null)
 			for (int i = 0; i < customColors.getColors().size(); i++) {
