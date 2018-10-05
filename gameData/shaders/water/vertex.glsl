@@ -15,7 +15,7 @@ layout(location = 1) out vec4 pass_clipSpaceReal;
 layout(location = 2) flat out vec3 pass_normal;
 layout(location = 3) out vec3 pass_toCameraVector;
 layout(location = 4) flat out vec3 pass_specular;
-layout(location = 5) out vec3 pass_diffuse;
+layout(location = 5) flat out vec3 pass_diffuse;
 layout(location = 6) out float out_visibility;
 
 uniform vec3 cameraPos;
@@ -42,7 +42,7 @@ vec3 calcSpecularLighting(vec3 toCamVector, vec3 toLightVector, vec3 normal, vec
 	vec3 reflectedLightDirection2 = reflect(-toLightVector2, normal);
 	float specularFactor2 = dot(reflectedLightDirection2, toCamVector);
 	specularFactor2 = max(specularFactor2, 0.0);
-	specularFactor2 = pow(specularFactor2, shineDamper);
+	specularFactor2 = pow(specularFactor2, shineDamper * 4.0);
 	return specularFactor * specularReflectivity * sun.color + specularFactor2 * specularReflectivity * moon.color;
 }
 
@@ -80,8 +80,9 @@ vec3 applyDistortion(vec3 vertex) {
 	float xDistortion = generateOffset(vertex.x, vertex.z, 0.2, 0.1);
 	float yDistortion = generateOffset(vertex.x, vertex.z, 0.1, 0.3);
 	float zDistortion = generateOffset(vertex.x, vertex.z, 0.15, 0.2);
-	xDistortion = 3.0 * xDistortion;
-	zDistortion = 3.0 * zDistortion;
+	xDistortion = 5.0 * xDistortion;
+	yDistortion = yDistortion;
+	zDistortion = 5.0 * zDistortion;
 	return vertex + vec3(xDistortion, yDistortion, zDistortion);
 }
 

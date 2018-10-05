@@ -8,6 +8,6 @@ public class MenuMaster {
 
 	public static MainMenu createMainMenu() {
 		return (MainMenu) UILoader
-				.load(GameData.getResourceAt("uiResources/xml/MainMenu.xml").asInputStream());
+				.loadBinaryUIR(GameData.getResourceAt("uiResources/xml/MainMenu.uir").asInputStream());
 	}
 }

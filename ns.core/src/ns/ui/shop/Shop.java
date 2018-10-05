@@ -52,7 +52,7 @@ public class Shop {
 			return null;
 		if (state == SS.OPEN) {
 			for (ShopItem item : items) {
-				if (item.clicked()) {
+				if (item.clicked() && !GU.prevFrameClicked) {
 					currentlySelected = item;
 					state = SS.BUYING;
 					complex.getCenter().x -= SLIDE_OFFSET;

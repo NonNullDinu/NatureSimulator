@@ -2,7 +2,7 @@
 
 //const vec3 waterColour = vec3(0.604, 0.867, 0.851);
 //const vec3 waterColour = vec3(0.6, 0.9, 0.9);
-const vec3 waterColour = vec3(0.8, 0.9, 1.0);
+const vec3 waterColour = vec3(0.8, 1.0, 1.0);
 const float fresnelReflective = 2.0;
 const float minBlueness = 0.2;
 const float maxBlueness = 0.7;
@@ -15,7 +15,7 @@ layout(location = 1) in vec4 pass_clipSpaceReal;
 layout(location = 2) flat in vec3 pass_normal;
 layout(location = 3) in vec3 pass_toCameraVector;
 layout(location = 4) flat in vec3 pass_specular;
-layout(location = 5) in vec3 pass_diffuse;
+layout(location = 5) flat in vec3 pass_diffuse;
 layout(location = 6) in float in_visibility;
 
 uniform sampler2D reflectionTexture;

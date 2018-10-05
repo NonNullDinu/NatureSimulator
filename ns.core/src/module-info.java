@@ -44,5 +44,4 @@ module ns.core {
 	exports ns.water;
 	exports ns.world;
 	exports ns.utils.natives;
-	exports ns.entitySpot;
 }

@@ -29,6 +29,6 @@
 	<MainMenuButton x="0" y="-0.7" xScale="0.1"
 		yScale="0.05" action="3"
 		texture="textures/buttonTextures/mainMenu_Exit.tex" />
-	<DNAPos x="-0.8" y="0" xScale="0.4" yScale="1" dnaX="1"
-		dnaY="-5" dnaZ="-8.1" />
+	<DNAPos x="0.8" y="0" xScale="0.4" yScale="1" dnaX="1"
+	        dnaY="-5" dnaZ="-8.1"/>
 </MainMenu>

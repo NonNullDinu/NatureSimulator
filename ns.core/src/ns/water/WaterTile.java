@@ -11,7 +11,7 @@ public class WaterTile {
 	public static WaterTile tile;
 
 	private static final float TILE_SIZE = Terrain.SIZE / 2f;
-	private static final int VERTEX_COUNT = (int) (128f * (TILE_SIZE / 600f));
+	private static final int VERTEX_COUNT = (int) (32f * (TILE_SIZE / 600f));
 
 	private float x, y, height;
 	private VAO model;

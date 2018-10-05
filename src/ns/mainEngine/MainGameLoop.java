@@ -6,8 +6,6 @@ import ns.display.DisplayManager;
 import ns.entities.Entity;
 import ns.entities.Moon;
 import ns.entities.Sun;
-import ns.entitySpot.MovingBatch;
-import ns.entitySpot.MovingEntitySpotRenderer;
 import ns.flares.FlareManager;
 import ns.fontRendering.TextMaster;
 import ns.interfaces.Action;
@@ -68,8 +66,6 @@ public class MainGameLoop implements Runnable {
 	private RiverRenderer riverRenderer;
 	private RiverList rivers;
 
-	private MovingBatch movingBatch = new MovingBatch();
-	private MovingEntitySpotRenderer entitySpotRenderer;
 	private Texture moonTex;
 
 	public void executeRequests() {
@@ -93,16 +89,10 @@ public class MainGameLoop implements Runnable {
 		moon.update(sun);
 		if (state == GS.GAME) {
 			MousePicker.update();
-			if (Mouse.isButtonDown(0) && movingBatch.size() == 1 && !GU.prevFrameClicked) {
-				Entity e = movingBatch.get(0);
+			Entity e = shop.update();
+			if (e != null) {
 				e.rotate(0, GU.random.genFloat() * 360f, 0);
 				world.add(e);
-				movingBatch.remove(e);
-			} else {
-				Entity e = shop.update();
-				if (e != null) {
-					movingBatch.add(e);
-				}
 			}
 			camera.update(world);
 			world.update();
@@ -138,24 +128,15 @@ public class MainGameLoop implements Runnable {
 			float distance = 2 * camera.getPosition().y;
 			camera.addToPositionNoViewMatUpdate(0, -distance, 0);
 			camera.invertPitch();
-			renderer.renderScene(world, camera, sun, moon, new Vector4f(0, 1, 0, 0.6f), true);
-			boolean renderMoving = movingBatch.size() > 0;
-			if (renderMoving)
-				entitySpotRenderer.renderAt(movingBatch.get(0), world, camera);
+			renderer.renderScene(world, camera, sun, moon, new Vector4f(0, 1, 0, 1f), true);
 			fbos.bindRefraction();
 			camera.addToPositionNoViewMatUpdate(0, distance, 0);
 			camera.invertPitch();
-			renderer.renderScene(world, camera, sun, moon, new Vector4f(0, -1, 0, 0.8f), false);
-			if (renderMoving)
-				entitySpotRenderer.renderAt(movingBatch.get(0), world, camera);
+			renderer.renderScene(world, camera, sun, moon, new Vector4f(0, -1, 0, 0.9f), false);
 			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 			sceneFBO.bind();
 			renderer.renderScene(world, camera, sun, moon, new Vector4f(0, 0, 0, 0), false);
-			if (renderMoving)
-				entitySpotRenderer.renderAt(movingBatch.get(0), world, camera);
-			fbos.blur(blurer);
-			sceneFBO.bind();
-			waterRenderer.renderBlured(water, camera, fbos, sun, moon);
+			waterRenderer.render(water, camera, fbos, sun, moon);
 			riverRenderer.render(rivers, camera);
 			flareManager.render();
 
@@ -247,7 +228,6 @@ public class MainGameLoop implements Runnable {
 		executeRequests();
 		riverRenderer = new RiverRenderer(camera.getProjectionMatrix());
 		MovingEntitySpotShader movingEntitySpotShader = new MovingEntitySpotShader();
-		entitySpotRenderer = new MovingEntitySpotRenderer(movingEntitySpotShader, camera.getProjectionMatrix());
 		moonTex = new TexFile("textures/moon.tex").load();
 		GU.currentThread().finishLoading();
 		while (!SecondaryThread.READY || !ThirdThread.READY || !LoadingScreenThread.READY) {

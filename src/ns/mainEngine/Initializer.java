@@ -100,7 +100,7 @@ public class Initializer {
 		String s = e.getLocalizedMessage();
 		for (StackTraceElement ste : e.getStackTrace()) {
 			s += "\n" + ste.getFileName() + " " + ste.getClassName() + " " + ste.getMethodName() + " " + ste.getModuleName() +
-				" " + ste.getLineNumber();
+					" " + ste.getLineNumber();
 		}
 		return Arrays.hashCode(s.getBytes());
 	}
@@ -110,7 +110,7 @@ public class Initializer {
 			if (args[i].equals("-p") || args[i].equals("--path")) {
 				i++;
 				GU.path = args[i];
-			}
+			} else System.out.println("Unknown arg:" + args[i]);
 		}
 	}
 }

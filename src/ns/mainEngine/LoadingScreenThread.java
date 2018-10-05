@@ -85,9 +85,10 @@ public class LoadingScreenThread implements Runnable {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			if (MainGameLoop.state != GS.LOADING || toBreak)
+			if (MainGameLoop.state != GS.LOADING && READY)
 				break;
 		}
+		TextMaster.remove(text);
 		GU.currentThread().finishExecution();
 	}
 
