@@ -1,5 +1,5 @@
 package ns.interfaces;
 
-public interface Condition {
+interface Condition {
 	boolean value();
 }

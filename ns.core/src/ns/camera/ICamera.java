@@ -11,13 +11,13 @@ import org.lwjgl.util.vector.Vector3f;
 public abstract class ICamera implements CameraImplementation {
 	public static ICamera createdCamera;
 
-	protected Vector3f position;
-	protected float rotX;
-	protected float rotY;
+	final Vector3f position;
+	float rotX;
+	float rotY;
 	protected float rotZ;
 
-	private Matrix4f projectionMatrix;
-	protected Matrix4f viewMatrix;
+	private final Matrix4f projectionMatrix;
+	Matrix4f viewMatrix;
 
 	public ICamera(Matrix4f projectionMatrix) {
 		createdCamera = this;

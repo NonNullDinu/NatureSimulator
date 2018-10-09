@@ -12,7 +12,7 @@ public enum Biome {
 	SWAMP(2, new Vector3f(0.659f, 0.569f, 0.62f), (Terrain terrain, Vector3f point) -> {
 		List<RiverEnd> riverEnds = terrain.getRiverEnds();
 		for (RiverEnd riverEnd : riverEnds) {
-			if (Vector3f.sub(point, riverEnd.getPosition(), null).length() < 150f)
+			if (Vector3f.sub(point, riverEnd.getPosition(), null).lengthSquared() < 22500f)
 				return true;
 		}
 		return false;
@@ -20,9 +20,9 @@ public enum Biome {
 	RIVER_LAND(5, new Vector3f(0.722f, 0.639f, 0.102f), null),
 	;
 
-	protected int biomeId;
-	protected Vector3f color;
-	private BiomePreconditions conditions;
+	private final int biomeId;
+	private final Vector3f color;
+	private final BiomePreconditions conditions;
 
 	Biome(int biomeId, Vector3f color, BiomePreconditions conditions) {
 		this.biomeId = biomeId;

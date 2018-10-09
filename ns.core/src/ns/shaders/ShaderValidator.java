@@ -7,12 +7,10 @@ import org.lwjgl.opengl.GL32;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShaderValidator {
-	private List<String> vs_inputs;
+class ShaderValidator {
 	private List<String> vs_outputs;
 
 	private List<String> fs_inputs;
-	private List<String> fs_outputs;
 
 	private boolean hasGeometryShader = false;
 
@@ -33,7 +31,7 @@ public class ShaderValidator {
 	private boolean validate(String type, Shader shaderStage) {
 		String src = shaderStage.getSource();
 		if (type.equals("vertex_shader") && shaderStage.type == GL20.GL_VERTEX_SHADER) {
-			vs_inputs = new ArrayList<>();
+			List<String> vs_inputs = new ArrayList<>();
 			vs_outputs = new ArrayList<>();
 			vs_layout_defined_outputs = new ArrayList<>();
 			String[] srclines = src.split("\n");
@@ -52,7 +50,7 @@ public class ShaderValidator {
 			return true;
 		} else if (type.equals("fragment_shader") && shaderStage.type == GL20.GL_FRAGMENT_SHADER) {
 			fs_inputs = new ArrayList<>();
-			fs_outputs = new ArrayList<>();
+			List<String> fs_outputs = new ArrayList<>();
 			fs_layout_defined_inputs = new ArrayList<>();
 			String[] srclines = src.split("\n");
 			for (String s : srclines) {

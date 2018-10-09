@@ -4,8 +4,8 @@ import java.util.List;
 
 public class Method {
 	private Code code;
-	protected String name;
-	protected List<Token> actions;
+	final String name;
+	private List<Token> actions;
 
 	public Method(String name, List<Token> actions) {
 		this.name = name;

@@ -11,7 +11,7 @@ public class Material {
 	private Vector3f indicators;
 	private String name;
 	private Vector4f data;
-	private byte index;
+	private final byte index;
 	private static BytesFunc btsFunc;
 
 	public interface BytesFunc {

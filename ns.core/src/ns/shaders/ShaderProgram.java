@@ -9,9 +9,9 @@ public abstract class ShaderProgram implements IOpenGLObject {
 	private final int programId;
 	//	private int vertexShaderId;
 //	private int fragmentShaderId;
-	protected StringBuffer src;
-	protected UniformLocator locator = new UniformLocator(this);
-	private boolean created = false;
+	private StringBuffer src;
+	final UniformLocator locator = new UniformLocator(this);
+	private boolean created;
 	private Shader[] shaders;
 
 //	public ShaderProgram(String VERTEX_SHADER, String FRAGMENT_SHADER) {
@@ -45,10 +45,10 @@ public abstract class ShaderProgram implements IOpenGLObject {
 		created = true;
 	}
 
-	protected void preLink() {
+	private void preLink() {
 	}
 
-	protected void postLink() {
+	void postLink() {
 	}
 
 	protected int variableType(String name) {
@@ -88,7 +88,7 @@ public abstract class ShaderProgram implements IOpenGLObject {
 		}
 	}
 
-	protected int getLocation(String name) {
+	int getLocation(String name) {
 		return GL20.glGetUniformLocation(programId, name);
 	}
 
@@ -142,7 +142,7 @@ public abstract class ShaderProgram implements IOpenGLObject {
 		return created;
 	}
 
-	public void storeUniforms(UniformVar... vars) {
+	void storeUniforms(UniformVar... vars) {
 		for (UniformVar var : vars) {
 			var.loadLocation(locator);
 		}

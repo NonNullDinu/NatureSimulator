@@ -5,7 +5,7 @@ import java.io.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class Installer {
+class Installer {
 	private static final String RUN_COMMAND = "java -jar NatureSimulator.jar -p %s";
 
 	public static void main(String[] args) {
@@ -35,28 +35,35 @@ public class Installer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		if (System.getProperty("os.name").equals("Linux")) {
-			String[] yn = new String[]{"Yes", "No"};
-			int ans = JOptionPane.showOptionDialog(null, "Create menu shortcut?", "Create shortcut",
-					JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, yn, null);
-			if (ans == 0) {
-				writeShortcut("NatureSimulator.desktop", installDir);
-			} else {
-				writeRun(new File(installDir.getAbsolutePath() + "/run.sh"), installDir);
+		switch (System.getProperty("os.name")) {
+			case "Linux": {
+				String[] yn = new String[]{"Yes", "No"};
+				int ans = JOptionPane.showOptionDialog(null, "Create menu shortcut?", "Create shortcut",
+						JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, yn, null);
+				if (ans == 0) {
+					writeShortcut(installDir);
+				} else {
+					writeRun(new File(installDir.getAbsolutePath() + "/run.sh"), installDir);
+				}
+				makens_installDir(installDir, new File(System.getProperty("user.home") + "/.ns-install"));
+				break;
 			}
-			makens_installDir(installDir, new File(System.getProperty("user.home") + "/.ns-install"));
-		} else if (System.getProperty("os.name").equals("Windows")) {
-			System.out.println("Vesions for operating systems other than Linux may or may not work as intended");
-			String[] yn = new String[]{"Yes", "No"};
-			int ans = JOptionPane.showOptionDialog(null, "Create desktop shortcut?", "Create shortcut",
-					JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, yn, null);
-			if (ans == 0) {
-				// TODO Change the windows .bat file with a windows .lnk file
-				writeRun(new File(System.getProperty("user.dir") + "/Desktop/Nature Simulator.bat"), installDir);
+			case "Windows": {
+				System.out.println("Vesions for operating systems other than Linux may or may not work as intended");
+				String[] yn = new String[]{"Yes", "No"};
+				int ans = JOptionPane.showOptionDialog(null, "Create desktop shortcut?", "Create shortcut",
+						JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, yn, null);
+				if (ans == 0) {
+					// TODO Change the windows .bat file with a windows .lnk file
+					writeRun(new File(System.getProperty("user.dir") + "/Desktop/Nature Simulator.bat"), installDir);
+				}
+				writeRun(new File(installDir.getAbsolutePath() + "/run.bat"), installDir);
+				break;
 			}
-			writeRun(new File(installDir.getAbsolutePath() + "/run.bat"), installDir);
-		} else
-			System.err.println("System not recognized");
+			default:
+				System.err.println("System not recognized");
+				break;
+		}
 		System.out.println("Installation complete!");
 		System.exit(0);
 	}
@@ -290,9 +297,9 @@ public class Installer {
 		}
 	}
 
-	private static void writeShortcut(String fileName, File installDir) {
+	private static void writeShortcut(File installDir) {
 		try {
-			File f = new File(System.getProperty("user.home") + "/.local/share/applications/" + fileName);
+			File f = new File(System.getProperty("user.home") + "/.local/share/applications/" + "NatureSimulator.desktop");
 			f.createNewFile();
 			BufferedWriter wr = new BufferedWriter(new FileWriter(f));
 			wr.write("[Desktop Entry]\nType=Application\nExec=java -jar " + installDir.getAbsolutePath()

@@ -1,7 +1,7 @@
 package ns.time;
 
 public interface DayNightCycle {
-	float H_S_DURATION = 3f;
+	float H_S_DURATION = 1f;
 
 	boolean isDay(float t);
 

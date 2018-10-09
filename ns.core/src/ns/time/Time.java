@@ -5,6 +5,7 @@ import ns.display.DisplayManager;
 public final class Time {
 	public float t;
 	private final DayNightCycle dayNightCycle;
+	private boolean isDay = false, isNight = false, isMorning = false, isEveneing = false;
 
 	public Time(DayNightCycle dayNightCycle) {
 		t = 0f;
@@ -12,19 +13,19 @@ public final class Time {
 	}
 
 	public boolean isDay() {
-		return dayNightCycle.isDay(t);
+		return isDay;
 	}
 
 	public boolean isNight() {
-		return dayNightCycle.isNight(t);
+		return isNight;
 	}
 
 	public boolean isEvening() {
-		return dayNightCycle.isEvening(t);
+		return isEveneing;
 	}
 
 	public boolean isMorning() {
-		return dayNightCycle.isMorning(t);
+		return isMorning;
 	}
 
 	public float dayFactor() {
@@ -37,5 +38,9 @@ public final class Time {
 
 	public void update() {
 		t += DisplayManager.getFrameTimeSeconds();
+		isDay = dayNightCycle.isDay(t);
+		isNight = dayNightCycle.isNight(t);
+		isMorning = dayNightCycle.isMorning(t);
+		isEveneing = dayNightCycle.isEvening(t);
 	}
 }

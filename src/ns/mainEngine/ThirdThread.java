@@ -11,7 +11,7 @@ import ns.world.World;
 import ns.world.WorldGenerator;
 import ns.worldSave.SaveWorldMaster;
 
-public class ThirdThread implements Runnable {
+class ThirdThread implements Runnable {
 	public static boolean READY = false;
 
 	@Override

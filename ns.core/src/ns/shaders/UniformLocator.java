@@ -1,7 +1,9 @@
 package ns.shaders;
 
+import java.util.Objects;
+
 public final class UniformLocator {
-	private ShaderProgram program;
+	private final ShaderProgram program;
 
 	public UniformLocator(ShaderProgram program) {
 		this.program = program;
@@ -57,7 +59,7 @@ public final class UniformLocator {
 		for (int i = 0; i < elemCnt; i++) {
 			switch (ind) {
 				case 0:
-					vars[i] = (T) new UniformFloat(name + "[" + i + "]");
+					Objects.requireNonNull(vars)[i] = (T) new UniformFloat(name + "[" + i + "]");
 					break;
 				case 1:
 					vars[i] = (T) new UniformVec2(name + "[" + i + "]");

@@ -1,5 +1,5 @@
 package patch.nsUpdateScript;
 
-public interface ExecutableToken {
+interface ExecutableToken {
 	void execute(String[] args);
 }

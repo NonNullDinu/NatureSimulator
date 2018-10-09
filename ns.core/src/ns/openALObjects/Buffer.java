@@ -1,7 +1,7 @@
 package ns.openALObjects;
 
 public class Buffer {
-	private int id;
+	private final int id;
 	
 	public Buffer(int id) {
 		this.id = id;

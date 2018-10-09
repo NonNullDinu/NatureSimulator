@@ -3,11 +3,11 @@ package ns.components;
 import ns.display.DisplayManager;
 
 public class LifeComponent implements IComponent {
-	private float totalLifespan;
+	final float totalLifespan;
 	private float lifespanRemaining;
 	private boolean dead = false;
 
-	public LifeComponent(float totalLifespan) {
+	LifeComponent(float totalLifespan) {
 		this.totalLifespan = totalLifespan;
 		this.lifespanRemaining = totalLifespan;
 	}
@@ -23,7 +23,12 @@ public class LifeComponent implements IComponent {
 		return dead;
 	}
 
-	public float getRemainingLifespan() {
+	float getRemainingLifespan() {
 		return lifespanRemaining;
+	}
+
+	@Override
+	public IComponent copy() {
+		return new LifeComponent(totalLifespan);
 	}
 }

@@ -14,9 +14,9 @@ public class OptionsMaster {
 //		GUIButton back = new GUIButton(new Vector2f(-0.95f, -0.95f), new Vector2f(0.05f, 0.05f),
 //				new TexFile("textures/back_arrow.tex").load());
 //		return new Options(options, back);
-		while (GU.Z003 == null && GU.caladea == null)
+		while (GU.Z003 == null || GU.caladea == null)
 			Thread.yield();
 		return (Options) UILoader
-				.load(GameData.getResourceAt("uiResources/xml/Options.xml").asInputStream());
+				.loadBinaryUIR(GameData.getResourceAt("uiResources/xml/Options.uir").asInputStream());
 	}
 }

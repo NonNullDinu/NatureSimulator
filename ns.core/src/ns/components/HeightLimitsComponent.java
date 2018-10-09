@@ -13,4 +13,9 @@ public class HeightLimitsComponent implements IComponent {
 	public boolean isWithinLimits(float y) {
 		return lim.x < y && lim.y > y;
 	}
+
+	@Override
+	public IComponent copy() {
+		return this;
+	}
 }

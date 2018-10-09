@@ -38,7 +38,7 @@ public class NUSFile {
 		turnToTokens(code);
 	}
 
-	private List<Token> turnToTokens(String code) {
+	private void turnToTokens(String code) {
 		List<Token> tokens = new ArrayList<>();
 		int indexOfCurrentMethodBegin = code.indexOf("method");
 		int indexOfCurrentMethodEnd = code.indexOf("}");
@@ -62,7 +62,6 @@ public class NUSFile {
 			tokens.add(currentMethod);
 			script_methods.put(currentMethod.name, currentMethod);
 		}
-		return tokens;
 	}
 
 	private abstract class Token {
@@ -73,18 +72,18 @@ public class NUSFile {
 	}
 
 	private class MethodDeclarationToken extends Token {
-		private String name;
+		private final String name;
 
-		public MethodDeclarationToken(String declarationLine) {
+		MethodDeclarationToken(String declarationLine) {
 			name = declarationLine.substring(7/* remove "method " */, declarationLine.length() - 2);
 		}
 	}
 
 	private class MethodBodyToken extends Token implements ExecutableToken {
-		private List<Token> tokens;
+		private final List<Token> tokens;
 		private String code;
 
-		public MethodBodyToken(String code) {
+		MethodBodyToken(String code) {
 			tokens = turnToTokensMethodBody(code);
 			this.code = code;
 		}
@@ -99,17 +98,17 @@ public class NUSFile {
 
 	private class MethodToken extends Token implements ExecutableToken {
 		private Action action;
-		private String name;
+		private final String name;
 		private MethodDeclarationToken declarationToken;
 		private MethodBodyToken bodyToken;
 
-		public MethodToken(MethodDeclarationToken declarationToken, MethodBodyToken bodyToken) {
+		MethodToken(MethodDeclarationToken declarationToken, MethodBodyToken bodyToken) {
 			this.declarationToken = declarationToken;
 			this.bodyToken = bodyToken;
 			this.name = declarationToken.name;
 		}
 
-		public MethodToken(String name, Action action) {
+		MethodToken(String name, Action action) {
 			this.action = action;
 			this.name = name;
 		}
@@ -124,19 +123,19 @@ public class NUSFile {
 
 	private class MethodArgToken extends Token {
 		private int id;
-		private String literal;
+		private final String literal;
 
-		public MethodArgToken(int id, String literal) {
+		MethodArgToken(int id, String literal) {
 			this.id = id;
 			this.literal = literal;
 		}
 	}
 
 	private class MethodCallToken extends Token implements ExecutableToken {
-		private MethodToken calledMethod;
-		private MethodArgToken[] args;
+		private final MethodToken calledMethod;
+		private final MethodArgToken[] args;
 
-		public MethodCallToken(MethodToken calledMethod, MethodArgToken[] args) {
+		MethodCallToken(MethodToken calledMethod, MethodArgToken[] args) {
 			this.calledMethod = calledMethod;
 			this.args = args;
 		}
@@ -159,11 +158,11 @@ public class NUSFile {
 	}
 
 	private class IfStatementToken extends Token implements ExecutableToken {
-		private Condition condition;
-		private ConditionResultToken condition_true_token;
-		private ConditionResultToken condition_false_token;
+		private final Condition condition;
+		private final ConditionResultToken condition_true_token;
+		private final ConditionResultToken condition_false_token;
 
-		public IfStatementToken(ConditionToken conditionToken, ConditionResultToken condition_true_token, ConditionResultToken condition_false_token) {
+		IfStatementToken(ConditionToken conditionToken, ConditionResultToken condition_true_token, ConditionResultToken condition_false_token) {
 			this.condition = conditionToken.turnToCondition();
 			this.condition_false_token = condition_false_token;
 			this.condition_true_token = condition_true_token;
@@ -179,13 +178,13 @@ public class NUSFile {
 	}
 
 	private class ConditionToken extends Token {
-		private String literal;
+		private final String literal;
 
-		public ConditionToken(String literal) {
+		ConditionToken(String literal) {
 			this.literal = literal;
 		}
 
-		public Condition turnToCondition() {
+		Condition turnToCondition() {
 			if (literal.contains("==")) {
 				String[] literalParts = literal.split("==");
 				String leftLiteral = literalParts[0];
@@ -213,9 +212,9 @@ public class NUSFile {
 
 
 	private class ConditionResultToken extends Token implements ExecutableToken {
-		private List<ExecutableToken> calls;
+		private final List<ExecutableToken> calls;
 
-		public ConditionResultToken(List<ExecutableToken> calls) {
+		ConditionResultToken(List<ExecutableToken> calls) {
 			this.calls = calls;
 		}
 
@@ -269,12 +268,9 @@ public class NUSFile {
 				line = line.replaceFirst("else ", "");
 			}
 			if (isMethodCall(line)) {
-				if (statementsFalse != null) {
-					statementsFalse.add(getMethodCallToken(line));
-				} else statements.add(getMethodCallToken(line));
+				Objects.requireNonNullElse(statementsFalse, statements).add(getMethodCallToken(line));
 			} else if (isIfStatement(line)) {
-				if (statementsFalse != null) statementsFalse.add(getIfStatementToken(i, line, lines));
-				else statements.add(getIfStatementToken(i, line, lines));
+				Objects.requireNonNullElse(statementsFalse, statements).add(getIfStatementToken(i, line, lines));
 				i = parseIndexIfStatementReached;
 			}
 		}
@@ -285,13 +281,13 @@ public class NUSFile {
 	}
 
 	private class PatternToken {
-		private String format;
+		private final String format;
 
-		public PatternToken(String format) {
+		PatternToken(String format) {
 			this.format = format;
 		}
 
-		public boolean isStringOfPattern(String string) {
+		boolean isStringOfPattern(String string) {
 			char[] str = string.toCharArray();
 			char[] pattern = format.toCharArray();
 			int add = 0;
@@ -324,7 +320,6 @@ public class NUSFile {
 					}
 					if (!(str[i + add] == ' ' || str[i + add] == '\t')) {
 						add--;
-						continue;
 					}
 				} else {
 					if (pattern[i] != str[i + add]) {
@@ -337,8 +332,7 @@ public class NUSFile {
 	}
 
 	private boolean isIfStatement(String line) {
-		boolean res = patterns.get("LANG_IF").isStringOfPattern(line);
-		return res;
+		return patterns.get("LANG_IF").isStringOfPattern(line);
 	}
 
 	private MethodCallToken getMethodCallToken(String line) {
@@ -363,9 +357,8 @@ public class NUSFile {
 		return new MethodCallToken(method, argTokens);
 	}
 
-	public boolean isMethodCall(String code) {
-		boolean res = patterns.get("LANG_METHOD_CALL").isStringOfPattern(code);
-		return res;
+	private boolean isMethodCall(String code) {
+		return patterns.get("LANG_METHOD_CALL").isStringOfPattern(code);
 //		return code.startsWith("NUS_CALL ") || code.startsWith("SCR_CALL ");
 	}
 
@@ -378,19 +371,19 @@ public class NUSFile {
 	}
 
 	private class MethodNotFoundException extends RuntimeException {
-		public MethodNotFoundException(String s) {
+		MethodNotFoundException(String s) {
 			super(s);
 		}
 	}
 
 	private class WrongMethodTypeException extends RuntimeException {
-		public WrongMethodTypeException(String line) {
+		WrongMethodTypeException(String line) {
 			super(line);
 		}
 	}
 
 	private class IfSyntaxError extends RuntimeException {
-		public IfSyntaxError(String s) {
+		IfSyntaxError(String s) {
 			super(s);
 		}
 	}

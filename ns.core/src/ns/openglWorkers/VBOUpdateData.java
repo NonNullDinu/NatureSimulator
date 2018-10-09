@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL15;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.Objects;
 
 public class VBOUpdateData {
 	private final float[] dataf;
@@ -46,17 +47,17 @@ public class VBOUpdateData {
 	public void updateWithin(VAO vao) {
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vao.getBuffers().get(attToWriteTo));
 		if(type == 0) {
-			FloatBuffer buffer = storeDataInFloatBuffer(dataf);
+			FloatBuffer buffer = storeDataInFloatBuffer(Objects.requireNonNull(dataf));
 			GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, begin, buffer);
 			buffer.clear();
 		}
 		if(type == 1) {
-			IntBuffer buffer = storeDataInIntBuffer(datai);
+			IntBuffer buffer = storeDataInIntBuffer(Objects.requireNonNull(datai));
 			GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, begin, buffer);
 			buffer.clear();
 		}
 		if(type == 2) {
-			ByteBuffer buffer = storeDataInByteBuffer(datab);
+			ByteBuffer buffer = storeDataInByteBuffer(Objects.requireNonNull(datab));
 			GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, begin, buffer);
 			buffer.clear();
 		}

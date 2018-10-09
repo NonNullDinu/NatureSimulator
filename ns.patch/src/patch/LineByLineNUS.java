@@ -6,9 +6,9 @@ import patch.nsUpdateScript.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LineByLineNUS {
-	private String code;
-	private Map<String, String> variables;
+class LineByLineNUS {
+	private final String code;
+	private final Map<String, String> variables;
 
 	public static void main(String[] args) {
 		LineByLineNUS nus = new LineByLineNUS(
@@ -25,7 +25,7 @@ public class LineByLineNUS {
 		this.variables = new HashMap<>();
 	}
 
-	public void run() {
+	private void run() {
 		boolean condition = false;
 		for (String line : code.split("\n")) {
 			if (line.startsWith("CONDITION "))
@@ -49,7 +49,7 @@ public class LineByLineNUS {
 		}
 	}
 
-	public void execute(String line) {
+	private void execute(String line) {
 		if (line.startsWith("NUS_CALL ")) {
 			String methodCalledName = line.substring(9, line.indexOf('('));
 			Method methodToCall = LANG_DEF.NUS_METHODS.get(methodCalledName);
@@ -66,7 +66,7 @@ public class LineByLineNUS {
 		}
 	}
 
-	public boolean evaluateCondition(String condition) {
+	private boolean evaluateCondition(String condition) {
 		if (condition.contains("==")) {
 			String[] parts = condition.split("==");
 			for (String varName : variables.keySet()) {

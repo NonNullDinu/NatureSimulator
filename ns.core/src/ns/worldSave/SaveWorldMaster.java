@@ -9,14 +9,12 @@ import java.io.ObjectOutputStream;
 
 public class SaveWorldMaster {
 	public static void save(World world, Out resource) {
-		ObjectOutputStream stream = null;
+		ObjectOutputStream stream;
 		try {
 			resource.writeVersion(GU.CURRENT_WORLD_FILE_VERSION);
 			stream = new ObjectOutputStream(resource.asOutputStream());
 			for (int i = 0;i < world.getEntities().size(); i++)
 				stream.writeObject(world.getEntities().get(i).asData());
-//			for(River river : world.getRivers())
-//				stream.writeObject(river.asData());
 			stream.writeObject(world.getRivers());
 			stream.writeObject(world.getTerrain().asData());
 			stream.writeObject(new EndObject());

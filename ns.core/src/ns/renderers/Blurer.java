@@ -9,9 +9,9 @@ import org.lwjgl.opengl.GL11;
 
 public class Blurer extends EffectRenderer {
 
-	private FBO helper;
-	private VBlurer vblurer;
-	private HBlurer hblurer;
+	private final FBO helper;
+	private final VBlurer vblurer;
+	private final HBlurer hblurer;
 
 	public Blurer(VAO quad) {
 		super(null, quad);
@@ -36,7 +36,7 @@ public class Blurer extends EffectRenderer {
 	}
 
 	private class VBlurer extends EffectRenderer {
-		private VBlurShader shader;
+		private final VBlurShader shader;
 
 		VBlurer(VBlurShader shader, VAO quad) {
 			super(shader, quad);
@@ -71,7 +71,7 @@ public class Blurer extends EffectRenderer {
 	}
 
 	private class HBlurer extends EffectRenderer {
-		private HBlurShader shader;
+		private final HBlurShader shader;
 
 		HBlurer(HBlurShader shader, VAO quad) {
 			super(shader, quad);

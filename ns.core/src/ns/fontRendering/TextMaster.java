@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 public class TextMaster {
-	private static Map<FontType, List<GUIText>> texts = new HashMap<>();
-	private static List<GUIText> allTexts = new ArrayList<>();
+	private static final Map<FontType, List<GUIText>> texts = new HashMap<>();
+	private static final List<GUIText> allTexts = new ArrayList<>();
 	private static FontRenderer renderer;
 	public static boolean initialized = false;
 
@@ -56,11 +56,7 @@ public class TextMaster {
 	
 	public static void add(GUIText text) {
 		FontType font = text.getFont();
-		List<GUIText> textBatch = texts.get(font);
-		if (textBatch == null) {
-			textBatch = new ArrayList<GUIText>();
-			texts.put(font, textBatch);
-		}
+		List<GUIText> textBatch = texts.computeIfAbsent(font, k -> new ArrayList<>());
 		textBatch.add(text);
 	}
 	

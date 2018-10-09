@@ -14,26 +14,24 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Terrain implements SerializableWorldObject {
 	public static final float SIZE = 4800;
-	public static final float SIZE_DIV_2 = SIZE / 2f;
+	private static final float SIZE_DIV_2 = SIZE / 2f;
 	public static final int VERTEX_COUNT = (int) (256f * (SIZE / 2400f));
 	private static final int GRID_SCL = 20;
-	public static final int GRID_VERTEX_COUNT = VERTEX_COUNT / GRID_SCL;
+	private static final int GRID_VERTEX_COUNT = VERTEX_COUNT / GRID_SCL;
 	private static final Vector3f DEFAULT_COLOR = new Vector3f(0.71f, 0.478f, 0.0f);
-	private VAO model;
-	private float x, z;
-	private HeightsGenerator generator;
+	private final VAO model;
+	private final float x;
+	private final float z;
+	private final HeightsGenerator generator;
 	private float[][] heights;
-	private List<TerrainVertex> vertices;
-	private Map<Integer, List<TerrainVertex>> gridVertices;
+	private final List<TerrainVertex> vertices;
+	private final Map<Integer, List<TerrainVertex>> gridVertices;
 	private Vector3f[][] normals;
-	private List<RiverEnd> riverEnds;
+	private final List<RiverEnd> riverEnds;
 	private World world;
 
 	public Terrain() {
@@ -204,14 +202,10 @@ public class Terrain implements SerializableWorldObject {
 				vertices.add(vertex);
 				int index = (z / GRID_VERTEX_COUNT * GRID_SCL + x / GRID_VERTEX_COUNT);
 				if (index != prevIndex) {
-					currentList = gridVertices.get(index);
-					if (currentList == null) {
-						currentList = new ArrayList<>();
-						gridVertices.put(index, currentList);
-					}
+					currentList = gridVertices.computeIfAbsent(index, k -> new ArrayList<>());
 					prevIndex = index;
 				}
-				currentList.add(vertex);
+				Objects.requireNonNull(currentList).add(vertex);
 				vertexPointer++;
 			}
 		}

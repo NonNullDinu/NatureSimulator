@@ -12,10 +12,7 @@ import org.lwjgl.opengl.GL30;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class VAOLoader {
 	private static final Map<Integer, Map<Integer, Integer>> vaos = new HashMap<>();
@@ -249,7 +246,7 @@ public class VAOLoader {
 				if (dimensions == 4)
 					buffer = storeDataInFloatBuffer(
 							new float[] { data[i * 4], data[i * 4 + 1], data[i * 4 + 2], data[i * 4 + 3] });
-				GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, offset, buffer);
+				GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, offset, Objects.requireNonNull(buffer));
 				buffer.clear();
 			}
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);

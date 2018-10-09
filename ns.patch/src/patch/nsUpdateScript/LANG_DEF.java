@@ -8,10 +8,10 @@ public class LANG_DEF {
 	public static final char FORMAT_SPACE_OR_TAB_OR_NOTHING = '`';
 	public static final Map<String, Method> NUS_METHODS = new HashMap<>();
 
-	protected static final int METHOD_DECLARATION = 0;
-	protected static final int METHOD_CALL = 1;
+	static final int METHOD_DECLARATION = 0;
+	static final int METHOD_CALL = 1;
 	protected static final int CONDITION_DECLARATION = 2;
-	protected static final Pattern[] LANG_PATTERNS = {
+	static final Pattern[] LANG_PATTERNS = {
 			pattern("method *()"),
 			pattern("*_CALL *(*)"),
 			pattern("CONDITION(*)"),

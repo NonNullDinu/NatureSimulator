@@ -11,10 +11,10 @@ import java.util.List;
 
 public class Shop {
 	private static final float SLIDE_OFFSET = 0.75f;
-	private List<ShopItem> items;
+	private final List<ShopItem> items;
 	private ShopItem currentlySelected;
 	private SS state;
-	private ComplexGUI complex;
+	private final ComplexGUI complex;
 	private int d;
 	private boolean increasing;
 
@@ -41,8 +41,6 @@ public class Shop {
 					complex.getCenter().x += SLIDE_OFFSET;
 				state = SS.OPEN;
 			} else {
-				if (state == SS.BUYING)
-					complex.getCenter().x += SLIDE_OFFSET;
 				state = SS.CLOSED;
 			}
 			currentlySelected = null;

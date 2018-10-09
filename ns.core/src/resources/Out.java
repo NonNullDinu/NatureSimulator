@@ -10,16 +10,16 @@ public class Out {
 	private Out() {
 	}
 
-	public Out withLocation(String location) {
+	private Out withLocation(String location) {
 		return withLocation(new PATH(location));
 	}
 
-	public Out withLocation(PATH location) {
+	private Out withLocation(PATH location) {
 		this.location = location;
 		return this;
 	}
 
-	public Out create() {
+	private Out create() {
 		try {
 			this.outputStream = location.openOutput();
 		} catch (IOException e) {

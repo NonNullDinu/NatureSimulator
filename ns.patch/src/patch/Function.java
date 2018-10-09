@@ -1,6 +1,7 @@
 package patch;
 
 import java.io.*;
+import java.util.Objects;
 
 public enum Function {
 	/**
@@ -48,7 +49,7 @@ public enum Function {
 	 */
 	ECHO("echo", true);
 
-	private String updateFunctionName;
+	private final String updateFunctionName;
 	private String source;
 
 	/**
@@ -93,13 +94,13 @@ public enum Function {
 			if (args.endsWith("/*")) {
 				String dir = args.substring(0, args.length() - 2);
 				File directory = new File(path + dir);
-				for (File f : directory.listFiles())
+				for (File f : Objects.requireNonNull(directory.listFiles()))
 					f.delete();
 			} else if (args.contains("/*.")) {
 				String dir = args.substring(0, args.length() - 3);
 				File directory = new File(path + dir);
 				String format = args.split("/*.")[1];
-				for (File f : directory.listFiles())
+				for (File f : Objects.requireNonNull(directory.listFiles()))
 					if (f.getName().endsWith("." + format))
 						f.delete();
 			} else

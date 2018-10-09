@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main {
+class Main {
 	public static void main(String[] args) throws IOException {
 		String path = System.getProperty("user.dir") + "/";
 		if (!System.getProperty("os.name").equals("Linux")/* || (args.length > 0 && args[0].equals("--use-ns-update-script"))*/) {

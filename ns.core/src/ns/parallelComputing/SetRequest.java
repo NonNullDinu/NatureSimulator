@@ -4,7 +4,7 @@ import ns.interfaces.PAction;
 
 public class SetRequest extends Request {
 
-	private Object o;
+	private final Object o;
 	
 	private static PAction action;
 	

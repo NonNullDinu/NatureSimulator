@@ -19,11 +19,11 @@ public class FlareManager {
 	public static final Vector2f CENTER = new Vector2f(0.5f, 0.5f);
 	private static final int TOTAL_SAMPLES = 44476;
 
-	private FlareTexture[] textures;
+	private final FlareTexture[] textures;
 	private float brightness;
 	private Vector2f sunToCenter;
-	private Texture sunTex;
-	private Query sunSamplePassed;
+	private final Texture sunTex;
+	private final Query sunSamplePassed;
 	private int lastResult;
 	private float coverage;
 

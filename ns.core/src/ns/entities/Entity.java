@@ -2,6 +2,7 @@ package ns.entities;
 
 import ns.components.*;
 import ns.display.DisplayManager;
+import ns.genetics.DNA;
 import ns.openglObjects.VAO;
 import ns.utils.GU;
 import ns.world.World;
@@ -11,15 +12,16 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class Entity implements SerializableWorldObject {
 
-	private Blueprint blueprint;
+	private final Blueprint blueprint;
 
-	private Vector3f position;
+	private final Vector3f position;
 	private float rotX;
 	private float rotY;
 	private float rotZ;
-	private float scale;
-	private Vector3f DEAD_ROT_AXIS;
+	private final float scale;
+	private final Vector3f DEAD_ROT_AXIS;
 	private float alpha;
+	private Entity partner;
 
 	public Entity(Blueprint blueprint, Vector3f position) {
 		this.blueprint = blueprint;
@@ -69,7 +71,7 @@ public class Entity implements SerializableWorldObject {
 		this.rotZ += dz;
 	}
 
-	public void rotate(Vector3f axis, float ang) {
+	private void rotate(Vector3f axis, float ang) {
 		this.rotate(ang * axis.x, ang * axis.y, ang * axis.z);
 	}
 
@@ -97,9 +99,44 @@ public class Entity implements SerializableWorldObject {
 				}
 			} else {
 				lc.update();
+				if (lc instanceof AnimalLifeComponent) {
+					AnimalLifeComponent alc = ((AnimalLifeComponent) lc);
+					if (alc.isOffspringCreating()) {
+						if (partner == null) {
+							partner = w.closestEntity(position,
+									(Entity e) -> !e.equals(this) && e.blueprint.getFolder().equals(blueprint.getFolder()) && alc.getDna()
+											.getAllosomeGeneData() != ((AnimalLifeComponent) e.getLifeComponent()).getDna()
+											.getAllosomeGeneData());
+							partner.setPartner(this);
+						}
+						if (Vector3f.sub(partner.getPosition(), position, null).lengthSquared() <= 25f) {
+							alc.setOffspring(false);
+							System.out.println("Initializing offspring");
+							Entity e = new Entity(this.blueprint.copy(), new Vector3f(position));
+
+							System.out.println("Initializing offspring genes");
+							AnimalLifeComponent alc2 = ((AnimalLifeComponent) partner.getLifeComponent());
+							((AnimalLifeComponent) e.getLifeComponent()).withDNA(DNA.blend(alc.getDna().passedToOffspring(),
+									alc2.getDna().passedToOffspring()));
+
+							w.add(e);
+							System.out.println("Adding offspring to world");
+						} else {
+							blueprint.setMovementTarget(partner.position);
+							partner.blueprint.setMovementTarget(position);
+						}
+					}
+				}
 			}
 		}
+		if (ableToMove) {
+			ableToMove = !GU.time.isNight();
+		}
 		blueprint.move(this, w, ableToMove);
+	}
+
+	private void setPartner(Entity partner) {
+		this.partner = partner;
 	}
 
 	public LifeComponent getLifeComponent() {
@@ -118,7 +155,7 @@ public class Entity implements SerializableWorldObject {
 	public EntityData asData() {
 		EntityData data = new EntityData();
 		data.setPosition(position);
-		data.setBlueprintData(blueprint.asData());
+		data.setBlueprint(blueprint);
 		data.setRotation(new Vector3f(rotX, rotY, rotZ));
 		return data;
 	}
@@ -134,5 +171,9 @@ public class Entity implements SerializableWorldObject {
 	public boolean isHeightWithinLimits(float y) {
 		HeightLimitsComponent limitsComponent = blueprint.getHeightLimits();
 		return limitsComponent == null || limitsComponent.isWithinLimits(y);
+	}
+
+	public ModelComponent getModelComponent() {
+		return blueprint.getModel();
 	}
 }

@@ -4,7 +4,7 @@ import ns.openglObjects.Query;
 
 public class CreateQueryRequest extends Request {
 
-	private Query query;
+	private final Query query;
 
 	public CreateQueryRequest(Query query) {
 		this.query = query;

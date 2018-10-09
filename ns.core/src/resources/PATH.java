@@ -6,9 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class PATH {
-	private _File file;
-	private String loc;
-	private String relativeLocation;
+	private final _File file;
+	private final String relativeLocation;
 
 	public PATH(String location) {
 		this(new _File(location));
@@ -16,7 +15,7 @@ public class PATH {
 
 	public PATH(_File file) {
 		this.file = file;
-		this.loc = file.getAbsolutePath();
+		String loc = file.getAbsolutePath();
 		this.relativeLocation = file.locGiven;
 	}
 

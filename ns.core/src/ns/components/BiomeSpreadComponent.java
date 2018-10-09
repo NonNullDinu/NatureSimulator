@@ -7,22 +7,22 @@ public class BiomeSpreadComponent implements IComponent {
 	private float minRange, maxRange;
 	private Biome biome;
 	private boolean addedColorsToTerrain = false;
-	
-	public BiomeSpreadComponent withMinMaxRange(float minRange, float maxRange) {
+
+	BiomeSpreadComponent withMinMaxRange(float minRange, float maxRange) {
 		this.minRange = minRange;
 		this.maxRange = maxRange;
 		return this;
 	}
-	
-	public BiomeSpreadComponent withBiome(Biome biome) {
+
+	BiomeSpreadComponent withBiome(Biome biome) {
 		this.biome = biome;
 		return this;
 	}
-	
+
 	public Vector2f getMinMax() {
 		return new Vector2f(minRange, maxRange);
 	}
-	
+
 	public Biome getBiome() {
 		return biome;
 	}
@@ -33,5 +33,10 @@ public class BiomeSpreadComponent implements IComponent {
 
 	public boolean addedColorsToTerrain() {
 		return addedColorsToTerrain;
+	}
+
+	@Override
+	public IComponent copy() {
+		return this;
 	}
 }

@@ -2,6 +2,7 @@ package ns.renderers;
 
 import ns.components.Blueprint;
 import ns.components.CustomColorsComponent;
+import ns.components.ModelComponent;
 import ns.entities.Entity;
 import ns.entities.Light;
 import ns.openglObjects.VAO;
@@ -16,11 +17,11 @@ import org.lwjgl.util.vector.Vector4f;
 import java.util.List;
 import java.util.Map;
 
-public class EntityRenderer {
+class EntityRenderer {
 
-	private StaticShader shader;
+	private final StaticShader shader;
 
-	public EntityRenderer(StaticShader shader, Matrix4f projectionMatrix) {
+	EntityRenderer(StaticShader shader, Matrix4f projectionMatrix) {
 		this.shader = shader;
 		shader.start();
 		shader.projectionMatrix.load(projectionMatrix);
@@ -42,6 +43,8 @@ public class EntityRenderer {
 					for (int i = 0; i < customColors.getColors().size(); i++) {
 						shader.customColors[i].load(customColors.getColors().get(i));
 					}
+				ModelComponent mc = e.getModelComponent();
+				shader.movementStopHeight.load(mc.heightStop ? mc.stopMovementHeight : -100f);
 				vao.batchRenderCall();
 			}
 			vao.unbind();
@@ -51,8 +54,6 @@ public class EntityRenderer {
 
 	public void render(Blueprint blueprint, Vector3f position) {
 		shader.start();
-//		shader.time.load(0); // Comment this line if you want to have dynamic shop item model movement (like
-		// the leaves of the trees in the world)
 		shader.viewMatrix.load(new Matrix4f());
 		shader.transformationMatrix.load(Maths.createTransformationMatrix(position, 0, 0, 0, 1));
 		shader.clipPlane.load(new Vector4f(0, 0, 0, 0));
@@ -63,6 +64,7 @@ public class EntityRenderer {
 			for (int i = 0; i < customColors.getColors().size(); i++) {
 				shader.customColors[i].load(customColors.getColors().get(i));
 			}
+		shader.movementStopHeight.load(-100f);
 		VAO vao = blueprint.getModel().getModel();
 		vao.bind(0, 1, 2, 3, 4, 5);
 		vao.batchRenderCall();

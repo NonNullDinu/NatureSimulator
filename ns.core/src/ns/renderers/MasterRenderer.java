@@ -27,9 +27,11 @@ import java.util.Map;
 
 public class MasterRenderer {
 	public static final float FAR_PLANE = 1000f;
-	protected static final float RED = 0.435f, GREEN = 0.812f, BLUE = 1.0f;
-	protected static final Vector2f FOG_VALUES = new Vector2f(0.0018f, 5.0f);
-	protected static Vector3f CLEAR_COLOR;
+	private static final float RED = 0.435f;
+	private static final float GREEN = 0.812f;
+	private static final float BLUE = 1.0f;
+	static final Vector2f FOG_VALUES = new Vector2f(0.0018f, 5.0f);
+	static Vector3f CLEAR_COLOR;
 
 	private static final float TIME_SPEED = 0.15f;
 
@@ -76,13 +78,13 @@ public class MasterRenderer {
 		standardModels.add(vao);
 	}
 
-	private StaticShader shader = new StaticShader();
-	private EntityRenderer renderer;
+	private final StaticShader shader = new StaticShader();
+	private final EntityRenderer renderer;
 
-	private TerrainShader terrainShader = new TerrainShader();
-	private TerrainRenderer terrainRenderer;
+	private final TerrainShader terrainShader = new TerrainShader();
+	private final TerrainRenderer terrainRenderer;
 
-	private Map<VAO, List<Entity>> entities = new HashMap<>();
+	private final Map<VAO, List<Entity>> entities = new HashMap<>();
 
 	private Terrain terrain;
 
@@ -123,17 +125,13 @@ public class MasterRenderer {
 		render(camera, sun, moon, clipPlane, updateTime);
 	}
 
-	public void process(Entity e) {
+	private void process(Entity e) {
 		VAO model = e.getModel();
-		List<Entity> bash = entities.get(model);
-		if (bash == null) {
-			bash = new ArrayList<>();
-			entities.put(model, bash);
-		}
+		List<Entity> bash = entities.computeIfAbsent(model, k -> new ArrayList<>());
 		bash.add(e);
 	}
 
-	public void process(Terrain terrain) {
+	private void process(Terrain terrain) {
 		this.terrain = terrain;
 	}
 

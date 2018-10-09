@@ -8,8 +8,8 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
-public class TerrainRenderer {
-	private TerrainShader shader;
+class TerrainRenderer {
+	private final TerrainShader shader;
 
 	public TerrainRenderer(TerrainShader shader, Matrix4f projectionMatrix) {
 		this.shader = shader;

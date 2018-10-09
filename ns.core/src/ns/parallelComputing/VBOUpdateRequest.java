@@ -7,11 +7,11 @@ import java.util.List;
 
 public class VBOUpdateRequest extends Request {
 
-	private VAO model;
-	private int attn;
-	private float[] data;
-	private List<Integer> changes;
-	private int dimensions;
+	private final VAO model;
+	private final int attn;
+	private final float[] data;
+	private final List<Integer> changes;
+	private final int dimensions;
 
 	public VBOUpdateRequest(VAO model, int attn, float[] data, List<Integer> changes, int dimensions) {
 		this.model = model;

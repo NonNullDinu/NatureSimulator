@@ -13,7 +13,7 @@ import org.lwjgl.util.vector.Vector2f;
 public class WaterRenderer {
 	private static final float WAVE_SPEED = 0.003f;
 
-	private WaterShader shader;
+	private final WaterShader shader;
 	private float waveTime;
 
 	public WaterRenderer(WaterShader shader, Matrix4f projectionMatrix) {

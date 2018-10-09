@@ -16,7 +16,7 @@ public class VAO implements IOpenGLObject, IRenderable {
 	private int id;
 	private int vertexCount;
 	private Map<Integer, Integer> vbos;
-	private List<Integer> currentlyBound;
+	private final List<Integer> currentlyBound;
 
 	private boolean hasIndices;
 

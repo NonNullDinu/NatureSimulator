@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StructLib {
-	private static Map<String, String> structs = new HashMap<>();
+	private static final Map<String, String> structs = new HashMap<>();
 
 	public static void load(In resource) {
 		BufferedReader reader = GU.open(resource);

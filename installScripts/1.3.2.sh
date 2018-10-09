@@ -34,7 +34,9 @@ echo -n "Make a command to use for CLI?y/n:"
 read make_command
 if [[ "$make_command" = "y" || "$make_command" = "Y" ]] ;
 then	cd "$HOME"
-	if [[ ! -d bin ]] ; then mkdir bin fi
+	if [[ ! -d bin ]] ;
+	then mkdir bin
+	fi
 	cd bin
 	wget -O ns https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/master/.data/ns-script.sh
 fi

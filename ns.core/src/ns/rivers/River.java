@@ -16,9 +16,9 @@ import java.util.List;
 public class River implements Serializable {
 	private static final long serialVersionUID = 3885806111259199169L;
 
-	protected static final int COUNT = 30;
-	private List<WaterParticle> waterParticles = new ArrayList<>();
-	private Vector3f source;
+	static final int COUNT = 30;
+	private final List<WaterParticle> waterParticles = new ArrayList<>();
+	private final Vector3f source;
 	private int cnt;
 	private transient VAO model;
 	private RiverEnd riverEnd;
@@ -75,7 +75,7 @@ public class River implements Serializable {
 				particle.updateVel(terrain);
 			} else {
 				WaterParticle prev = waterParticles.get(i - 1);
-				particle.setPosition(new Vector3f(prev.getPrevPosition()), source.y, prev.getVelocity(), prev.deltaY());
+				particle.setPosition(new Vector3f(prev.getPrevPosition()), source.y);
 			}
 		}
 		if (waterParticles.size() < 2)
@@ -188,9 +188,4 @@ public class River implements Serializable {
 	public int vao_length() {
 		return 2 * (waterParticles.size() - sub);
 	}
-
-//	@Override
-//	public RiverData asData() {
-//		return new RiverData().withSource(source);
-//	}
 }

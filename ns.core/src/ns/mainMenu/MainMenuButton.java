@@ -6,8 +6,8 @@ import ns.ui.Button;
 import org.lwjgl.util.vector.Vector2f;
 
 public class MainMenuButton extends Button {
-	private Action action;
-	private Texture tex;
+	private final Action action;
+	private final Texture tex;
 
 	public MainMenuButton(Vector2f center, Vector2f scale, Action action, Texture texture) {
 		super(center, scale);

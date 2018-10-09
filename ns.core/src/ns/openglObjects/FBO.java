@@ -26,7 +26,7 @@ public class FBO implements IOpenGLObject {
 		this.config = config;
 	}
 
-	public void init(int width, int height, int config) {
+	private void init(int width, int height, int config) {
 		this.width = width;
 		this.height = height;
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, id);

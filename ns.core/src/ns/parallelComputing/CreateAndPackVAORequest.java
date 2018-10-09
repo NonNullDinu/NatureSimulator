@@ -6,8 +6,8 @@ import ns.openglWorkers.VBOData;
 
 public class CreateAndPackVAORequest extends Request {
 
-	private VBOData[] data;
-	private VAO target;
+	private final VBOData[] data;
+	private final VAO target;
 
 	public CreateAndPackVAORequest(VBOData[] args, VAO target) {
 		this.data = args;

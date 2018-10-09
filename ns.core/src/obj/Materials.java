@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Materials extends ArrayList<Material> {
 	private static final long serialVersionUID = -4711987157168197781L;
@@ -31,15 +32,15 @@ public class Materials extends ArrayList<Material> {
 					current.setName(line.split(" ")[1]);
 				} else if (line.startsWith("Kd")) {
 					String[] pcs = line.split(" ");
-					current.setColor(
+					Objects.requireNonNull(current).setColor(
 							new Vector3f(Float.parseFloat(pcs[1]), Float.parseFloat(pcs[2]), Float.parseFloat(pcs[3])));
 				} else if (line.startsWith("Ka")) {
 					String[] pcs = line.split(" ");
-					current.setIndicators(
+					Objects.requireNonNull(current).setIndicators(
 							new Vector3f(Float.parseFloat(pcs[1]), Float.parseFloat(pcs[2]), Float.parseFloat(pcs[3])));
 				} else if (line.startsWith("d")) {
 					String[] pcs = line.split(" ");
-					current.setData(new Vector4f(Float.valueOf(pcs[1]), 0, 0, 0));
+					Objects.requireNonNull(current).setData(new Vector4f(Float.valueOf(pcs[1]), 0, 0, 0));
 				}
 			}
 			add(current);

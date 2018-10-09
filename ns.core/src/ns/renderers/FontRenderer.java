@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class FontRenderer {
 
-	private FontShader shader;
+	private final FontShader shader;
 
 	public FontRenderer() {
 		shader = new FontShader();

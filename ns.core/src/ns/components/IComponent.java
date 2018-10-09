@@ -1,4 +1,7 @@
 package ns.components;
 
-interface IComponent {
+import java.io.Serializable;
+
+interface IComponent extends Serializable {
+	IComponent copy();
 }

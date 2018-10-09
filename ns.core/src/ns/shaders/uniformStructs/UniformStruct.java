@@ -7,10 +7,10 @@ import java.util.List;
 
 public abstract class UniformStruct extends UniformVar {
 
-	private String name;
-	private List<UniformVar> attributes;
+	private final String name;
+	private final List<UniformVar> attributes;
 
-	public UniformStruct(String name, List<UniformVar> attributes) {
+	UniformStruct(String name, List<UniformVar> attributes) {
 		super(-1, name);
 		this.name = name;
 		this.attributes = attributes;
@@ -27,7 +27,7 @@ public abstract class UniformStruct extends UniformVar {
 		}
 	}
 
-	protected void load(UniformValue... values) {
+	void load(UniformValue... values) {
 		int itn = Math.min(attributes.size(), values.length);
 		for (int i = 0; i < itn; i++) {
 			values[i].loadTo(attributes.get(i));

@@ -4,22 +4,21 @@ import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TextMeshCreator {
+class TextMeshCreator {
 
-	protected static final double LINE_HEIGHT = 0.03f;
-	protected static final int SPACE_ASCII = 32;
+	static final double LINE_HEIGHT = 0.03f;
+	static final int SPACE_ASCII = 32;
 	public static final double TAB_SPC = 7.0;
 
-	private MetaFile metaData;
+	private final MetaFile metaData;
 
 	protected TextMeshCreator(BufferedReader metaFile) {
 		metaData = new MetaFile(metaFile);
 	}
 
-	protected TextMeshData createTextMesh(GUIText text) {
+	TextMeshData createTextMesh(GUIText text) {
 		List<Line> lines = createStructure(text);
-		TextMeshData data = createQuadVertices(text, lines);
-		return data;
+		return createQuadVertices(text, lines);
 	}
 
 	private List<Line> createStructure(GUIText text) {

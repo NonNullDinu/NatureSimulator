@@ -5,8 +5,8 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 
 public class Button {
-	private Vector2f center;
-	private Vector2f scale;
+	private final Vector2f center;
+	private final Vector2f scale;
 
 	public Button(Vector2f center, Vector2f scale) {
 		this.center = center;

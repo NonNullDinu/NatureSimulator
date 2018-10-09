@@ -6,17 +6,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-public class ConfigInputStream {
+class ConfigInputStream {
 	private static final int CONF_TYPE = GU.binaryInt("0011 0000");
 	private static final int CONF = GU.binaryInt("0000 0111");
 
-	private InputStream instream;
+	private final InputStream instream;
 
 	public ConfigInputStream(InputStream src) {
 		this.instream = src;
 	}
 
-	public Config read() throws IOException {
+	private Config read() throws IOException {
 		byte[] data = new byte[2];
 		instream.read(data, 0, 2);
 		int flags = data[0];

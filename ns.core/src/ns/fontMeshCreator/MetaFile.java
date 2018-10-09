@@ -13,7 +13,7 @@ import java.util.Map;
  * @author Karl
  *
  */
-public class MetaFile {
+class MetaFile {
 
 	private static final int PAD_TOP = 0;
 	private static final int PAD_LEFT = 1;
@@ -25,7 +25,7 @@ public class MetaFile {
 	private static final String SPLITTER = " ";
 	private static final String NUMBER_SEPARATOR = ",";
 
-	private double aspectRatio;
+	private final double aspectRatio;
 
 	private double verticalPerPixelSize;
 	private double horizontalPerPixelSize;
@@ -34,10 +34,10 @@ public class MetaFile {
 	private int paddingWidth;
 	private int paddingHeight;
 
-	private Map<Integer, Character> metaData = new HashMap<Integer, Character>();
+	private final Map<Integer, Character> metaData = new HashMap<>();
 
-	private BufferedReader reader;
-	private Map<String, String> values = new HashMap<String, String>();
+	private final BufferedReader reader;
+	private final Map<String, String> values = new HashMap<>();
 
 	/**
 	 * Opens a font file in preparation for reading.
@@ -54,11 +54,11 @@ public class MetaFile {
 		close();
 	}
 
-	protected double getSpaceWidth() {
+	double getSpaceWidth() {
 		return spaceWidth;
 	}
 
-	protected Character getCharacter(int ascii) {
+	Character getCharacter(int ascii) {
 		if (ascii == '\t')
 			return Character.TAB;
 		else
@@ -75,7 +75,7 @@ public class MetaFile {
 		String line = null;
 		try {
 			line = reader.readLine();
-		} catch (IOException e1) {
+		} catch (IOException ignored) {
 		}
 		if (line == null || line.startsWith("kerning")) {
 			return false;
@@ -104,11 +104,10 @@ public class MetaFile {
 	/**
 	 * Gets the array of ints associated with a variable on the current line.
 	 * 
-	 * @param variable - the name of the variable.
 	 * @return The int array of values associated with the variable.
 	 */
-	private int[] getValuesOfVariable(String variable) {
-		String[] numbers = values.get(variable).split(NUMBER_SEPARATOR);
+	private int[] getValuesOfVariable() {
+		String[] numbers = values.get("padding").split(NUMBER_SEPARATOR);
 		int[] actualValues = new int[numbers.length];
 		for (int i = 0; i < actualValues.length; i++) {
 			actualValues[i] = Integer.parseInt(numbers[i]);
@@ -133,7 +132,7 @@ public class MetaFile {
 	 */
 	private void loadPaddingData() {
 		processNextLine();
-		this.padding = getValuesOfVariable("padding");
+		this.padding = getValuesOfVariable();
 		this.paddingWidth = padding[PAD_LEFT] + padding[PAD_RIGHT];
 		this.paddingHeight = padding[PAD_TOP] + padding[PAD_BOTTOM];
 	}

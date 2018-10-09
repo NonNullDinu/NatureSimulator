@@ -1,7 +1,7 @@
 package patch.nsUpdateScript;
 
 public class Pattern {
-	private String patt;
+	private final String patt;
 
 	public Pattern(String pattern) {
 		this.patt = pattern;
@@ -41,7 +41,6 @@ public class Pattern {
 				}
 				if (!(str[i + add] == ' ' || str[i + add] == '\t')) {
 					add--;
-					continue;
 				}
 			} else {
 				if (pattern[i] != str[i + add]) {

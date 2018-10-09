@@ -4,8 +4,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Objects;
 
-public class WriteCounter {
+class WriteCounter {
 	private static int counter;
 	private static int lineCounter;
 	private static long mem;
@@ -58,7 +59,7 @@ public class WriteCounter {
 
 	private static void count(File file) {
 		if (file.isDirectory())
-			for (File f : file.listFiles()) {
+			for (File f : Objects.requireNonNull(file.listFiles())) {
 				count(f);
 			}
 		else {

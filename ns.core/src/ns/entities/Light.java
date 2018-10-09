@@ -4,9 +4,9 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 public class Light {
-	public Vector3f dir;
-	public Vector3f color;
-	public Vector2f bias;
+	public final Vector3f dir;
+	public final Vector3f color;
+	public final Vector2f bias;
 
 	public Light(Vector3f dir, Vector3f color, Vector2f bias) {
 		this.dir = dir;

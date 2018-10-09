@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL20;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.Objects;
 
 public class VBOData {
 	private final float[] dataf;
@@ -19,7 +20,7 @@ public class VBOData {
 	private final int type;
 	private int attNumber = -1;
 	private boolean isIndices;
-	private int gl_type;
+	private final int gl_type;
 	private int dimensions;
 	private int usage = GL15.GL_STATIC_DRAW;
 
@@ -71,15 +72,15 @@ public class VBOData {
 		int type = (isIndices ? GL15.GL_ELEMENT_ARRAY_BUFFER : GL15.GL_ARRAY_BUFFER);
 		GL15.glBindBuffer(type, vbo.getId());
 		if (this.type == 0) {
-			FloatBuffer data = storeDataInFloatBuffer(dataf);
+			FloatBuffer data = storeDataInFloatBuffer(Objects.requireNonNull(dataf));
 			GL15.glBufferData(type, data, usage);
 			data.clear();
 		} else if (this.type == 1) {
-			IntBuffer data = storeDataInIntBuffer(datai);
+			IntBuffer data = storeDataInIntBuffer(Objects.requireNonNull(datai));
 			GL15.glBufferData(type, data, usage);
 			data.clear();
 		} else if (this.type == 2) {
-			ByteBuffer data = storeDataInByteBuffer(datab);
+			ByteBuffer data = storeDataInByteBuffer(Objects.requireNonNull(datab));
 			GL15.glBufferData(type, data, usage);
 			data.clear();
 		}
@@ -108,11 +109,11 @@ public class VBOData {
 	public int getLength() {
 		switch(type) {
 		case 0:
-			return dataf.length;
+			return Objects.requireNonNull(dataf).length;
 		case 1:
-			return datai.length;
+			return Objects.requireNonNull(datai).length;
 		case 2:
-			return datab.length;
+			return Objects.requireNonNull(datab).length;
 		}
 		System.out.println("Type " + type + " not found");
 		return 0;

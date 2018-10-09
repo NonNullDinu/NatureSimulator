@@ -9,6 +9,7 @@ import resources.IFolder;
 import resources.In;
 
 import java.io.InputStream;
+import java.util.Objects;
 
 public class GameData implements IFolder {
 	private static GameData folder;
@@ -16,7 +17,7 @@ public class GameData implements IFolder {
 	public static void init() {
 		InputStream ins = In.create("gameData/gameData.fd.xml").asInputStream();
 		Document doc = GU.getDocument(ins);
-		Element documentElement = doc.getDocumentElement();
+		Element documentElement = Objects.requireNonNull(doc).getDocumentElement();
 		NodeList nodes = documentElement.getChildNodes();
 		int version = 0, patch = 0;
 		for (int i = 0; i < nodes.getLength(); i++) {

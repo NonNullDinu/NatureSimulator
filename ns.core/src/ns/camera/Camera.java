@@ -13,12 +13,9 @@ public class Camera extends ICamera {
 	private static final float DIST_AB_TER = 10f;
 	private static final float SENSITIVITY = 0.1f;
 
-	private Matrix4f toWorldRotation;
-	private Vector3f point;
-	private Vector3f onTerrainPoint;
+	private final Vector3f point;
+	private final Vector3f onTerrainPoint;
 	private float distance;
-	private float toTerrainDistance;
-	private float dist;
 	private float angle = 180;
 
 	private int flags = 0;
@@ -42,7 +39,7 @@ public class Camera extends ICamera {
 				float coef = 120f * DisplayManager.getFrameTimeSeconds();
 				delta.x = coef * -mouseDelta.x;
 				delta.z = coef * mouseDelta.y;
-				toWorldRotation = Maths.createTransformationMatrix(new Vector3f(), 0, -rotY, 0, 1);
+				Matrix4f toWorldRotation = Maths.createTransformationMatrix(new Vector3f(), 0, -rotY, 0, 1);
 				Vector4f result = Matrix4f.transform(toWorldRotation, new Vector4f(delta.x, 0, delta.z, 0), null);
 				position.x += result.x;
 				position.z += result.z;
@@ -71,9 +68,9 @@ public class Camera extends ICamera {
 				distance -= dw * 0.1f;
 			}
 		}
-		toTerrainDistance = Vector3f.sub(onTerrainPoint, position, null).length();
+		float toTerrainDistance = Vector3f.sub(onTerrainPoint, position, null).length();
 		Vector3f onPointPt = new Vector3f(point.x, GU.clamp(position.y, 0f, onTerrainPoint.y), point.z);
-		dist = Vector3f.sub(onPointPt, position, null).length();
+		float dist = Vector3f.sub(onPointPt, position, null).length();
 
 		// Recalculate position
 		if (dist < 200f) {

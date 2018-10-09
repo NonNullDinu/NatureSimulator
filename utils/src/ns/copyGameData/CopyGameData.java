@@ -4,8 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 
-public class CopyGameData {
+class CopyGameData {
 
 	public static void main(String[] args) {
 		copy(new File(System.getProperty("user.dir") + "/gameData"));
@@ -16,7 +17,7 @@ public class CopyGameData {
 				"NS_Installer/src/ns/mainEngine/install/gameData/"));
 		if (file.isDirectory()) {
 			target.mkdir();
-			for (File f : file.listFiles())
+			for (File f : Objects.requireNonNull(file.listFiles()))
 				copy(f);
 		} else {
 			try {

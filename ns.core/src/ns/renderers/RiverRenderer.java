@@ -11,7 +11,7 @@ import org.lwjgl.util.vector.Vector3f;
 import java.util.List;
 
 public class RiverRenderer {
-	private RiverShader shader;
+	private final RiverShader shader;
 
 	public RiverRenderer(Matrix4f projectionMatrix) {
 		shader = new RiverShader();

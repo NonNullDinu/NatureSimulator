@@ -6,7 +6,6 @@ import java.util.Map;
 
 @Deprecated
 public class NUSFile {
-	private List<Token> tokens;
 	private Map<String, Method> methods;
 
 	public static void main(String[] args) {
@@ -25,7 +24,7 @@ public class NUSFile {
 		String codeToParseLeft = code;
 		while (!codeToParseLeft.startsWith("method"))
 			codeToParseLeft = codeToParseLeft.substring(1); // Skip to first method declaration
-		tokens = getTokens(codeToParseLeft);
+		List<Token> tokens = getTokens(codeToParseLeft);
 	}
 
 	private int idx = 0;
@@ -78,7 +77,7 @@ public class NUSFile {
 		return null;
 	}
 
-	public void callMain() {
+	private void callMain() {
 		for (Method m : methods.values()) {
 			if (m.name.equals("main")) {
 				m.execute(null);

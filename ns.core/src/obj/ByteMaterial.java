@@ -6,7 +6,7 @@ import org.lwjgl.util.vector.Vector4f;
 import java.nio.ByteBuffer;
 
 public class ByteMaterial {
-	private float[] dataf;
+	private final float[] dataf;
 
 	public ByteMaterial(ByteBuffer buffer) {
 		this.dataf = new float[buffer.capacity() / 4];

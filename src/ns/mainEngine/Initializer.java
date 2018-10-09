@@ -20,7 +20,7 @@ import static java.lang.System.getProperty;
 /**
  * @version 1.3.2-alpha
  */
-public class Initializer {
+class Initializer {
 	public static void main(String[] args) {
 		processArgs(args);
 		if (GU.path == null)

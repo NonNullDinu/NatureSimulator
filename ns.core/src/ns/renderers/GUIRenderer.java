@@ -15,8 +15,8 @@ import java.util.List;
 public class GUIRenderer {
 	public static final Vector3f TRANSPARENCY = new Vector3f(1.0f, 4f / 255f, 214f / 255f);
 	public static GUIRenderer instance;
-	private GUIShader shader;
-	private VAO quad;
+	private final GUIShader shader;
+	private final VAO quad;
 
 	public GUIRenderer(GUIShader shader, VAO quad) {
 		instance = this;
@@ -30,25 +30,25 @@ public class GUIRenderer {
 		unbind();
 	}
 
-	protected void batchRenderCall(GUITexture texture) {
+	private void batchRenderCall(GUITexture texture) {
 		texture.getTexture().bindToTextureUnit(0);
 		shader.transformationMatrix.load(Maths.createTransformationMatrix(texture.getCenter(), texture.getScale()));
 		GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);
 	}
 
-	protected void batchRenderCall(Vector2f center, Vector2f scale, Texture tex) {
+	void batchRenderCall(Vector2f center, Vector2f scale, Texture tex) {
 		tex.bindToTextureUnit(0);
 		shader.transformationMatrix.load(Maths.createTransformationMatrix(center, scale));
 		GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);
 	}
 
-	protected void bind() {
+	void bind() {
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		shader.start();
 		quad.bind(0);
 	}
 
-	protected void unbind() {
+	void unbind() {
 		quad.unbind();
 		shader.stop();
 		GL11.glEnable(GL11.GL_DEPTH_TEST);

@@ -2,13 +2,13 @@ package ns.terrain;
 
 import java.util.Random;
 
-public class HeightsGenerator {
+class HeightsGenerator {
 	private static final float AMPLITUDE = 300f;
 	private static final int OCTAVES = 5;
 	private static final float ROUGHNESS = 0.1f;
 
-	private Random random = new Random();
-	private int seed;
+	private final Random random = new Random();
+	private final int seed;
 
 	public HeightsGenerator() {
 		this.seed = random.nextInt(1000000000);

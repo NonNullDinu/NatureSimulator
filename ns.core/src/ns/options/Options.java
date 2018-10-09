@@ -10,9 +10,9 @@ import org.lwjgl.util.vector.Vector2f;
 import java.util.List;
 
 public class Options implements UIMenu {
-	private List<Option> options;
-	private GUIButton back;
-	private Action action;
+	private final List<Option> options;
+	private final GUIButton back;
+	private final Action action;
 
 	public Options(List<Option> options, GUIButton back, Action backClicked) {
 		this.options = options;

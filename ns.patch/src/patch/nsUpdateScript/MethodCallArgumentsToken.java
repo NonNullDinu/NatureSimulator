@@ -1,9 +1,8 @@
 package patch.nsUpdateScript;
 
-public class MethodCallArgumentsToken extends Token {
-	private final MethodCallArgumentToken[] arguments;
+class MethodCallArgumentsToken extends Token {
 
 	public MethodCallArgumentsToken(MethodCallArgumentToken... arguments) {
-		this.arguments = arguments;
+		MethodCallArgumentToken[] arguments1 = arguments;
 	}
 }

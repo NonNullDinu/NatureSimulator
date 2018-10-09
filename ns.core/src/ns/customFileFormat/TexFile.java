@@ -16,9 +16,10 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class TexFile implements File {
-	private String location;
+	private final String location;
 
 	public TexFile(String location) {
 		this.location = location;
@@ -119,7 +120,7 @@ public class TexFile implements File {
 					pixels.put((byte) val);
 				}
 			}
-			pixels.flip();
+			Objects.requireNonNull(pixels).flip();
 
 			if (Thread.currentThread().getName().equals(GU.MAIN_THREAD_NAME)) {
 				id = GL11.glGenTextures();

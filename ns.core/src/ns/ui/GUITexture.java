@@ -6,7 +6,7 @@ import org.lwjgl.util.vector.Vector2f;
 public class GUITexture {
 	private Vector2f center;
 	private Vector2f scale;
-	private Texture texture;
+	private final Texture texture;
 
 	public GUITexture(Vector2f center, Vector2f scale, Texture texture) {
 		this.center = center;

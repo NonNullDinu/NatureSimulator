@@ -9,12 +9,12 @@ import java.util.List;
  * @author Karl
  *
  */
-public class Word {
+class Word {
 
-	private List<Character> characters = new ArrayList<Character>();
+	private final List<Character> characters = new ArrayList<>();
 	private double width = 0;
-	private double fontSize;
-	private double space;
+	private final double fontSize;
+	private final double space;
 
 	/**
 	 * Create a new empty word.
@@ -33,7 +33,7 @@ public class Word {
 	 * 
 	 * @param character - the character to be added.
 	 */
-	protected void addCharacter(Character character) {
+	void addCharacter(Character character) {
 		characters.add(character);
 		if (character.getId() == '\t') {
 			width += TextMeshCreator.TAB_SPC * space * fontSize;
@@ -44,14 +44,14 @@ public class Word {
 	/**
 	 * @return The list of characters in the word.
 	 */
-	protected List<Character> getCharacters() {
+	List<Character> getCharacters() {
 		return characters;
 	}
 
 	/**
 	 * @return The width of the word in terms of screen size.
 	 */
-	protected double getWordWidth() {
+	double getWordWidth() {
 		return width;
 	}
 

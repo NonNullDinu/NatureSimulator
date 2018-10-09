@@ -5,8 +5,8 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class GLClearRequest extends Request {
 
-	private int mask;
-	private Vector3f color;
+	private final int mask;
+	private final Vector3f color;
 
 	public GLClearRequest(int mask, Vector3f color) {
 		this.mask = mask;

@@ -1,4 +1,4 @@
 package patch.nsUpdateScript;
 
-public class CodeBlockOpenBracketToken extends Token {
+class CodeBlockOpenBracketToken extends Token {
 }

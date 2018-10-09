@@ -2,7 +2,7 @@ package ns.converting;
 
 import java.io.*;
 
-public class VersionAdder {
+class VersionAdder {
 
 	public static void main(String[] args) throws IOException {
 		byte[] buf = new byte[80];

@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GameConfig {
+class GameConfig {
 	public static final int FULLSCREEN = 0;
 
 	private static final Map<Integer, Config> configuration = new HashMap<>();
 
-	protected static final int TOTAL = 1;
+	static final int TOTAL = 1;
 
 	static {
 		ConfigInputStream inp = new ConfigInputStream(GameData.getResourceAt("config/gameConfiguration.config").asInputStream());

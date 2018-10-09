@@ -17,14 +17,15 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class XMLRToUIRConverter {
+class XMLRToUIRConverter {
 	public static void main(String[] args) throws IOException {
 		byte[] buf = new byte[50];
 		int len = System.in.read(buf);
 		String location = "";
 		for (int i = 0; i < len - 1; i++)
-			location += (char) buf[i];
+			location = location + (char) buf[i];
 		File target = new File("../gameData/uiResources/xml/" +
 				location);
 		try {
@@ -88,7 +89,7 @@ public class XMLRToUIRConverter {
 			fout.write(getBytes(dnaX));
 			fout.write(getBytes(dnaY));
 			fout.write(getBytes(dnaZ));
-			fout.write(getBytes(dnaLocation.x));
+			fout.write(getBytes(Objects.requireNonNull(dnaLocation).x));
 			fout.write(getBytes(dnaLocation.y));
 			fout.write(getBytes(dnaLocation.z));
 			fout.write(getBytes(dnaLocation.w));
@@ -97,7 +98,7 @@ public class XMLRToUIRConverter {
 			GUIButton backButton = null;
 			List<Option> options = new ArrayList<>();
 			for (int i = 0; i < nodes.getLength(); i++) {
-				Node node = nodes.item(i);
+				final Node node = nodes.item(i);
 				if (node.getNodeName().equals("BackButton")) {
 					NamedNodeMap nodeMap = node.getAttributes();
 					float x = Float.parseFloat(nodeMap.getNamedItem("x").getNodeValue());
@@ -112,7 +113,9 @@ public class XMLRToUIRConverter {
 					float y = Float.parseFloat(nodeMap.getNamedItem("y").getNodeValue());
 					float xScale = Float.parseFloat(nodeMap.getNamedItem("xScale").getNodeValue());
 					float yScale = Float.parseFloat(nodeMap.getNamedItem("yScale").getNodeValue());
-					Node textNode = node.getChildNodes().item(0);
+					NodeList nodeList = node.getChildNodes();
+					Node textNode = nodeList.item(0);
+					System.out.println(textNode.toString());
 					NamedNodeMap textMap = textNode.getAttributes();
 					float x2 = Float.parseFloat(textMap.getNamedItem("x").getNodeValue());
 					float y2 = Float.parseFloat(textMap.getNamedItem("y").getNodeValue());
@@ -120,17 +123,11 @@ public class XMLRToUIRConverter {
 					float fontSize = Float.parseFloat(textMap.getNamedItem("fontSize").getNodeValue());
 					float maxLen = Float.parseFloat(textMap.getNamedItem("maxLen").getNodeValue());
 					Text text = new Text(textMap.getNamedItem("text").getNodeValue(), fontSize, font,
-							x2, y2, maxLen, true);
+							x2, y2, maxLen);
 					options.add(new Option(x, y, xScale, yScale, text));
 				}
 			}
 			fout.write(new byte[]{1, 0});
-			fout.write(getBytes(backButton.x));
-			fout.write(getBytes(backButton.y));
-			fout.write(getBytes(backButton.xScale));
-			fout.write(getBytes(backButton.yScale));
-			fout.write(getBytes(backButton.tex.length()));
-			fout.write(backButton.tex.getBytes());
 
 			for (Option o : options) {
 				fout.write(0);
@@ -140,6 +137,7 @@ public class XMLRToUIRConverter {
 				fout.write(getBytes(o.yScale));
 				fout.write(getBytes(o.text.x));
 				fout.write(getBytes(o.text.y));
+				fout.write(getBytes(o.text.maxLen));
 				fout.write(getBytes(o.text.fontSize));
 				fout.write(getBytes(o.text.font.length()));
 				fout.write(o.text.font.getBytes());
@@ -147,8 +145,40 @@ public class XMLRToUIRConverter {
 				fout.write(o.text.text.getBytes());
 				fout.write(o.text.center ? 1 : 0);
 			}
+
+			fout.write(1);
+			fout.write(getBytes(Objects.requireNonNull(backButton).x));
+			fout.write(getBytes(backButton.y));
+			fout.write(getBytes(backButton.xScale));
+			fout.write(getBytes(backButton.yScale));
+			fout.write(getBytes(backButton.tex.length()));
+			fout.write(backButton.tex.getBytes());
 		}
 		fout.close();
+	}
+
+	public static float readFloat(byte b1, byte b2, byte b3, byte b4) {
+		return ByteBuffer.wrap(new byte[]{b1, b2, b3, b4}).order(ByteOrder.BIG_ENDIAN).getFloat();
+	}
+
+	private static final ByteBuffer buffer = ByteBuffer.allocateDirect(4);
+
+	public static int readInt(byte b1, byte b2, byte b3, byte b4) {
+		return ByteBuffer.wrap(new byte[]{b1, b2, b3, b4}).order(ByteOrder.BIG_ENDIAN).getInt();
+	}
+
+	private static byte[] getBytes(float f) {
+		buffer.clear();
+		buffer.putFloat(f);
+		buffer.flip();
+		return new byte[]{buffer.get(), buffer.get(), buffer.get(), buffer.get()};
+	}
+
+	private static byte[] getBytes(int i) {
+		buffer.clear();
+		buffer.putInt(i);
+		buffer.flip();
+		return new byte[]{buffer.get(), buffer.get(), buffer.get(), buffer.get()};
 	}
 
 	private static class MainMenuButton {
@@ -159,7 +189,7 @@ public class XMLRToUIRConverter {
 		private final String tex;
 		private final int ac;
 
-		public MainMenuButton(float x, float y, float xScale, float yScale, int ac, String tex) {
+		MainMenuButton(float x, float y, float xScale, float yScale, int ac, String tex) {
 			this.x = x;
 			this.y = y;
 			this.xScale = xScale;
@@ -169,34 +199,6 @@ public class XMLRToUIRConverter {
 		}
 	}
 
-	private static final ByteBuffer buffer = ByteBuffer.allocateDirect(4);
-
-	public static float readFloat(byte b1, byte b2, byte b3, byte b4) {
-		float result = ByteBuffer.wrap(new byte[]{b1, b2, b3, b4}).order(ByteOrder.BIG_ENDIAN).getFloat();
-		return result;
-	}
-
-	public static int readInt(byte b1, byte b2, byte b3, byte b4) {
-		int result = ByteBuffer.wrap(new byte[]{b1, b2, b3, b4}).order(ByteOrder.BIG_ENDIAN).getInt();
-		return result;
-	}
-
-	public static byte[] getBytes(float f) {
-		buffer.clear();
-		buffer.putFloat(f);
-		buffer.flip();
-		byte[] bytes = {buffer.get(), buffer.get(), buffer.get(), buffer.get()};
-		return bytes;
-	}
-
-	public static byte[] getBytes(int i) {
-		buffer.clear();
-		buffer.putInt(i);
-		buffer.flip();
-		byte[] bytes = {buffer.get(), buffer.get(), buffer.get(), buffer.get()};
-		return bytes;
-	}
-
 	private static class GUIButton {
 		private final float x;
 		private final float y;
@@ -204,7 +206,7 @@ public class XMLRToUIRConverter {
 		private final float yScale;
 		private final String tex;
 
-		public GUIButton(float x, float y, float xScale, float yScale, String tex) {
+		GUIButton(float x, float y, float xScale, float yScale, String tex) {
 			this.x = x;
 			this.y = y;
 			this.xScale = xScale;
@@ -220,7 +222,7 @@ public class XMLRToUIRConverter {
 		private final float yScale;
 		private final Text text;
 
-		public Option(float x, float y, float xScale, float yScale, Text text) {
+		Option(float x, float y, float xScale, float yScale, Text text) {
 			this.x = x;
 			this.y = y;
 			this.xScale = xScale;
@@ -238,14 +240,14 @@ public class XMLRToUIRConverter {
 		private final float maxLen;
 		private final boolean center;
 
-		public Text(String text, float fontSize, String font, float x, float y, float maxLen, boolean center) {
+		Text(String text, float fontSize, String font, float x, float y, float maxLen) {
 			this.text = text;
 			this.fontSize = fontSize;
 			this.font = font;
 			this.x = x;
 			this.y = y;
 			this.maxLen = maxLen;
-			this.center = center;
+			this.center = true;
 		}
 	}
 }

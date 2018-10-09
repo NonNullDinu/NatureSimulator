@@ -8,11 +8,11 @@ import org.lwjgl.opengl.GL20;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
-public class VBOInterleavedData {
+class VBOInterleavedData {
 
-	private ByteBuffer data;
-	private VBOData[] dataArray;
-	private Map<Integer, Integer> vbos;
+	private final ByteBuffer data;
+	private final VBOData[] dataArray;
+	private final Map<Integer, Integer> vbos;
 
 	public VBOInterleavedData(ByteBuffer interleavedData, VBOData[] data, Map<Integer, Integer> vbos) {
 		this.data = interleavedData;

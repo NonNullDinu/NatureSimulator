@@ -51,19 +51,19 @@ public class GU {
 	public static boolean prevFrameClicked;
 	public static Vector3f mouseDelta;
 	public static float lastFramesLengths;
-	private static float[] mouseLengths = new float[20];
-	public static final List<Texture> textures = new ArrayList<>();
-	public static final List<IntBuffer> textureBuffers = new ArrayList<>();
+	private static final float[] mouseLengths = new float[20];
+	private static final List<Texture> textures = new ArrayList<>();
+	public static final int CURRENT_WORLD_FILE_VERSION = 4;
 	public static final int TOTAL_NUMBER_OF_ENTITIES = 13;
-	public static final int CURRENT_WORLD_FILE_VERSION = 3;
+	private static final List<IntBuffer> textureBuffers = new ArrayList<>();
 	public static final String WORLD_SAVE_FILE_FORMAT = "nssv";
 	public static final String MAIN_THREAD_NAME = "main thread";
 	public static FontType Z003;
 	public static FontType caladea;
 	public static String path;
-	private static ByteBuffer buffer = ByteBuffer.allocateDirect(4);
+	private static final ByteBuffer buffer = ByteBuffer.allocateDirect(4);
 	public static Vector2b mouseButtons;
-	public static DocumentBuilder documentBuilder;
+	private static final DocumentBuilder documentBuilder;
 	public static final boolean OS_WINDOWS;
 	public static final boolean OS_LINUX;
 	public static final Time time;
@@ -190,7 +190,7 @@ public class GU {
 		}
 	}
 
-	public static final synchronized void initMouseCursors(MasterRenderer renderer) {
+	public static synchronized void initMouseCursors(MasterRenderer renderer) {
 		FBO fbo = new FBO(64, 64, (FBO.COLOR_TEXTURE | FBO.DEPTH_RENDERBUFFER)).create();
 		fbo.bind();
 		GL11.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
@@ -244,19 +244,27 @@ public class GU {
 		public float genFloat() {
 			return random.nextFloat();
 		}
+
+		public void setSeed(long seed) {
+			random.setSeed(seed);
+		}
+
+		public double genDouble() {
+			return random.nextDouble();
+		}
 	}
 
 	public enum Key {
 		KEY_S(Keyboard.KEY_S), KEY_W(Keyboard.KEY_W), KEY_ESC(Keyboard.KEY_ESCAPE);
 
-		private int id;
+		private final int id;
 		private boolean pressedPrevFrame;
 
 		Key(int id) {
 			this.id = id;
 		}
 
-		public boolean isPressed() {
+		boolean isPressed() {
 			return Keyboard.isKeyDown(id);
 		}
 
@@ -276,8 +284,7 @@ public class GU {
 	public static Cursor createCursor(int xHotspot, int yHotspot, int nrOfFrames, IntBuffer textures,
 	                                  IntBuffer delays) {
 		try {
-			Cursor c = new Cursor(64, 64, xHotspot, yHotspot, nrOfFrames, textures, delays);
-			return c;
+			return new Cursor(64, 64, xHotspot, yHotspot, nrOfFrames, textures, delays);
 		} catch (LWJGLException e) {
 			return null;
 		}
@@ -285,15 +292,13 @@ public class GU {
 
 	public static IntBuffer getMouseTexture(String modelFolder, int sub) {
 		int idx = Integer.parseInt(modelFolder) - 1000;
-		IntBuffer buf = textures.get(idx).getAsIntBuffer(sub, textureBuffers.get(idx));
-		return buf;
+		return textures.get(idx).getAsIntBuffer(sub, textureBuffers.get(idx));
 	}
 
 	public static Cursor createCursor(int xHotspot, int yHotspot, int nrOfFrames, IntBuffer textures, IntBuffer delays,
 	                                  int sub) {
 		try {
-			Cursor c = new Cursor(64 - sub, 64 - sub, xHotspot, yHotspot - sub, nrOfFrames, textures, delays);
-			return c;
+			return new Cursor(64 - sub, 64 - sub, xHotspot, yHotspot - sub, nrOfFrames, textures, delays);
 		} catch (LWJGLException e) {
 			return null;
 		}
@@ -301,8 +306,7 @@ public class GU {
 
 	public static int binaryInt(String string) {
 		string = string.replaceAll(" ", "");
-		int i = Integer.parseInt(string, 2);
-		return i;
+		return Integer.parseInt(string, 2);
 	}
 
 	public static int sizeof(int gl_type) {
@@ -395,8 +399,7 @@ public class GU {
 //		buffer.put(b4);
 //		buffer.flip();
 //		float result = buffer.getFloat();
-		float result = ByteBuffer.wrap(new byte[]{b1, b2, b3, b4}).order(ByteOrder.BIG_ENDIAN).getFloat();
-		return result;
+		return ByteBuffer.wrap(new byte[]{b1, b2, b3, b4}).order(ByteOrder.BIG_ENDIAN).getFloat();
 	}
 
 	public static int readInt(byte b1, byte b2, byte b3, byte b4) {
@@ -408,8 +411,7 @@ public class GU {
 //		buffer.put(b4);
 //		buffer.flip();
 //		int result = buffer.getInt();
-		int result = ByteBuffer.wrap(new byte[]{b1, b2, b3, b4}).order(ByteOrder.BIG_ENDIAN).getInt();
-		return result;
+		return ByteBuffer.wrap(new byte[]{b1, b2, b3, b4}).order(ByteOrder.BIG_ENDIAN).getInt();
 	}
 
 	public static byte[] getBytes(float f) {
@@ -419,22 +421,19 @@ public class GU {
 //		buffer.flip();
 		buffer.clear();
 		buffer.putFloat(f);
-		byte[] bytes = buffer.array();
-//		byte[] bytes = new byte[]{buffer.get(), buffer.get(), buffer.get(), buffer.get()};
-		return bytes;
+		//		byte[] bytes = new byte[]{buffer.get(), buffer.get(), buffer.get(), buffer.get()};
+		return buffer.array();
 	}
 
 	public static byte[] getBytes(int i) {
 		buffer.clear();
 		buffer.putInt(i);
-		byte[] bytes = buffer.array();
-		return bytes;
+		return buffer.array();
 	}
 
 	public static Document getDocument(InputStream in) {
 		try {
-			Document doc = documentBuilder.parse(in);
-			return doc;
+			return documentBuilder.parse(in);
 		} catch (IOException | SAXException e) {
 			e.printStackTrace();
 		}
@@ -442,8 +441,7 @@ public class GU {
 	}
 
 	public static boolean isStringOfPattern(String string, String pattern) {
-		boolean result = Pattern.compile(pattern).matcher(string).matches();
-		return result;
+		return Pattern.compile(pattern).matcher(string).matches();
 	}
 
 	public static Vector3f mix(Vector3f a, Vector3f b, float blend) {

@@ -5,7 +5,7 @@ import ns.openglObjects.VAO;
 
 public class TexturedVAO extends VAO {
 
-	private Texture texture;
+	private final Texture texture;
 
 	public TexturedVAO(Texture texture, VAO vao) {
 		super(vao.getID(), vao.getVertexCount(), vao.getBuffers(), vao.hasIndices());
@@ -15,7 +15,7 @@ public class TexturedVAO extends VAO {
 	public Texture getTexture() {
 		return texture;
 	}
-	
+
 	@Override
 	public void render() {
 		bind((Integer[]) super.getBuffers().keySet().toArray());

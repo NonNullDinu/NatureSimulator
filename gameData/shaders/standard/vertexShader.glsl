@@ -30,6 +30,8 @@ uniform FogValues fogValues;
 
 uniform float time;
 
+uniform float stopMovementHeight;
+
 const float windLength = 20.0;
 const float amplitude = 0.8;
 
@@ -72,7 +74,7 @@ float generateOffset(float x, float z, float val1, float val2) {
 }
 
 vec3 applyDistortion(vec3 vertex, vec3 normal) {
-	float xDistortion = generateOffset(vertex.x, vertex.y, 0.2, 0.1);
+	float xDistortion = generateOffset(vertex.x, vertex.y, 0.5, 0.1);
 	float yDistortion = generateOffset(vertex.x, vertex.z, 0.1, 0.3);
 	float zDistortion = generateOffset(vertex.x, vertex.y, 0.15, 0.2);
 	return vertex
@@ -82,10 +84,11 @@ vec3 applyDistortion(vec3 vertex, vec3 normal) {
 
 vec4 calculatePosition(vec3 normal) {
 	vec4 pos = vec4(in_position, 1.0);
-//	pos += time * vec4(in_normal, 0.0) * in_materialData.x;
 	pos = transformationMatrix * pos;
-	vec3 p = applyDistortion(pos.xyz, normal);
-	pos.xyz = p;
+	if(in_position.y > stopMovementHeight){
+		vec3 p = applyDistortion(pos.xyz, normal);
+		pos.xyz = p;
+	}
 	return pos;
 }
 

@@ -9,10 +9,10 @@ import org.lwjgl.util.vector.Vector3f;
 import java.util.List;
 
 public class ComplexGUI implements IRenderable {
-	private Vector2f center;
-	private Vector2f scale;
-	private List<GUITexture> others;
-	private GUIRenderer guiRenderer;
+	private final Vector2f center;
+	private final Vector2f scale;
+	private final List<GUITexture> others;
+	private final GUIRenderer guiRenderer;
 
 	public ComplexGUI(Vector2f center, Vector2f scale, List<GUITexture> others, GUIRenderer guiRenderer) {
 		this.center = center;

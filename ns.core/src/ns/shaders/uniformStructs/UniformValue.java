@@ -6,25 +6,25 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
-public class UniformValue {
+class UniformValue {
 
-	protected static final int INT = 1;
-	protected static final int FLOAT = 2;
-	protected static final int BOOLEAN = 3;
-	protected static final int VEC2 = 4;
-	protected static final int VEC3 = 5;
-	protected static final int VEC4 = 6;
-	protected static final int MAT4 = 7;
+	private static final int INT = 1;
+	private static final int FLOAT = 2;
+	private static final int BOOLEAN = 3;
+	private static final int VEC2 = 4;
+	private static final int VEC3 = 5;
+	private static final int VEC4 = 6;
+	private static final int MAT4 = 7;
 
-	protected int int_value;
-	protected float float_value;
-	protected boolean boolean_value;
-	protected Vector2f vec2_value;
-	protected Vector3f vec3_value;
-	protected Vector4f vec4_value;
-	protected Matrix4f mat4_value;
+	private int int_value;
+	private float float_value;
+	private boolean boolean_value;
+	private Vector2f vec2_value;
+	private Vector3f vec3_value;
+	private Vector4f vec4_value;
+	private Matrix4f mat4_value;
 
-	protected final int type;
+	private final int type;
 
 	public UniformValue(int value) {
 		this.int_value = value;

@@ -6,7 +6,7 @@ public class GLRenderRequest extends Request {
 		void render();
 	}
 
-	private RenderMethod renderMethod;
+	private final RenderMethod renderMethod;
 
 	public GLRenderRequest(RenderMethod renderMethod) {
 		this.renderMethod = renderMethod;

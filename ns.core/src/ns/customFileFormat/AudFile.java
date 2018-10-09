@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 public class AudFile implements File {
-	private String location;
+	private final String location;
 
 	public AudFile(String location) {
 		this.location = location;
@@ -21,9 +21,8 @@ public class AudFile implements File {
 	@Override
 	public Buffer load() throws LoadingException {
 		int id = AL10.alGenBuffers();
-		BufferedReader reader = GU.open(GameData.getResourceAt(location));
-		String line;
-		try {
+		try (BufferedReader reader = GU.open(GameData.getResourceAt(location))) {
+			String line;
 			line = reader.readLine();
 			String[] pts = line.split(" ");
 			int format = Integer.parseInt(pts[0]);
@@ -39,11 +38,6 @@ public class AudFile implements File {
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
-		} finally {
-			try {
-				reader.close();
-			} catch (IOException e) {
-			}
 		}
 		return new Buffer(id);
 	}

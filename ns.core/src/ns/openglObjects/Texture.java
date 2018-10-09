@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Texture implements IOpenGLObject {
-	private static List<Texture> textures = new ArrayList<>();
+	private static final List<Texture> textures = new ArrayList<>();
 
 	private int id;
-	private int width;
-	private int height;
+	private final int width;
+	private final int height;
 
 	private boolean created = false;
 

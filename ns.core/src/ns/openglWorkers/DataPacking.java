@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class DataPacking {
-	public static VBO packVertexDataf(int vertexCount, Map<Integer, Integer> current, VBOData... data) {
+class DataPacking {
+	public static void packVertexDataf(int vertexCount, Map<Integer, Integer> current, VBOData... data) {
 		List<float[]> dataList = new ArrayList<>();
 		for (VBOData d : data) {
 			float[] asArray = d.getDataf();
@@ -23,10 +23,9 @@ public class DataPacking {
 		int vboId = GL15.glGenBuffers();
 		VBO vbo = new VBO(vboId);
 		interleavedData.store(vbo);
-		return vbo;
 	}
 
-	public static ByteBuffer interleaveData(int vertexCount, float[]... data) {
+	private static ByteBuffer interleaveData(int vertexCount, float[]... data) {
 		int totalSize = 0;
 		int[] lengths = new int[data.length];
 		for (int i = 0; i < data.length; i++) {

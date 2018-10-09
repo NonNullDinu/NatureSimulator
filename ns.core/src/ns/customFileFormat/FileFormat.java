@@ -7,8 +7,8 @@ import java.lang.reflect.InvocationTargetException;
 public enum FileFormat {
 	TEXTURE("tex", TexFile.class), AUDIO("aud", AudFile.class), MODEL("mdl", MdlFile.class);
 
-	private String extension;
-	private Class<? extends File> representingClass;
+	private final String extension;
+	private final Class<? extends File> representingClass;
 
 	FileFormat(String extension, Class<? extends File> representingClass) {
 		this.extension = extension;

@@ -1,39 +1,46 @@
 package ns.components;
 
 import ns.entities.Entity;
+import ns.openglObjects.VAO;
 import ns.world.World;
-import ns.worldSave.BlueprintData;
-import ns.worldSave.SerializableWorldObject;
 import org.lwjgl.util.vector.Vector3f;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Blueprint implements SerializableWorldObject {
+public class Blueprint implements Serializable {
 
-	protected static final int MODEL = 0;
-	protected static final int BIOME_SPREAD = 1;
-	protected static final int MOVEMENT = 2;
-	protected static final int CUSTOM_COLORS = 3;
-	protected static final int FOOD = 4;
-	protected static final int LIFE = 5;
-	private static final Integer HEIGHT_LIMITS = 6;
+	private static final int MODEL = 0;
+	private static final int BIOME_SPREAD = 1;
+	private static final int MOVEMENT = 2;
+	private static final int CUSTOM_COLORS = 3;
+	private static final int FOOD = 4;
+	private static final int LIFE = 5;
+	private static final int HEIGHT_LIMITS = 6;
 
-	private Map<Integer, IComponent> components = new HashMap<>();
-	private String objectName;
+	private final Map<Integer, IComponent> components;
+	private final String objectName;
 
 	protected Blueprint(String objectName) {
-		this.objectName = objectName;
+		this(objectName, new HashMap<>());
 	}
 
-	protected Blueprint withComponent(int id, IComponent c) {
+	public Blueprint(String objectName, Map<Integer, IComponent> components) {
+		this.objectName = objectName;
+		this.components = components;
+	}
+
+	private Blueprint withComponent(int id, IComponent c) {
 		components.put(id, c);
 		return this;
 	}
 
-	protected Blueprint withBiomeSpread(BiomeSpreadComponent c) {
+	Blueprint withBiomeSpread(BiomeSpreadComponent c) {
 		return withComponent(BIOME_SPREAD, c);
 	}
 
@@ -41,7 +48,7 @@ public class Blueprint implements SerializableWorldObject {
 		return (BiomeSpreadComponent) components.get(BIOME_SPREAD);
 	}
 
-	protected Blueprint withModel(ModelComponent c) {
+	Blueprint withModel(ModelComponent c) {
 		return withComponent(MODEL, c);
 	}
 
@@ -49,16 +56,16 @@ public class Blueprint implements SerializableWorldObject {
 		return (ModelComponent) components.get(MODEL);
 	}
 
-	protected Blueprint withMovement(MovementComponent c) {
+	Blueprint withMovement(MovementComponent c) {
 		return withComponent(MOVEMENT, c);
 	}
 
-	public MovementComponent getMovement() {
+	private MovementComponent getMovement() {
 		return (MovementComponent) components.get(MOVEMENT);
 	}
 
-	protected Blueprint withFoodComponent(FoodComponent component) {
-		return withComponent(FOOD, component);
+	void withFoodComponent(FoodComponent component) {
+		withComponent(FOOD, component);
 	}
 
 	public void move(Entity e, World w, boolean ableToMove) {
@@ -68,7 +75,7 @@ public class Blueprint implements SerializableWorldObject {
 		}
 	}
 
-	protected Blueprint withCuctomColors(CustomColorsComponent c) {
+	Blueprint withCustomColors(CustomColorsComponent c) {
 		return withComponent(CUSTOM_COLORS, c);
 	}
 
@@ -76,12 +83,12 @@ public class Blueprint implements SerializableWorldObject {
 		return (CustomColorsComponent) components.get(CUSTOM_COLORS);
 	}
 
-	@Override
-	public BlueprintData asData() {
-		BlueprintData data = new BlueprintData();
-		data.setBlueprint(this);
-		return data;
-	}
+//	@Override
+//	public BlueprintData asData() {
+//		BlueprintData data = new BlueprintData();
+//		data.setBlueprint(this);
+//		return data;
+//	}
 
 	public String getFolder() {
 		return objectName;
@@ -96,14 +103,13 @@ public class Blueprint implements SerializableWorldObject {
 			cc.add(new Vector3f(0.002494f, 0.350834f, 0.000000f));
 			cc.add(new Vector3f(0.000000f, 0.307499f, 0.002174f));
 		}
-		return this.withCuctomColors(new CustomColorsComponent(cc));
+		return this.withCustomColors(new CustomColorsComponent(cc));
 	}
 
 	public int flags(int i) {
 		switch (i) {
 			case 0: // Model
-				int front = Integer.parseInt(objectName) - 999;
-				return front;
+				return Integer.parseInt(objectName) - 999;
 			case 1: // Movement and biome spread 1
 				MovementComponent mvm = getMovement();
 				int front2 = 0;
@@ -126,9 +132,22 @@ public class Blueprint implements SerializableWorldObject {
 			case 5: // Life part 2
 				LifeComponent comp5 = getLifeComponent();
 				return comp5 != null ? ((int) comp5.getRemainingLifespan()) & 0xFF : 0;
+			case 6: // Life part 3
+				LifeComponent comp6 = getLifeComponent();
+				return comp6 != null ? (comp6 instanceof AnimalLifeComponent ?
+						0x40 + (int) (((AnimalLifeComponent) comp6).REPR_TIME / 60f) : 0) & 0x3F : 0;
 			default:
 				return 0;
 		}
+	}
+
+	public void writeTo(ObjectOutputStream out) throws IOException {
+//		for (int i = 0; i < 7; i++) {
+//			out.writeByte(flags(i));
+//		}
+//		if (getLifeComponent() instanceof AnimalLifeComponent)
+//			out.writeObject(((AnimalLifeComponent) getLifeComponent()).getDna());
+		out.writeObject(this);
 	}
 
 	public FoodComponent getFoodComponent() {
@@ -139,8 +158,8 @@ public class Blueprint implements SerializableWorldObject {
 		return (LifeComponent) components.get(LIFE);
 	}
 
-	public Blueprint withLife(LifeComponent component) {
-		return withComponent(LIFE, component);
+	void withLife(LifeComponent component) {
+		withComponent(LIFE, component);
 	}
 
 	public HeightLimitsComponent getHeightLimits() {
@@ -149,5 +168,23 @@ public class Blueprint implements SerializableWorldObject {
 
 	public Blueprint withHeightLimits(HeightLimitsComponent limits) {
 		return withComponent(HEIGHT_LIMITS, limits);
+	}
+
+	public void setMovementTarget(Vector3f target) {
+		MovementComponent movementComponent = getMovement();
+		if (movementComponent != null)
+			movementComponent.setTarget(target);
+	}
+
+	public Blueprint copy() {
+		Map<Integer, IComponent> componentMap = new HashMap<>();
+		for (int i : components.keySet()) {
+			componentMap.put(i, components.get(i).copy());
+		}
+		return new Blueprint(objectName, components);
+	}
+
+	public void setModel(VAO model) {
+		this.getModel().setModel(model);
 	}
 }

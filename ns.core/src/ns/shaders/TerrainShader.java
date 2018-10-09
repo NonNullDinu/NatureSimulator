@@ -12,19 +12,19 @@ public class TerrainShader extends ShaderProgram {
 
 	private static final String VERTEX_SHADER = "terrain/terrainVertex.glsl";
 	private static final String FRAGMENT_SHADER = "terrain/terrainFragment.glsl";
-	
-	public UniformMat4 projectionMatrix = new UniformMat4("projectionMatrix");
-	public UniformMat4 transformationMatrix = new UniformMat4("transformationMatrix");
-	public UniformMat4 viewMatrix = new UniformMat4("viewMatrix");
 
-	public UniformLight sun = new UniformLight("sun", locator);
-	public UniformLight moon = new UniformLight("moon", locator);
-	
-	public UniformVec4 clipPlane = new UniformVec4("clipPlane");
-	
-	public UniformVec3 skyColor = new UniformVec3("skyColor");
+	public final UniformMat4 projectionMatrix = new UniformMat4("projectionMatrix");
+	public final UniformMat4 transformationMatrix = new UniformMat4("transformationMatrix");
+	public final UniformMat4 viewMatrix = new UniformMat4("viewMatrix");
 
-	public UniformFogValues fogValues = new UniformFogValues("fogValues", locator);
+	public final UniformLight sun = new UniformLight("sun", locator);
+	public final UniformLight moon = new UniformLight("moon", locator);
+
+	public final UniformVec4 clipPlane = new UniformVec4("clipPlane");
+
+	public final UniformVec3 skyColor = new UniformVec3("skyColor");
+
+	public final UniformFogValues fogValues = new UniformFogValues("fogValues", locator);
 	
 	private int colors_buffer;
 	

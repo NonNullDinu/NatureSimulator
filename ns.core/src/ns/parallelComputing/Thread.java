@@ -11,10 +11,10 @@ public class Thread extends java.lang.Thread {
 		WAITING, RUNNING, FINISHED
 	}
 
-	public List<Request> toCarryOutRequests = new ArrayList<>();
-	public List<CreateVAORequest> vaoCreateRequests = new ArrayList<>();
-	private Runnable runnable;
-	public List<Request> renderingRequests = new ArrayList<>();
+	public final List<Request> toCarryOutRequests = new ArrayList<>();
+	public final List<CreateVAORequest> vaoCreateRequests = new ArrayList<>();
+	private final Runnable runnable;
+	public final List<Request> renderingRequests = new ArrayList<>();
 	private long timeb;
 	public boolean isExecutingRequests;
 	private ThreadState state;

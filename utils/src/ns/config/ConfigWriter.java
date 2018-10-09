@@ -6,7 +6,7 @@ import resources.Out;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class ConfigWriter {
+class ConfigWriter {
 
 	public static void main(String[] args) throws IOException {
 		OutputStream stream = Out.create("gameData/config/gameConfiguration.config").asOutputStream();

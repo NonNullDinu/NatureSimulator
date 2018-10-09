@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MdlFile implements File {
-	private String location;
+	private final String location;
 
 	public MdlFile(String location) {
 		this.location = location;

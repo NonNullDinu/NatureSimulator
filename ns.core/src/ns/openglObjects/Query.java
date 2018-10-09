@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL15;
 
 public class Query implements IOpenGLObject {
 	private int id;
-	private int type;
+	private final int type;
 	private boolean created;
 	private boolean isInUse;
 	private boolean beginCalled;

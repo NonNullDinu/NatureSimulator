@@ -1,4 +1,4 @@
 package patch.nsUpdateScript;
 
-public class CodeBlockToken extends Token {
+class CodeBlockToken extends Token {
 }

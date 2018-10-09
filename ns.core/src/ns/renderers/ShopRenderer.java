@@ -9,8 +9,8 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 public class ShopRenderer {
-	private GUIRenderer guiRenderer;
-	private FBO fbo;
+	private final GUIRenderer guiRenderer;
+	private final FBO fbo;
 
 	public ShopRenderer(GUIRenderer guiRenderer) {
 		this.guiRenderer = guiRenderer;

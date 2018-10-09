@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 
 public class DepthFieldBlurRenderer extends EffectRenderer {
-	private DepthFieldBlurShader shader;
+	private final DepthFieldBlurShader shader;
 	private Texture bluredTexture;
 
 	public DepthFieldBlurRenderer(DepthFieldBlurShader shader, VAO quad) {

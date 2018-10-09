@@ -9,9 +9,9 @@ import java.util.List;
 
 public class MainMenu implements UIMenu {
 	public static MainMenu instance;
-	private List<MainMenuButton> buttons;
-	private Entity DNA;
-	private Vector4f dnaLocation;
+	private final List<MainMenuButton> buttons;
+	private final Entity DNA;
+	private final Vector4f dnaLocation;
 
 	public MainMenu(List<MainMenuButton> buttons, Entity DNA, Vector4f dnaLocation) {
 		instance = this;

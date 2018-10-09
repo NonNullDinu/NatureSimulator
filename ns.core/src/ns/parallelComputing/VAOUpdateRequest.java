@@ -5,8 +5,8 @@ import ns.openglWorkers.VBOUpdateData;
 
 public class VAOUpdateRequest extends Request {
 
-	private VAO vao;
-	private VBOUpdateData data;
+	private final VAO vao;
+	private final VBOUpdateData data;
 
 	public VAOUpdateRequest(VAO vao, VBOUpdateData data) {
 		this.vao = vao;

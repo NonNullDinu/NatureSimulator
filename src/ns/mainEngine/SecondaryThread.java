@@ -29,7 +29,7 @@ import ns.world.WorldGenerator;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-public class SecondaryThread implements Runnable {
+class SecondaryThread implements Runnable {
 	public static boolean READY = false;
 
 	@Override

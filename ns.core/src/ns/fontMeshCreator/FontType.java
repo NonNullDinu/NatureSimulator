@@ -13,8 +13,8 @@ import java.io.BufferedReader;
  */
 public class FontType {
 
-	private Texture textureAtlas;
-	private TextMeshCreator loader;
+	private final Texture textureAtlas;
+	private final TextMeshCreator loader;
 
 	/**
 	 * Creates a new font and loads up the data about each character from the

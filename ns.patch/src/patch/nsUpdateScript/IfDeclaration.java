@@ -1,4 +1,4 @@
 package patch.nsUpdateScript;
 
-public class IfDeclaration extends Token {
+class IfDeclaration extends Token {
 }

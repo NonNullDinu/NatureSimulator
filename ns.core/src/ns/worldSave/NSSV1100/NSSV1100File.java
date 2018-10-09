@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class NSSV1100File extends NSSVFile {
 
@@ -42,7 +43,7 @@ public class NSSV1100File extends NSSVFile {
 				else if (o instanceof EndObject)
 					break;
 			}
-			world = new World(entities, terrain);
+			world = new World(entities, Objects.requireNonNull(terrain));
 			world.setRivers(rivers);
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();

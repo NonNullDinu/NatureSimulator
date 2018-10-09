@@ -7,7 +7,7 @@ public class FlareTexture {
 	private Vector2f position;
 	private float scale;
 	private Texture texture;
-	private boolean hasRotation;
+	private final boolean hasRotation;
 	private float rotation;
 	private float rotOff;
 

@@ -10,14 +10,14 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OBJToMDLConvertor {
+class OBJToMDLConvertor {
 	public static void main(String[] args) throws IOException {
 		byte[] buf = new byte[50];
 		int len = System.in.read(buf);
 		String location = "";
 		for (int i = 0; i < len - 1; i++)
 			location += (char) buf[i];
-		Material.init(f -> getBytes(f));
+		Material.init(OBJToMDLConvertor::getBytes);
 		if (location.equals("UPDATE ALL")) {
 			write(new File("../gameData/models"));
 		} else {
@@ -46,12 +46,12 @@ public class OBJToMDLConvertor {
 			ArrayList<Vector3f> vertices = new ArrayList<>();
 			ArrayList<Vector2f> textures = new ArrayList<>();
 			ArrayList<Vector3f> normals = new ArrayList<>();
-			ArrayList<Integer> indices = new ArrayList<Integer>();
-			float[] verticesArray = null;
+			ArrayList<Integer> indices = new ArrayList<>();
+			float[] verticesArray;
 			float[] texturesArray = null;
 			float[] normalsArray = null;
 			byte[] materialsArray = null;
-			int[] indicesArray = null;
+			int[] indicesArray;
 
 			try {
 				Material current = null;
@@ -181,17 +181,15 @@ public class OBJToMDLConvertor {
 
 	private static final ByteBuffer buffer = ByteBuffer.allocate(4);
 
-	public static byte[] getBytes(float f) {
+	private static byte[] getBytes(float f) {
 		buffer.clear();
 		buffer.putFloat(f);
-		byte[] bytes = buffer.array();
-		return bytes;
+		return buffer.array();
 	}
 
-	public static byte[] getBytes(int i) {
+	private static byte[] getBytes(int i) {
 		buffer.clear();
 		buffer.putInt(i);
-		byte[] bytes = buffer.array();
-		return bytes;
+		return buffer.array();
 	}
 }

@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Options [
-<!ELEMENT Options (OnOffOption*, BackButton)>
-<!ELEMENT OnOffOption (Text)>
-<!ATTLIST OnOffOption 
-	x CDATA #REQUIRED
-	y CDATA #REQUIRED
-	xScale CDATA #REQUIRED
-	yScale CDATA #REQUIRED
-	code CDATA #REQUIRED
->
-<!ELEMENT Text (#PCDATA)>
-<!ATTLIST Text
-	x CDATA #REQUIRED
-	y CDATA #REQUIRED
-	maxLen CDATA #REQUIRED
-	font CDATA #REQUIRED
-	fontSize CDATA #REQUIRED
-	text CDATA #REQUIRED
->
-<!ELEMENT BackButton (#PCDATA)>
-<!ATTLIST BackButton 
-	x CDATA #REQUIRED
-	y CDATA #REQUIRED
-	xScale CDATA #REQUIRED
-	yScale CDATA #REQUIRED
-	texture CDATA #REQUIRED
->
-]>
+		<!ELEMENT Options (OnOffOption*, BackButton)>
+		<!ELEMENT OnOffOption (Text)>
+		<!ATTLIST OnOffOption
+				x CDATA #REQUIRED
+				y CDATA #REQUIRED
+				xScale CDATA #REQUIRED
+				yScale CDATA #REQUIRED
+				code CDATA #REQUIRED
+				>
+
+		<!ELEMENT Text EMPTY>
+		<!ATTLIST Text
+				x CDATA #REQUIRED
+				y CDATA #REQUIRED
+				maxLen CDATA #REQUIRED
+				font CDATA #REQUIRED
+				fontSize CDATA #REQUIRED
+				text CDATA #REQUIRED
+				>
+
+		<!ELEMENT BackButton EMPTY>
+		<!ATTLIST BackButton
+				x CDATA #REQUIRED
+				y CDATA #REQUIRED
+				xScale CDATA #REQUIRED
+				yScale CDATA #REQUIRED
+				texture CDATA #REQUIRED
+				>
+		]>
 <Options>
 	<OnOffOption x="0" y="0" xScale="0.1" yScale="0.1" code="1">
-		<Text x="0" y="0.02" maxLen="0.2" font="Z003" fontSize="1"
-			text="Some test option On" />
+		<Text x="0" y="0.02" maxLen="0.2" font="Z003" fontSize="1" text="Some test option On"/>
 	</OnOffOption>
 	<BackButton x="-0.95" y="-0.95" xScale="0.05" yScale="0.05"
-		texture="textures/back_arrow.tex" />
+	            texture="textures/back_arrow.tex"/>
 </Options>

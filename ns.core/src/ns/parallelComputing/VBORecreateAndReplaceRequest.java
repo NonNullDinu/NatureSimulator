@@ -5,10 +5,10 @@ import ns.openglWorkers.VAOLoader;
 
 public class VBORecreateAndReplaceRequest extends Request {
 
-	private VAO model;
-	private int attn;
-	private float[] data;
-	private int usage;
+	private final VAO model;
+	private final int attn;
+	private final float[] data;
+	private final int usage;
 
 	public VBORecreateAndReplaceRequest(VAO model, int attn, float[] data, int usage) {
 		this.model = model;

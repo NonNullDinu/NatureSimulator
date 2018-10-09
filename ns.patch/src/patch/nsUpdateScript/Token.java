@@ -1,4 +1,4 @@
 package patch.nsUpdateScript;
 
-public abstract class Token {
+abstract class Token {
 }

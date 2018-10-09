@@ -7,8 +7,8 @@ import java.nio.ByteBuffer;
 
 public class TextureCreateRequest extends Request {
 
-	private Texture target;
-	private ByteBuffer pixels;
+	private final Texture target;
+	private final ByteBuffer pixels;
 
 	public TextureCreateRequest(Texture target, ByteBuffer pixels) {
 		this.target = target;

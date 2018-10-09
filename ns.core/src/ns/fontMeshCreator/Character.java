@@ -10,16 +10,16 @@ package ns.fontMeshCreator;
 public class Character {
 	public static final Character TAB = new Character('\t', 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
-	private int id;
-	private double xTextureCoord;
-	private double yTextureCoord;
-	private double xMaxTextureCoord;
-	private double yMaxTextureCoord;
-	private double xOffset;
-	private double yOffset;
-	private double sizeX;
-	private double sizeY;
-	private double xAdvance;
+	private final int id;
+	private final double xTextureCoord;
+	private final double yTextureCoord;
+	private final double xMaxTextureCoord;
+	private final double yMaxTextureCoord;
+	private final double xOffset;
+	private final double yOffset;
+	private final double sizeX;
+	private final double sizeY;
+	private final double xAdvance;
 
 	/**
 	 * @param id
@@ -62,43 +62,43 @@ public class Character {
 		this.xAdvance = xAdvance;
 	}
 
-	protected int getId() {
+	int getId() {
 		return id;
 	}
 
-	protected double getxTextureCoord() {
+	double getxTextureCoord() {
 		return xTextureCoord;
 	}
 
-	protected double getyTextureCoord() {
+	double getyTextureCoord() {
 		return yTextureCoord;
 	}
 
-	protected double getXMaxTextureCoord() {
+	double getXMaxTextureCoord() {
 		return xMaxTextureCoord;
 	}
 
-	protected double getYMaxTextureCoord() {
+	double getYMaxTextureCoord() {
 		return yMaxTextureCoord;
 	}
 
-	protected double getxOffset() {
+	double getxOffset() {
 		return xOffset;
 	}
 
-	protected double getyOffset() {
+	double getyOffset() {
 		return yOffset;
 	}
 
-	protected double getSizeX() {
+	double getSizeX() {
 		return sizeX;
 	}
 
-	protected double getSizeY() {
+	double getSizeY() {
 		return sizeY;
 	}
 
-	protected double getxAdvance() {
+	double getxAdvance() {
 		return xAdvance;
 	}
 

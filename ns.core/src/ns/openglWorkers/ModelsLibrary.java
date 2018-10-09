@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ModelsLibrary {
-	private static Map<String, VAO> models = new HashMap<>();
+	private static final Map<String, VAO> models = new HashMap<>();
 
 	public static VAO getModel(String name) {
 		VAO model = models.get(name);

@@ -6,9 +6,9 @@ package ns.fontMeshCreator;
  *
  */
 public class TextMeshData {
-	
-	private float[] vertexPositions;
-	private float[] textureCoords;
+
+	private final float[] vertexPositions;
+	private final float[] textureCoords;
 	
 	protected TextMeshData(float[] vertexPositions, float[] textureCoords){
 		this.vertexPositions = vertexPositions;

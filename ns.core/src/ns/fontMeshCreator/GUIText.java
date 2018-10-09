@@ -14,19 +14,19 @@ import org.lwjgl.util.vector.Vector3f;
 public class GUIText {
 
 	private String textString;
-	private float fontSize;
+	private final float fontSize;
 
 	private VAO textMeshVao;
 	private int vertexCount;
-	private Vector3f colour = new Vector3f(0f, 0f, 0f);
+	private final Vector3f colour = new Vector3f(0f, 0f, 0f);
 
-	private Vector2f position;
-	private float lineMaxSize;
+	private final Vector2f position;
+	private final float lineMaxSize;
 	private int numberOfLines;
 
-	private FontType font;
+	private final FontType font;
 
-	private boolean centerText = false;
+	private boolean centerText;
 
 	/**
 	 * Creates a new text, loads the text's quads into a VAO, and adds the text
@@ -149,7 +149,7 @@ public class GUIText {
 	/**
 	 * @return the font size of the text (a font size of 1 is normal).
 	 */
-	protected float getFontSize() {
+	float getFontSize() {
 		return fontSize;
 	}
 
@@ -159,21 +159,21 @@ public class GUIText {
 	 * 
 	 * @param number
 	 */
-	protected void setNumberOfLines(int number) {
+	void setNumberOfLines(int number) {
 		this.numberOfLines = number;
 	}
 
 	/**
 	 * @return {@code true} if the text should be centered.
 	 */
-	protected boolean isCentered() {
+	boolean isCentered() {
 		return centerText;
 	}
 
 	/**
 	 * @return The maximum length of a line of this text.
 	 */
-	protected float getMaxLineSize() {
+	float getMaxLineSize() {
 		return lineMaxSize;
 	}
 

@@ -32,8 +32,7 @@ public class MousePicker {
 		Vector2f normalizedCoords = getNormalisedDeviceCoordinates(mouseX, mouseY);
 		Vector4f clipCoords = new Vector4f(normalizedCoords.x, normalizedCoords.y, -1.0f, 1.0f);
 		Vector4f eyeCoords = toEyeCoords(clipCoords);
-		Vector3f worldRay = toWorldCoords(eyeCoords);
-		return worldRay;
+		return toWorldCoords(eyeCoords);
 	}
 
 	private static Vector3f calculateTerrainPos() {

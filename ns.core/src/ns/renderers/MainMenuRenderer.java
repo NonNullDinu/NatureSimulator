@@ -12,9 +12,9 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector4f;
 
 public class MainMenuRenderer {
-	private GUIRenderer guiRenderer;
-	private FBO DNAFBO;
-	private MenuDNAShader shader;
+	private final GUIRenderer guiRenderer;
+	private final FBO DNAFBO;
+	private final MenuDNAShader shader;
 
 	public MainMenuRenderer(GUIRenderer guiRenderer, ICamera camera) {
 		this.guiRenderer = guiRenderer;

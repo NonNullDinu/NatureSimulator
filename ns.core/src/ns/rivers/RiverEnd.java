@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class RiverEnd implements Serializable {
 	private static final long serialVersionUID = -4775100940305038961L;
 
-	private Vector3f position;
+	private final Vector3f position;
 	private float timeSinceLastPlantCreated;
 	private int spawned;
 

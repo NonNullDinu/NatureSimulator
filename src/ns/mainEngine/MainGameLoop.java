@@ -39,8 +39,8 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
-public class MainGameLoop implements Runnable {
-	public static GS state = GS.LOADING;
+class MainGameLoop implements Runnable {
+	static GS state = GS.LOADING;
 	public static int leaves = 10000;
 
 	private FBO bluredSceneFBO;
@@ -51,7 +51,6 @@ public class MainGameLoop implements Runnable {
 	private MainMenuRenderer menuRenderer;
 	private MasterRenderer renderer;
 	private FBO sceneFBO;
-	private WaterShader shader;
 	private Shop shop;
 	private ShopRenderer shopRenderer;
 	private Sun sun;
@@ -68,25 +67,28 @@ public class MainGameLoop implements Runnable {
 
 	private Texture moonTex;
 
-	public void executeRequests() {
-		ns.parallelComputing.Thread thread = GU.currentThread();
-		synchronized (thread) {
-			thread.isExecutingRequests = true;
-			for (int i = 0; i < thread.vaoCreateRequests.size(); i++)
-				thread.vaoCreateRequests.get(i).execute();
-			for (int i = 0; i < thread.toCarryOutRequests.size(); i++)
-				thread.toCarryOutRequests.get(i).execute();
-			for (int i = 0; i < thread.renderingRequests.size(); i++)
-				thread.renderingRequests.get(i).execute();
-			thread.clearRequests();
-			thread.isExecutingRequests = false;
-		}
+	private static void requestExecuteRequests() {
+		((MainGameLoop) ThreadMaster.getThread(GU.MAIN_THREAD_NAME).getRunnable()).executeRequests();
 	}
 
-	public void logic() {
+	private void executeRequests() {
+		ns.parallelComputing.Thread thread = GU.currentThread();
+		thread.isExecutingRequests = true;
+		for (int i = 0; i < thread.vaoCreateRequests.size(); i++)
+			thread.vaoCreateRequests.get(i).execute();
+		for (int i = 0; i < thread.toCarryOutRequests.size(); i++)
+			thread.toCarryOutRequests.get(i).execute();
+		for (int i = 0; i < thread.renderingRequests.size(); i++)
+			thread.renderingRequests.get(i).execute();
+		thread.clearRequests();
+		thread.isExecutingRequests = false;
+	}
+
+	private void logic() {
 		GU.rn_update();
 		sun.update();
 		moon.update(sun);
+		flareManager.updateFlares(sun, camera);
 		if (state == GS.GAME) {
 			MousePicker.update();
 			Entity e = shop.update();
@@ -106,7 +108,6 @@ public class MainGameLoop implements Runnable {
 						e1.printStackTrace();
 					}
 			}
-			flareManager.updateFlares(sun, camera);
 		} else if (state == GS.MENU) {
 			menu.update();
 			if (GU.Key.KEY_ESC.pressedThisFrame()) {
@@ -120,7 +121,19 @@ public class MainGameLoop implements Runnable {
 		GU.update();
 	}
 
-	public void render() {
+	private Vector2f convertToScreenSpace(Vector3f worldPos, Matrix4f viewMat, Matrix4f projectionMat) {
+		Vector4f coords = new Vector4f(worldPos.x, worldPos.y, worldPos.z, 1f);
+		Matrix4f.transform(viewMat, coords, coords);
+		Matrix4f.transform(projectionMat, coords, coords);
+		if (coords.w <= 0) {
+			return null;
+		}
+		float x = (coords.x / coords.w + 1) / 2f;
+		float y = 1 - ((coords.y / coords.w + 1) / 2f);
+		return new Vector2f(x, y);
+	}
+
+	private void render() {
 		GU.updateWireFrame();
 		if (state == GS.GAME || state == GS.MENU || state == GS.OPTIONS) {
 			GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
@@ -169,40 +182,24 @@ public class MainGameLoop implements Runnable {
 		}
 	}
 
-	private Vector2f convertToScreenSpace(Vector3f worldPos, Matrix4f viewMat, Matrix4f projectionMat) {
-		Vector4f coords = new Vector4f(worldPos.x, worldPos.y, worldPos.z, 1f);
-		Matrix4f.transform(viewMat, coords, coords);
-		Matrix4f.transform(projectionMat, coords, coords);
-		if (coords.w <= 0) {
-			return null;
-		}
-		float x = (coords.x / coords.w + 1) / 2f;
-		float y = 1 - ((coords.y / coords.w + 1) / 2f);
-		return new Vector2f(x, y);
+	private void runLogicAndRender() {
+		logic();
+		render();
 	}
 
 	public void run() {
 		GU.init();
-		SetRequest.init((Object... o) -> {
-					set(o[0]);
-				}
-		);
-		VAO.init(() -> {
-			requestExecuteRequests();
+		SetRequest.init((Object... o) -> set(o[0]));
+		VAO.init(MainGameLoop::requestExecuteRequests);
+		UILoader.init(new Action[]{() -> MainGameLoop.state = GS.GAME,
+				() -> MainGameLoop.state = GS.OPTIONS,
+				() -> MainGameLoop.state = GS.EXIT,
+				() -> MainGameLoop.state = GS.MENU
 		});
-		UILoader.init(new Action[]{() -> {
-			MainGameLoop.state = GS.GAME;
-		}, () -> {
-			MainGameLoop.state = GS.OPTIONS;
-		}, () -> {
-			MainGameLoop.state = GS.EXIT;
-		}, () -> {
-			MainGameLoop.state = GS.MENU;
-		}});
 		DisplayManager.createDisplay();
 		TextMaster.init();
 		executeRequests();
-		shader = new WaterShader();
+		WaterShader shader = new WaterShader();
 		executeRequests();
 		fbos = new WaterFBOs(true);
 		while (camera == null)
@@ -267,12 +264,7 @@ public class MainGameLoop implements Runnable {
 		GU.currentThread().finishExecution();
 	}
 
-	private void runLogicAndRender() {
-		logic();
-		render();
-	}
-
-	public void set(Object o) {
+	private void set(Object o) {
 		if (o instanceof Shop)
 			this.shop = (Shop) o;
 		if (o instanceof World)
@@ -293,9 +285,5 @@ public class MainGameLoop implements Runnable {
 			this.flareManager = (FlareManager) o;
 		if (o instanceof RiverList)
 			this.rivers = (RiverList) o;
-	}
-
-	public static void requestExecuteRequests() {
-		((MainGameLoop) ThreadMaster.getThread(GU.MAIN_THREAD_NAME).getRunnable()).executeRequests();
 	}
 }

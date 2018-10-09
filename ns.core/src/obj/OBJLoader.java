@@ -27,17 +27,17 @@ public class OBJLoader {
 				materials = new Materials(materialsResource);
 		}
 		String line;
-		ArrayList<Vector3f> vertices = new ArrayList<Vector3f>();
-		ArrayList<Vector2f> textures = new ArrayList<Vector2f>();
-		ArrayList<Vector3f> normals = new ArrayList<Vector3f>();
-		ArrayList<Integer> indices = new ArrayList<Integer>();
-		float[] verticesArray = null;
+		ArrayList<Vector3f> vertices = new ArrayList<>();
+		ArrayList<Vector2f> textures = new ArrayList<>();
+		ArrayList<Vector3f> normals = new ArrayList<>();
+		ArrayList<Integer> indices = new ArrayList<>();
+		float[] verticesArray;
 		float[] texturesArray = null;
 		float[] colorsArray = null;
 		float[] colorsIndicators = null;
 		float[] normalsArray = null;
 		float[] materialsArray = null;
-		int[] indicesArray = null;
+		int[] indicesArray;
 
 		try {
 			Material current = null;

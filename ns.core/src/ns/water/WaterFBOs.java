@@ -4,14 +4,15 @@ import ns.openglObjects.FBO;
 import ns.renderers.Blurer;
 
 public class WaterFBOs {
-	private static final int REFLECTION_WIDTH = 1024, REFRACTION_WIDTH = 720, REFLECTION_HEIGHT = 720,
+	private static final int REFLECTION_WIDTH = 1024, REFRACTION_WIDTH = 720,
+			REFLECTION_HEIGHT = 720,
 			REFRACTION_HEIGHT = 500;
 
-	private FBO reflection;
-	private FBO refraction;
+	private final FBO reflection;
+	private final FBO refraction;
 	private FBO bluredReflection;
 	private FBO bluredRefraction;
-	private boolean blured;
+	private final boolean blured;
 
 	public WaterFBOs(boolean blured) {
 		reflection = new FBO(REFLECTION_WIDTH, REFLECTION_HEIGHT, (FBO.COLOR_TEXTURE | FBO.DEPTH_RENDERBUFFER)).create();

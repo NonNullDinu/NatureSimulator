@@ -9,12 +9,12 @@ import java.util.List;
  * @author Karl
  *
  */
-public class Line {
+class Line {
 
-	private double maxLength;
-	private double spaceSize;
+	private final double maxLength;
+	private final double spaceSize;
 
-	private List<Word> words = new ArrayList<Word>();
+	private final List<Word> words = new ArrayList<>();
 	private double currentLineLength = 0;
 
 	/**
@@ -41,7 +41,7 @@ public class Line {
 	 *            - the word to try to add.
 	 * @return {@code true} if the word has successfully been added to the line.
 	 */
-	protected boolean attemptToAddWord(Word word) {
+	boolean attemptToAddWord(Word word) {
 		double additionalLength = word.getWordWidth();
 		additionalLength += !words.isEmpty() ? spaceSize : 0;
 		if (currentLineLength + additionalLength <= maxLength) {
@@ -63,14 +63,14 @@ public class Line {
 	/**
 	 * @return The current screen-space length of the line.
 	 */
-	protected double getLineLength() {
+	double getLineLength() {
 		return currentLineLength;
 	}
 
 	/**
 	 * @return The list of words in the line.
 	 */
-	protected List<Word> getWords() {
+	List<Word> getWords() {
 		return words;
 	}
 

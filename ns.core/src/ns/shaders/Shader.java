@@ -8,8 +8,8 @@ public class Shader implements IOpenGLObject {
 	private String src;
 	private int ID;
 	private boolean created = false;
-	private String name;
-	protected int type;
+	private final String name;
+	final int type;
 
 	public Shader(String name, int type) {
 		while (this.src == null)

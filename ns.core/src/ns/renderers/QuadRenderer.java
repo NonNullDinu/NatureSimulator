@@ -37,8 +37,8 @@ public class QuadRenderer {
 	public static void render(Vector2f center, Vector2f scale, Texture tex) {
 		render(center, scale, tex, false);
 	}
-	
-	public static void render(Vector2f center, Vector2f scale, Texture tex, boolean alphaDiscard) {
+
+	private static void render(Vector2f center, Vector2f scale, Texture tex, boolean alphaDiscard) {
 		if (center == null)
 			return;
 		shader.start();
@@ -54,7 +54,7 @@ public class QuadRenderer {
 		quad.unbind();
 		shader.stop();
 	}
-	
+
 	public static void render(Vector2f center, Vector2f scale, Texture tex, boolean alphaDiscard, int blend) {
 		if (center == null)
 			return;
@@ -74,7 +74,7 @@ public class QuadRenderer {
 		quad.unbind();
 		shader.stop();
 	}
-	
+
 	public static void renderMaxDepth(Vector2f center, Vector2f scale, Texture tex, boolean alphaDiscard, int blend) {
 		if (center == null)
 			return;

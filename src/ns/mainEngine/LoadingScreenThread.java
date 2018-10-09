@@ -2,7 +2,6 @@ package ns.mainEngine;
 
 import data.GameData;
 import ns.customFileFormat.TexFile;
-import ns.display.DisplayManager;
 import ns.fontMeshCreator.FontType;
 import ns.fontMeshCreator.GUIText;
 import ns.fontRendering.TextMaster;
@@ -18,15 +17,14 @@ import org.lwjgl.util.vector.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoadingScreenThread implements Runnable {
+class LoadingScreenThread implements Runnable {
 	private static final float SPD = 0.01f;
 
 	private float alphaCoef = 0.1f;
 	private int textI = 0;
-	public static boolean READY = false;
+	static boolean READY = false;
 	private GUIText text;
 	private boolean incr = true;
-	private boolean toBreak;
 
 	@Override
 	public void run() {
@@ -72,8 +70,7 @@ public class LoadingScreenThread implements Runnable {
 			TextMaster.render(alphaCoef);
 		};
 		GU.currentThread().finishLoading();
-		DisplayManager.setWindowVisible();
-		while (true) {
+		do {
 			GU.sendRequestToMainThread(
 					new GLClearRequest(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, new Vector3f(1, 1, 1)));
 			GU.sendRequestToMainThread(new GLRenderRequest(renderMethod));
@@ -85,18 +82,16 @@ public class LoadingScreenThread implements Runnable {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			if (MainGameLoop.state != GS.LOADING && READY)
-				break;
-		}
+		} while (MainGameLoop.state == GS.LOADING || !READY);
 		TextMaster.remove(text);
 		GU.currentThread().finishExecution();
 	}
 
 	private void setBreak(boolean b) {
-		this.toBreak = b;
+		boolean toBreak = b;
 	}
 
-	protected void setIncr(boolean b) {
+	private void setIncr(boolean b) {
 		incr = b;
 	}
 

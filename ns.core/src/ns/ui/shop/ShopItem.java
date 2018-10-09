@@ -10,8 +10,8 @@ public class ShopItem extends Button {
 	public static final Vector2f SCALE = new Vector2f(0.1f, 0.1f);
 
 	private final Vector2f position;
-	private Blueprint blueprint;
-	private ComplexGUI complex;
+	private final Blueprint blueprint;
+	private final ComplexGUI complex;
 
 	public ShopItem(Vector2f position, Blueprint blueprint, ComplexGUI complex) {
 		super(position, SCALE);

@@ -23,25 +23,25 @@ public class In {
 		return new In().withLocation(location).withVersion(version).create();
 	}
 
-	public In withLocation(String location) {
+	private In withLocation(String location) {
 		return withLocation(new PATH(location));
 	}
 
-	public In withLocation(PATH location) {
+	private In withLocation(PATH location) {
 		this.location = location;
 		return this;
 	}
 
-	public In withVersion(boolean version) {
+	private In withVersion(boolean version) {
 		this.hasVersion = version;
 		return this;
 	}
 
-	public In create() {
+	private In create() {
 		try {
 			this.asInputStream = location.openInput();
 			exists = true;
-		} catch (FileNotFoundException e) {
+		} catch (FileNotFoundException ignored) {
 		}
 		if (this.exists && this.hasVersion) {
 			try {
