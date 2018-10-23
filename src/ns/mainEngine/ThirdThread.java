@@ -11,6 +11,10 @@ import ns.world.World;
 import ns.world.WorldGenerator;
 import ns.worldSave.SaveWorldMaster;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 class ThirdThread implements Runnable {
 	public static boolean READY = false;
 
@@ -30,11 +34,28 @@ class ThirdThread implements Runnable {
 		GU.currentThread().finishLoading();
 		READY = true;
 
-		while (MainGameLoop.state != GS.CLOSING)
+		BufferedReader cin = new BufferedReader(new InputStreamReader(System.in));
+		System.out.print(">");
+		while (MainGameLoop.state != GS.CLOSING) {
+			try {
+				if (cin.ready()) {
+					String ln = cin.readLine();
+					execute(ln);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			Thread.yield();
+		}
 
 		SaveWorldMaster.save(world,
 				SaveData.openOutput("save0." + GU.WORLD_SAVE_FILE_FORMAT));
 		GU.currentThread().finishExecution();
+	}
+
+	private void execute(String ln) {
+		if (ln.equals("show-time")) {
+			System.out.print("Simulation seconds since begun: " + GU.time.t + "; days passed in simulation " + GU.time.day() + "\n>");
+		}
 	}
 }

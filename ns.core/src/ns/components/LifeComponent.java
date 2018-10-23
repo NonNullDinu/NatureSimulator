@@ -31,4 +31,8 @@ public class LifeComponent implements IComponent {
 	public IComponent copy() {
 		return new LifeComponent(totalLifespan);
 	}
+
+	public void setDead(boolean b) {
+		dead = b;
+	}
 }

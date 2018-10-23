@@ -8,6 +8,7 @@ import ns.utils.GU;
 import ns.world.World;
 import ns.worldSave.EntityData;
 import ns.worldSave.SerializableWorldObject;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 public class Entity implements SerializableWorldObject {
@@ -82,6 +83,7 @@ public class Entity implements SerializableWorldObject {
 	public void update(World w) {
 		LifeComponent lc = getLifeComponent();
 		boolean ableToMove = true;
+		Vector2f deathLim = null;
 		if (lc != null) {
 			if (lc.isDead()) {
 				ableToMove = false;
@@ -101,6 +103,7 @@ public class Entity implements SerializableWorldObject {
 				lc.update();
 				if (lc instanceof AnimalLifeComponent) {
 					AnimalLifeComponent alc = ((AnimalLifeComponent) lc);
+					deathLim = alc.getDna().deathLimits();
 					if (alc.isOffspringCreating()) {
 						if (partner == null) {
 							partner = w.closestEntity(position,
@@ -111,16 +114,13 @@ public class Entity implements SerializableWorldObject {
 						}
 						if (Vector3f.sub(partner.getPosition(), position, null).lengthSquared() <= 25f) {
 							alc.setOffspring(false);
-							System.out.println("Initializing offspring");
 							Entity e = new Entity(this.blueprint.copy(), new Vector3f(position));
 
-							System.out.println("Initializing offspring genes");
 							AnimalLifeComponent alc2 = ((AnimalLifeComponent) partner.getLifeComponent());
 							((AnimalLifeComponent) e.getLifeComponent()).withDNA(DNA.blend(alc.getDna().passedToOffspring(),
 									alc2.getDna().passedToOffspring()));
 
 							w.add(e);
-							System.out.println("Adding offspring to world");
 						} else {
 							blueprint.setMovementTarget(partner.position);
 							partner.blueprint.setMovementTarget(position);
@@ -133,6 +133,10 @@ public class Entity implements SerializableWorldObject {
 			ableToMove = !GU.time.isNight();
 		}
 		blueprint.move(this, w, ableToMove);
+		if (deathLim != null) {
+			if (position.y < deathLim.x || position.y > deathLim.y)
+				lc.setDead(true);
+		}
 	}
 
 	private void setPartner(Entity partner) {
@@ -166,11 +170,6 @@ public class Entity implements SerializableWorldObject {
 
 	public float getAlpha() {
 		return alpha;
-	}
-
-	public boolean isHeightWithinLimits(float y) {
-		HeightLimitsComponent limitsComponent = blueprint.getHeightLimits();
-		return limitsComponent == null || limitsComponent.isWithinLimits(y);
 	}
 
 	public ModelComponent getModelComponent() {

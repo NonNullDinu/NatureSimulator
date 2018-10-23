@@ -44,7 +44,8 @@ public class TerrainShader extends ShaderProgram {
 	
 	@Override
 	public void cleanUp() {
-		super.cleanUp();
+		GL30.glBindBufferBase(GL43.GL_SHADER_STORAGE_BUFFER, 0, 0);
 		GL15.glDeleteBuffers(colors_buffer);
+		super.cleanUp();
 	}
 }

@@ -1,14 +1,20 @@
 package ns.genetics;
 
+import org.lwjgl.util.vector.Vector2f;
+
 import java.io.Serializable;
 
 public class DNA implements Serializable {
 	// GENE VALUES
 	private static final int ALLOSOME_X = 0;
 	private static final int ALLOSOME_Y = 1;
+
 	// CHROMOSOME IDs
 	private static final int ALLOSOME_1 = 44;
 	private static final int ALLOSOME_2 = 45;
+
+	private static final int HEIGHT_LIMITS = 0;
+
 	private final Chromosome[] chromosomes;
 
 	private DNA(Chromosome[] chromosomes) {
@@ -20,7 +26,14 @@ public class DNA implements Serializable {
 		Chromosome[] chromosomes = new Chromosome[46];
 		if (id == 1) {
 			for (int i = 0; i < 46; i++) {
-				if (i == ALLOSOME_1)
+				if (i == HEIGHT_LIMITS)
+					chromosomes[i] = new Chromosome(new Gene[]{
+							new Gene(20),
+							new Gene(80),
+							new Gene(0).unmutable(),
+							new Gene(100).unmutable()
+					});
+				else if (i == ALLOSOME_1)
 					chromosomes[i] =
 							new Chromosome(new Gene[]{new Gene(ALLOSOME_X)});
 				else if (i == ALLOSOME_2)
@@ -31,7 +44,14 @@ public class DNA implements Serializable {
 		}
 		if (id == 2) {
 			for (int i = 0; i < 46; i++) {
-				if (i == ALLOSOME_1)
+				if (i == HEIGHT_LIMITS)
+					chromosomes[i] = new Chromosome(new Gene[]{
+							new Gene(20),
+							new Gene(80),
+							new Gene(0).unmutable(),
+							new Gene(100).unmutable()
+					});
+				else if (i == ALLOSOME_1)
 					chromosomes[i] =
 							new Chromosome(new Gene[]{new Gene(ALLOSOME_X)});
 				else if (i == ALLOSOME_2)
@@ -45,7 +65,6 @@ public class DNA implements Serializable {
 
 	public static DNA blend(DNA a, DNA b) {
 		Chromosome[] chromosomes = new Chromosome[a.chromosomes.length];
-		System.out.println("Blending chromosomes");
 		for (int i = 0; i < chromosomes.length; i++) {
 			if (a.chromosomes[i] == null && b.chromosomes[i] == null) {
 				chromosomes[i] = null;
@@ -60,18 +79,15 @@ public class DNA implements Serializable {
 				} else chromosomes[i] = b.chromosomes[i].copy();
 			}
 		}
-		System.out.println("Finished blending chromosomes");
 		return new DNA(chromosomes);
 	}
 
 	private DNA mutate() {
 		Chromosome[] chromosomes = new Chromosome[this.chromosomes.length];
-		System.out.println("Mutating chromosomes");
 		for (int i = 0; i < chromosomes.length; i++)
 			chromosomes[i] = (i < ALLOSOME_1 ? (this.chromosomes[i] != null ? this.chromosomes[i].mutate() : null) :
 					(this.chromosomes[i] != null ? this.chromosomes[i].copy() : null)); //
 		// Mutating the allosome chromosomes is a bad idea!!!
-		System.out.println("Finish mutating chromosomes");
 		return new DNA(chromosomes);
 	}
 
@@ -95,5 +111,13 @@ public class DNA implements Serializable {
 
 	public int getAllosomeGeneData() {
 		return chromosomes[ALLOSOME_2].genes[0].geneInfo;
+	}
+
+	public Vector2f getHeightLimits() {
+		return new Vector2f(chromosomes[HEIGHT_LIMITS].genes[0].geneInfo, chromosomes[HEIGHT_LIMITS].genes[1].geneInfo);
+	}
+
+	public Vector2f deathLimits() {
+		return new Vector2f(chromosomes[HEIGHT_LIMITS].genes[2].geneInfo, chromosomes[HEIGHT_LIMITS].genes[3].geneInfo);
 	}
 }

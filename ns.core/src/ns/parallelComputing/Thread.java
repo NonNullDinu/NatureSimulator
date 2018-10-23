@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Thread extends java.lang.Thread {
-	public enum ThreadState {
-		WAITING, RUNNING, FINISHED
-	}
 
 	public final List<Request> toCarryOutRequests = new ArrayList<>();
 	public final List<CreateVAORequest> vaoCreateRequests = new ArrayList<>();
@@ -17,8 +14,6 @@ public class Thread extends java.lang.Thread {
 	public final List<Request> renderingRequests = new ArrayList<>();
 	private long timeb;
 	public boolean isExecutingRequests;
-	private ThreadState state;
-	private boolean special_loop_executing;
 
 	protected Thread(String name, Runnable runnable) {
 		super(runnable, name);
@@ -26,6 +21,8 @@ public class Thread extends java.lang.Thread {
 	}
 
 	public synchronized void setToCarryOutRequest(Request request) {
+		while (isExecutingRequests)
+			Thread.yield();
 		if (request instanceof CreateVAORequest)
 			vaoCreateRequests.add((CreateVAORequest) request);
 		else if (request instanceof GLClearRequest || request instanceof GLRenderRequest
@@ -61,24 +58,11 @@ public class Thread extends java.lang.Thread {
 			java.lang.Thread.yield();
 	}
 
-	public void sayTimeSinceBegin() {
-		System.out.println(getName() + " ran for " + (System.nanoTime() - timeb));
-	}
-
 	public void finishLoading() {
 		System.out.println(getName() + " finished loading in " + (System.nanoTime() - timeb));
 	}
 
-	protected ThreadState state() {
-		return state;
-	}
-
-	public void setState(ThreadState state) {
-		this.state = state;
-	}
-
 	public void finishExecution() {
 		System.out.println(getName() + " finished execution");
-		state = ThreadState.FINISHED;
 	}
 }

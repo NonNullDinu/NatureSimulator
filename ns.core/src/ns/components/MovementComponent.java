@@ -47,8 +47,14 @@ public class MovementComponent implements IComponent {
 			float radyrot = (float) Math.toRadians(e.getRotY() + 180);
 			vel.x = (float) (SPEED * DisplayManager.getFrameTimeSeconds() * Math.sin(radyrot));
 			vel.z = (float) (SPEED * DisplayManager.getFrameTimeSeconds() * Math.cos(radyrot));
-			position.x += vel.x;
-			position.z += vel.z;
+			if (blueprint.withinLimits(world.getTerrain().getHeight(position.x + vel.x, position.z + vel.z))) {
+				position.x += vel.x;
+				position.z += vel.z;
+			} else if (target != null) {
+				// TODO Make it go around the the zone witch is unreachable
+			} else {
+				e.rotate(0, GU.random.genFloat() * 20f - 10f, 0);
+			}
 		}
 		if ((config & JUMP) != 0 && ableToMove) {
 			float th = world.getTerrain().getHeight(position.x, position.z);

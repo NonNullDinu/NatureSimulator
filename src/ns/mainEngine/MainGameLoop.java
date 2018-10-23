@@ -142,6 +142,7 @@ class MainGameLoop implements Runnable {
 			camera.addToPositionNoViewMatUpdate(0, -distance, 0);
 			camera.invertPitch();
 			renderer.renderScene(world, camera, sun, moon, new Vector4f(0, 1, 0, 1f), true);
+			riverRenderer.render(rivers, camera);
 			fbos.bindRefraction();
 			camera.addToPositionNoViewMatUpdate(0, distance, 0);
 			camera.invertPitch();
@@ -229,6 +230,11 @@ class MainGameLoop implements Runnable {
 		GU.currentThread().finishLoading();
 		while (!SecondaryThread.READY || !ThirdThread.READY || !LoadingScreenThread.READY) {
 			executeRequests();
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 		executeRequests();
 		state = GS.MENU;

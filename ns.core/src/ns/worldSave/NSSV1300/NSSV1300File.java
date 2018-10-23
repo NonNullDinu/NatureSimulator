@@ -3,6 +3,7 @@ package ns.worldSave.NSSV1300;
 import ns.entities.Entity;
 import ns.rivers.RiverList;
 import ns.terrain.Terrain;
+import ns.utils.GU;
 import ns.world.World;
 import ns.worldSave.EndObject;
 import ns.worldSave.EntityData;
@@ -44,6 +45,7 @@ public class NSSV1300File extends NSSVFile {
 					break;
 			}
 			world = new World(entities, Objects.requireNonNull(terrain));
+			GU.time = ((EndObject) o).getGuTime();
 			world.setRivers(rivers);
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();

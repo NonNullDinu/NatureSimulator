@@ -17,7 +17,7 @@ public class SaveWorldMaster {
 				stream.writeObject(world.getEntities().get(i).asData());
 			stream.writeObject(world.getRivers());
 			stream.writeObject(world.getTerrain().asData());
-			stream.writeObject(new EndObject());
+			stream.writeObject(new EndObject(GU.time));
 			stream.close();
 		} catch (IOException e) {
 			e.printStackTrace();

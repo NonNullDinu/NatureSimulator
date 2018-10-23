@@ -70,7 +70,7 @@ class LoadingScreenThread implements Runnable {
 			TextMaster.render(alphaCoef);
 		};
 		GU.currentThread().finishLoading();
-		do {
+		while (MainGameLoop.state == GS.LOADING || !READY) {
 			GU.sendRequestToMainThread(
 					new GLClearRequest(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, new Vector3f(1, 1, 1)));
 			GU.sendRequestToMainThread(new GLRenderRequest(renderMethod));
@@ -78,11 +78,11 @@ class LoadingScreenThread implements Runnable {
 			for (int i = textI + 1; i < textToShow.size(); i++)
 				TextMaster.loadTextIfNotLoadedAlready(textToShow.get(i));
 			try {
-				Thread.sleep(10);
+				Thread.sleep(30);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		} while (MainGameLoop.state == GS.LOADING || !READY);
+		}
 		TextMaster.remove(text);
 		GU.currentThread().finishExecution();
 	}

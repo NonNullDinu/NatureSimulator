@@ -16,7 +16,7 @@ import java.util.List;
 public class River implements Serializable {
 	private static final long serialVersionUID = 3885806111259199169L;
 
-	static final int COUNT = 30;
+	static final int COUNT = 10;
 	private final List<WaterParticle> waterParticles = new ArrayList<>();
 	private final Vector3f source;
 	private int cnt;
@@ -31,17 +31,17 @@ public class River implements Serializable {
 	public River(Vector3f source) {
 		this.source = source;
 		this.model = VAOLoader.storeDataInVAO(
-				new VBOData(new float[] {}).withAttributeNumber(0).withDimensions(3).withUsage(GL15.GL_STREAM_DRAW),
-				new VBOData(new float[] {}).withAttributeNumber(1).withDimensions(3).withUsage(GL15.GL_STREAM_DRAW),
-				new VBOData(new float[] {}).withAttributeNumber(2).withDimensions(3).withUsage(GL15.GL_STREAM_DRAW));
+				new VBOData(new float[]{}).withAttributeNumber(0).withDimensions(3).withUsage(GL15.GL_STREAM_DRAW),
+				new VBOData(new float[]{}).withAttributeNumber(1).withDimensions(3).withUsage(GL15.GL_STREAM_DRAW),
+				new VBOData(new float[]{}).withAttributeNumber(2).withDimensions(3).withUsage(GL15.GL_STREAM_DRAW));
 	}
 
 	private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.defaultReadObject();
 		this.model = VAOLoader.storeDataInVAO(
-				new VBOData(new float[] {}).withAttributeNumber(0).withDimensions(3).withUsage(GL15.GL_STREAM_DRAW),
-				new VBOData(new float[] {}).withAttributeNumber(1).withDimensions(3).withUsage(GL15.GL_STREAM_DRAW),
-				new VBOData(new float[] {}).withAttributeNumber(2).withDimensions(3).withUsage(GL15.GL_STREAM_DRAW));
+				new VBOData(new float[]{}).withAttributeNumber(0).withDimensions(3).withUsage(GL15.GL_STREAM_DRAW),
+				new VBOData(new float[]{}).withAttributeNumber(1).withDimensions(3).withUsage(GL15.GL_STREAM_DRAW),
+				new VBOData(new float[]{}).withAttributeNumber(2).withDimensions(3).withUsage(GL15.GL_STREAM_DRAW));
 		addEnd = riverEnd != null;
 	}
 
@@ -51,31 +51,51 @@ public class River implements Serializable {
 		else
 			cnt++;
 		if (cnt == 0 || cnt == COUNT) {
-			waterParticles.add(new WaterParticle(new Vector3f(source), idx++));
+			waterParticles.add(new WaterParticle(new Vector3f(source), idx++,
+					waterParticles.size() == 0 ? null : waterParticles.get(waterParticles.size() - 1)));
 			dec = cnt == COUNT;
 		}
 		Terrain terrain = world.getTerrain();
 		for (int i = waterParticles.size() - 1; i >= 0; i--) {
 			WaterParticle particle = waterParticles.get(i);
 			if (i == 0) {
-				boolean remove = particle.update(terrain, source.y);
-				if (remove) {
-					if (!particle.reachedBaseLake()) {
-						if (this.riverEnd == null) {
-							this.riverEnd = new RiverEnd(particle.getPosition());
-							terrain.addRiverEnd(this.riverEnd);
+				if (particle.getPrev() != null) {
+					particle.setPosition(new Vector3f(particle.getPrev().getPrevPosition()), this.source.y);
+				} else {
+					for (River r : world.getRivers()) {
+						if (r.equals(this))
+							continue;
+						for (WaterParticle p : r.waterParticles) {
+							if (Vector3f.sub(p.getPosition(), particle.getPosition(), null).lengthSquared() < particle.getSize()) {
+								particle.setPrevious(p);
+								p.addFollows(particle);
+								i = -1;
+								continue;
+							}
 						}
 					}
-					waterParticles.remove(i);
-					i++;
-					if (waterParticles.size() == 0)
-						return;
+					boolean remove = particle.update(terrain, source.y);
+					if (remove) {
+						particle.removeFromFollowers();
+					}
+					if (remove) {
+						if (!particle.reachedBaseLake()) {
+							if (this.riverEnd == null) {
+								this.riverEnd = new RiverEnd(particle.getPosition());
+								terrain.addRiverEnd(this.riverEnd);
+							}
+						}
+						waterParticles.remove(i);
+						i++;
+						if (waterParticles.size() == 0)
+							return;
+					}
 				}
-			} else if (i == waterParticles.size() - 1) {
-				particle.updateVel(terrain);
+//			} else if (i == waterParticles.size() - 1) {
+//				particle.updateVel(terrain);
+//				System.out.println(particle.getPosition().toString());
 			} else {
-				WaterParticle prev = waterParticles.get(i - 1);
-				particle.setPosition(new Vector3f(prev.getPrevPosition()), source.y);
+				particle.setPosition(new Vector3f(particle.getPrev().getPrevPosition()), source.y);
 			}
 		}
 		if (waterParticles.size() < 2)
@@ -90,7 +110,7 @@ public class River implements Serializable {
 		List<Float> list1 = new ArrayList<>();
 		List<Float> list2 = new ArrayList<>();
 		List<Float> list3 = new ArrayList<>();
-		if (current.getVelocity().length() != 0) {
+		if (current.getVelocity().lengthSquared() != 0) {
 			Vector3f.cross(vel, UP, pos);
 			pos.normalise();
 			list1.add(currentPos.x + pos.x * size);
@@ -117,28 +137,27 @@ public class River implements Serializable {
 			list3.add(currentPos.y);
 			list3.add(currentPos.z - pos.z * size * 2);
 		}
-		sub = 0;
-		final float wave = 0.1f * (float) cnt / (float) COUNT;
-		for (int i = 1; i < waterParticles.size(); i++) {
+
+		sub = 1;
+		for (int i = 0; i < waterParticles.size(); i++) {
 			current = waterParticles.get(i);
-			if (current.getVelocity().length() != 0 && currentPos.length() != 0) {
-				currentPos = current.getPosition();
+			currentPos = current.getPosition();
+			if (current.getVelocity().lengthSquared() != 0 && current.getPosition().lengthSquared() != 0f) {
 				pos = new Vector3f();
 				vel = new Vector3f(current.getVelocity().x, current.deltaY(), current.getVelocity().y);
 				Vector3f.cross(vel, UP, pos);
 				size = current.getSize();
-				boolean b = current.idx % 2 == 0;
 				pos.normalise();
 				list1.add(currentPos.x + pos.x * size);
-				list1.add(currentPos.y + riverHeight + size * (b ? (wave) : (-wave)));
+				list1.add(currentPos.y + riverHeight * size / 3f);
 				list1.add(currentPos.z + pos.z * size);
 
 				list1.add(currentPos.x - pos.x * size);
-				list1.add(currentPos.y + riverHeight + size * (b ? (wave) : (-wave)));
+				list1.add(currentPos.y + riverHeight * size / 3f);
 				list1.add(currentPos.z - pos.z * size);
 
 				list2.add(currentPos.x + pos.x * size);
-				list2.add(currentPos.y + riverHeight + size * (b ? (wave) : (-wave)));
+				list2.add(currentPos.y + riverHeight * size / 3f);
 				list2.add(currentPos.z + pos.z * size);
 
 				list2.add(currentPos.x + pos.x * size * 2);
@@ -146,13 +165,13 @@ public class River implements Serializable {
 				list2.add(currentPos.z + pos.z * size * 2);
 
 				list3.add(currentPos.x - pos.x * size);
-				list3.add(currentPos.y + riverHeight + size * (b ? (wave) : (-wave)));
+				list3.add(currentPos.y + riverHeight * size / 3f);
 				list3.add(currentPos.z - pos.z * size);
 
 				list3.add(currentPos.x - pos.x * size * 2);
 				list3.add(currentPos.y);
 				list3.add(currentPos.z - pos.z * size * 2);
-			}else {
+			} else {
 				sub++;
 			}
 		}
@@ -175,10 +194,6 @@ public class River implements Serializable {
 		for (int i = 0; i < arr.length; i++)
 			arr[i] = list.get(i);
 		return arr;
-	}
-
-	public List<WaterParticle> getParticles() {
-		return waterParticles;
 	}
 
 	public VAO getModel() {

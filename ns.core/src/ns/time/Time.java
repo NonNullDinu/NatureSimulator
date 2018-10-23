@@ -2,10 +2,13 @@ package ns.time;
 
 import ns.display.DisplayManager;
 
-public final class Time {
+import java.io.Serializable;
+
+public final class Time implements Serializable {
 	public float t;
 	private final DayNightCycle dayNightCycle;
-	private boolean isDay = false, isNight = false, isMorning = false, isEveneing = false;
+	private boolean isDay = false, isNight = false, isMorning = false, isEveneing = false, prevDay = false;
+	private int day;
 
 	public Time(DayNightCycle dayNightCycle) {
 		t = 0f;
@@ -37,10 +40,18 @@ public final class Time {
 	}
 
 	public void update() {
+		prevDay = isDay;
 		t += DisplayManager.getFrameTimeSeconds();
 		isDay = dayNightCycle.isDay(t);
 		isNight = dayNightCycle.isNight(t);
 		isMorning = dayNightCycle.isMorning(t);
 		isEveneing = dayNightCycle.isEvening(t);
+		if (isDay && !prevDay) {
+			day++;
+		}
+	}
+
+	public int day() {
+		return day;
 	}
 }

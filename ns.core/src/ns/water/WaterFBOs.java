@@ -4,7 +4,7 @@ import ns.openglObjects.FBO;
 import ns.renderers.Blurer;
 
 public class WaterFBOs {
-	private static final int REFLECTION_WIDTH = 1024, REFRACTION_WIDTH = 720,
+	private static final int REFLECTION_WIDTH = 2048, REFRACTION_WIDTH = 1440,
 			REFLECTION_HEIGHT = 720,
 			REFRACTION_HEIGHT = 500;
 

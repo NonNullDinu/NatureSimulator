@@ -66,7 +66,7 @@ public class GU {
 	private static final DocumentBuilder documentBuilder;
 	public static final boolean OS_WINDOWS;
 	public static final boolean OS_LINUX;
-	public static final Time time;
+	public static Time time;
 
 	static {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -391,37 +391,20 @@ public class GU {
 	}
 
 	public static float readFloat(byte b1, byte b2, byte b3, byte b4) {
-//		buffer.flip();
-//		buffer.clear();
-//		buffer.put(b1);
-//		buffer.put(b2);
-//		buffer.put(b3);
-//		buffer.put(b4);
-//		buffer.flip();
-//		float result = buffer.getFloat();
 		return ByteBuffer.wrap(new byte[]{b1, b2, b3, b4}).order(ByteOrder.BIG_ENDIAN).getFloat();
 	}
 
+	public static float readFloat(int i) {
+		return ByteBuffer.wrap(getBytes(i)).order(ByteOrder.BIG_ENDIAN).getFloat();
+	}
+
 	public static int readInt(byte b1, byte b2, byte b3, byte b4) {
-//		buffer.flip();
-//		buffer.clear();
-//		buffer.put(b1);
-//		buffer.put(b2);
-//		buffer.put(b3);
-//		buffer.put(b4);
-//		buffer.flip();
-//		int result = buffer.getInt();
 		return ByteBuffer.wrap(new byte[]{b1, b2, b3, b4}).order(ByteOrder.BIG_ENDIAN).getInt();
 	}
 
 	public static byte[] getBytes(float f) {
-//		buffer.flip();
-//		buffer.clear();
-//		buffer.putFloat(f);
-//		buffer.flip();
 		buffer.clear();
 		buffer.putFloat(f);
-		//		byte[] bytes = new byte[]{buffer.get(), buffer.get(), buffer.get(), buffer.get()};
 		return buffer.array();
 	}
 

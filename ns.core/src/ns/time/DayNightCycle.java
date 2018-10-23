@@ -1,7 +1,9 @@
 package ns.time;
 
-public interface DayNightCycle {
-	float H_S_DURATION = 1f;
+import java.io.Serializable;
+
+public interface DayNightCycle extends Serializable {
+	float H_S_DURATION = 60f;
 
 	boolean isDay(float t);
 

@@ -15,7 +15,6 @@ public class NL /* NativeLibrary */ {
 	}
 
 	public enum Method {
-		ADD((Object... o) -> _NL.add((int) o[0], (int) o[1])),
 		;
 		private final MethodImpl implementation;
 

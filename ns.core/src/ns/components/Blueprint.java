@@ -3,6 +3,7 @@ package ns.components;
 import ns.entities.Entity;
 import ns.openglObjects.VAO;
 import ns.world.World;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.io.IOException;
@@ -21,7 +22,6 @@ public class Blueprint implements Serializable {
 	private static final int CUSTOM_COLORS = 3;
 	private static final int FOOD = 4;
 	private static final int LIFE = 5;
-	private static final int HEIGHT_LIMITS = 6;
 
 	private final Map<Integer, IComponent> components;
 	private final String objectName;
@@ -82,13 +82,6 @@ public class Blueprint implements Serializable {
 	public CustomColorsComponent getCustomColors() {
 		return (CustomColorsComponent) components.get(CUSTOM_COLORS);
 	}
-
-//	@Override
-//	public BlueprintData asData() {
-//		BlueprintData data = new BlueprintData();
-//		data.setBlueprint(this);
-//		return data;
-//	}
 
 	public String getFolder() {
 		return objectName;
@@ -162,14 +155,6 @@ public class Blueprint implements Serializable {
 		withComponent(LIFE, component);
 	}
 
-	public HeightLimitsComponent getHeightLimits() {
-		return (HeightLimitsComponent) components.get(HEIGHT_LIMITS);
-	}
-
-	public Blueprint withHeightLimits(HeightLimitsComponent limits) {
-		return withComponent(HEIGHT_LIMITS, limits);
-	}
-
 	public void setMovementTarget(Vector3f target) {
 		MovementComponent movementComponent = getMovement();
 		if (movementComponent != null)
@@ -186,5 +171,14 @@ public class Blueprint implements Serializable {
 
 	public void setModel(VAO model) {
 		this.getModel().setModel(model);
+	}
+
+	public boolean withinLimits(float height) {
+		LifeComponent c = getLifeComponent();
+		if (c != null && c instanceof AnimalLifeComponent) {
+			Vector2f v =
+					((AnimalLifeComponent) c).getDna().getHeightLimits();
+			return height >= v.x && height <= v.y;
+		} else return true;
 	}
 }
