@@ -12,7 +12,7 @@ fi
 
 cd "$install_dir"
 
-wget -O install_fld.tar.xz https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/master/install/1.3.2.tar.xz
+curl -o install_fld.tar.xz https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/master/install/1.3.2.tar.xz
 tar -xJf install_fld.tar.xz
 rm install_fld.tar.xz
 
@@ -28,15 +28,12 @@ fi
 
 cd "$HOME/.ns-install"
 printf "$install_dir" > target-dir
-wget -O update.sh https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/master/install/update.sh
+curl -o update.sh https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/master/install/update.sh
+curl -o ns.sh https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/master/.data/ns-script.sh
 
-echo -n "Make a command to use for CLI?y/n:"
-read make_command
-if [[ "$make_command" = "y" || "$make_command" = "Y" ]] ;
-then	cd "$HOME"
-	if [[ ! -d bin ]] ;
-	then mkdir bin
-	fi
-	cd bin
-	wget -O ns https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/master/.data/ns-script.sh
+cd "$HOME"
+if [[ ! -d bin ]] ;
+then mkdir bin
 fi
+cd bin
+ln "$HOME/.ns-install/ns.sh" ns

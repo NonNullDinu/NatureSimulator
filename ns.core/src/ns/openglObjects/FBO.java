@@ -128,6 +128,16 @@ public class FBO implements IOpenGLObject {
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 	}
 
+	public void blit(int code, FBO target, int target_attachment) {
+		GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, target.id);
+		GL11.glDrawBuffer(target_attachment);
+		GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, id);
+		GL11.glReadBuffer(code);
+		GL30.glBlitFramebuffer(0, 0, width, height, 0, 0, target.width, target.height,
+				GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
+		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+	}
+
 	public void clear(int mask) {
 		GL11.glClear(mask);
 	}

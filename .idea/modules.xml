@@ -5,7 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/NS.iml" filepath="$PROJECT_DIR$/.idea/NS.iml" />
       <module fileurl="file://$PROJECT_DIR$/ns.core/ns.core.iml" filepath="$PROJECT_DIR$/ns.core/ns.core.iml" />
       <module fileurl="file://$PROJECT_DIR$/ns.install/ns.install.iml" filepath="$PROJECT_DIR$/ns.install/ns.install.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ns.patch/ns.patch.iml" filepath="$PROJECT_DIR$/ns.patch/ns.patch.iml" />
       <module fileurl="file://$PROJECT_DIR$/utils/utils.iml" filepath="$PROJECT_DIR$/utils/utils.iml" />
     </modules>
   </component>

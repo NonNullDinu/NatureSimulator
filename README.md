@@ -30,11 +30,11 @@ Get the .nus file and run patch.jar with the name of the .nus file as the argume
 
 # OS dependent features
 
-| Feature                                | Linux x86_64     | macOS x64                     | Windows 7+ x64            |
-|----------------------------------------|:----------------:|:-----------------------------:|:-------------------------:|
-| **N**S<br />**U**pdate<br />**S**cript | ✓                | ✓                             | ✓                         |
-| BASH-based update                      | ✓ 4.1+           |   Need linux "wget"           |                           |
-| Dependency native libraries            | ✓                |   @FIXME                      | ✓                         |
+| Feature                                | Linux            | macOS                         | Windows 7+             |
+|----------------------------------------|:----------------:|:-----------------------------:|:----------------------:|
+| **N**S<br />**U**pdate<br />**S**cript | ✓                | ✓                             | ✓                      |
+| BASH-based update                      | ✓ 4.1+           | ✓                             |                        |
+| Dependency native libraries            | ✓                |   @FIXME                      | ✓                      |
 
 # Update log
 * NS v.1.3.3.-alpha
@@ -47,6 +47,5 @@ Get the .nus file and run patch.jar with the name of the .nus file as the argume
 		    * Download the patch data
 		    * Apply the patch
 		    * Delete the patch data
-	
-	* NUS-based updating engine v.1.0
-		* Runs the .nus file
+
+# TO DO
