@@ -1,5 +1,12 @@
 :toc:
 :icons: font
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
 == In-game console comands
 Meaning of simbols are as follows::
 <> - mandatory +
@@ -7,12 +14,14 @@ Meaning of simbols are as follows::
 $sarg* - string argument (referenced as arg*) +
 $narg* - numeric argument (same as sarg*, referenced as arg*)
 
-NOTE: *SYNTAX*: `action-identifier arg...`
+[NOTE]
+====
+*SYNTAX*: `action-identifier arg...`
 Command structure is as follows:
-pass:[<ol><li>Action identifier. Is a structure of only one word.
-If there are multiple words they will be separated by <code>-</code></li>
-<li>Action arguments. Can be either string arguments or numeric arguments</li>
-</ol>]
+	1.`Action identifier`. Is a structure of only one word.
+	If there are multiple words they will be separated by `-` +
+	2.`Action arguments`. Can be either string arguments or numeric arguments
+====
 
 IMPORTANT: No modification to the `action identifier` is allowed if not specified with optional part.
 
@@ -36,11 +45,11 @@ IMPORTANT: No modification to the `action identifier` is allowed if not specifie
 		arg1 = latexmath:[some\:ms] +
 		Easy explanation: What we need to add to the current time rate to get the desired time rate. +
 
-//=== Physics engine commands
-//`print <$sarg1>`::
-//	Prints the current value of the specified physics engine property arg1
-//	Arguments:::
-//		arg1 = the name of the property
+=== Physics engine commands
+`print <$sarg1>`::
+	Prints the current value of the specified physics engine property arg1
+	Arguments:::
+		arg1 = the name of the property
 
 === Other commands
 `h[elp]`::
