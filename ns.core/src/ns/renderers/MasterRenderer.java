@@ -153,7 +153,7 @@ public class MasterRenderer {
 
 		shader.start();
 		if (updateTime) {
-			time += TIME_SPEED * DisplayManager.getFrameTimeSeconds() * (inc ? 1f : -1f);
+			time += TIME_SPEED * DisplayManager.getInGameTimeSeconds() * (inc ? 1f : -1f);
 			shader.time.load(time);
 		}
 		shader.skyColor.load(CLEAR_COLOR);

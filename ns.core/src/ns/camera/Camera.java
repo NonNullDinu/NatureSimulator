@@ -36,7 +36,7 @@ public class Camera extends ICamera {
 			if (mouseDelta.lengthSquared() != 0f) {
 				mouseDelta.scale(SENSITIVITY);
 				Vector3f delta = new Vector3f();
-				float coef = 120f * DisplayManager.getFrameTimeSeconds();
+				float coef = 120f * DisplayManager.getDelta();
 				delta.x = coef * -mouseDelta.x;
 				delta.z = coef * mouseDelta.y;
 				Matrix4f toWorldRotation = Maths.createTransformationMatrix(new Vector3f(), 0, -rotY, 0, 1);

@@ -13,7 +13,7 @@ public class LifeComponent implements IComponent {
 	}
 
 	public void update() {
-		lifespanRemaining -= DisplayManager.getFrameTimeSeconds();
+		lifespanRemaining -= DisplayManager.getInGameTimeSeconds();
 		if (lifespanRemaining <= 0f) {
 			dead = true;
 		}

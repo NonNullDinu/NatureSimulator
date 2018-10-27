@@ -15,11 +15,7 @@ uniform int loc;
 uniform FogValues fogValues;
 
 void main(void) {
-	vec4 posRelToCamera = viewMatrix
-                          			* vec4(
-                          					(loc == 0) ?
-                          							(in_position1) :
-                          							((loc == 1) ? in_position2 : in_position3), 1.0);
+	vec4 posRelToCamera = viewMatrix * vec4((loc == 0) ? (in_position1) : ((loc == 1) ? in_position2 : in_position3), 1.0);
 	gl_Position = projectionMatrix * posRelToCamera;
 
 	float distance = length(posRelToCamera.xyz);

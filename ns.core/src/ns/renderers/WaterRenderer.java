@@ -1,6 +1,7 @@
 package ns.renderers;
 
 import ns.camera.ICamera;
+import ns.display.DisplayManager;
 import ns.entities.Light;
 import ns.openglObjects.VAO;
 import ns.shaders.WaterShader;
@@ -11,7 +12,7 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 
 public class WaterRenderer {
-	private static final float WAVE_SPEED = 0.003f;
+	private static final float WAVE_SPEED = 0.125f;
 
 	private final WaterShader shader;
 	private float waveTime;
@@ -29,7 +30,7 @@ public class WaterRenderer {
 	public void render(WaterTile water, ICamera camera, WaterFBOs fbos, Light sun, Light moon) {
 		shader.start();
 
-		waveTime += WAVE_SPEED;
+		waveTime += WAVE_SPEED * DisplayManager.getInGameTimeSeconds();
 		shader.waveTime.load(waveTime);
 
 		shader.skyColor.load(MasterRenderer.CLEAR_COLOR);

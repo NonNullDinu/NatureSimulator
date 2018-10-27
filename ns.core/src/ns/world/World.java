@@ -48,6 +48,8 @@ public class World {
 
 	public void remove(Entity entity) {
 		entities.remove(entity);
+		if (entity.getBiomeSpreadComponent() != null)
+			terrain.initColors(entities);
 	}
 
 	public Entity closestEntity(Vector3f pos, EntitySelectingCriteria criteria) {

@@ -41,7 +41,7 @@ public final class Time implements Serializable {
 
 	public void update() {
 		prevDay = isDay;
-		t += DisplayManager.getFrameTimeSeconds();
+		t += DisplayManager.getInGameTimeSeconds();
 		isDay = dayNightCycle.isDay(t);
 		isNight = dayNightCycle.isNight(t);
 		isMorning = dayNightCycle.isMorning(t);

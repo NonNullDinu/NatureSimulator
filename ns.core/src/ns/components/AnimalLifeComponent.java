@@ -35,7 +35,7 @@ public class AnimalLifeComponent extends LifeComponent {
 		super.update();
 		cooldown--;
 
-		repr_time += DisplayManager.getFrameTimeSeconds();
+		repr_time += DisplayManager.getInGameTimeSeconds();
 		if (repr_time >= REPR_TIME) {
 			offspring = true;
 			repr_time = 0f;

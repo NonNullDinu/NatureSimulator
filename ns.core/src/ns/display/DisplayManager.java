@@ -22,6 +22,8 @@ public class DisplayManager {
 	private static float delta;
 	public static final int WIDTH = 1200;
 	public static final int HEIGHT = 800;
+	public static float time_rate = 1 / 1000f;
+	private static float ingametime;
 
 	public static void createDisplay() {
 		try {
@@ -45,6 +47,7 @@ public class DisplayManager {
 		Display.update();
 		long currentTime = getCurrentTime();
 		delta = (currentTime - lastFrameTime) / 1000f;
+		ingametime = (currentTime - lastFrameTime) * time_rate;
 		lastFrameTime = currentTime;
 	}
 
@@ -58,7 +61,11 @@ public class DisplayManager {
 		return Sys.getTime() * 1000 / Sys.getTimerResolution();
 	}
 
-	public static float getFrameTimeSeconds() {
+	public static float getInGameTimeSeconds() {
+		return ingametime;
+	}
+
+	public static float getDelta() {
 		return delta;
 	}
 
@@ -105,5 +112,9 @@ public class DisplayManager {
 			}
 		}
 		return ByteBuffer.wrap(imageBuffer);
+	}
+
+	public static void time_rate(float time_rate) {
+		DisplayManager.time_rate = time_rate / 1000f;
 	}
 }

@@ -23,7 +23,7 @@ public class RiverEnd implements Serializable {
 	}
 
 	public void update(World world) {
-		timeSinceLastPlantCreated += DisplayManager.getFrameTimeSeconds();
+		timeSinceLastPlantCreated += DisplayManager.getInGameTimeSeconds();
 		if (timeSinceLastPlantCreated >= 10f && spawned < 20) {
 			float x = position.x + GU.random.genFloat() * 200f - 100f;
 			float z = position.z + GU.random.genFloat() * 200f - 100f;

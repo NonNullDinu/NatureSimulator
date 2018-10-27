@@ -54,7 +54,7 @@ class WaterParticle implements Serializable {
 
 	public boolean update(Terrain terrain, float sourceHeight) {
 		Vector3f normal = terrain.getNormal(position);
-		float spd = 5f * DisplayManager.getFrameTimeSeconds();
+		float spd = 5f * DisplayManager.getInGameTimeSeconds();
 		velocity.scale(0.7f);
 		Vector2f nrmvec = new Vector2f(normal.x, normal.z);
 		nrmvec.scale(0.3f);

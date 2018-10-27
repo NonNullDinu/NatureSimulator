@@ -1,10 +1,12 @@
-= Title
+= README
 NonNullDinu
 v1.0, 2018-10-26
+:toc: right
+:icons: font
 
 image::https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/master/gameData/textures/ns_icon.png[NS_ICON]
 
-# Description
+== Description
 This application is an open-source attempt to simulate nature.
 Still has a long way to go before the objective is reached
 
@@ -13,15 +15,15 @@ Only requires JRE 10.0.2 or later to be installed to run
 
 Developed on Fedora 28
 
-# How to update?
-### Linux and MacOS
+== How to update?
+=== Linux and MacOS
 Just run the following and the application will update:
 [source,bash]
 ----
 sh ~/.ns-install/update.sh
 ----
 
-### Windows
+=== Windows
 No auto-update, have to download the new version.
 
 .OS Dependent Features
@@ -43,7 +45,7 @@ No auto-update, have to download the new version.
 
 .Update log
 * NS v.1.3.3.-alpha
-** BASH4.1-based updating engine v.1.0
+** BASH4.1-based updating engine v.1.0(can be seen link:install/update.sh[here])
 *** Downloads update script
 *** Runs update script
 *** After it's done, deletes the update script
@@ -53,3 +55,5 @@ No auto-update, have to download the new version.
 **** Apply the patch
 **** Delete the patch data
 **** Update current version
+
+include::COMMANDS.adoc[]

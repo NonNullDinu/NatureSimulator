@@ -87,8 +87,8 @@ public class Entity implements SerializableWorldObject {
 		if (lc != null) {
 			if (lc.isDead()) {
 				ableToMove = false;
-				rotate(DEAD_ROT_AXIS, 30f * DisplayManager.getFrameTimeSeconds());
-				alpha -= 0.4f * DisplayManager.getFrameTimeSeconds();
+				rotate(DEAD_ROT_AXIS, 30f * DisplayManager.getInGameTimeSeconds());
+				alpha -= 0.4f * DisplayManager.getInGameTimeSeconds();
 				if ((Math.abs(rotX) >= 75f || Math.abs(rotZ) >= 75f) && alpha <= 0f) {
 					w.remove(this);
 					if (lc instanceof AnimalLifeComponent) {
@@ -107,7 +107,7 @@ public class Entity implements SerializableWorldObject {
 					if (alc.isOffspringCreating()) {
 						if (partner == null) {
 							partner = w.closestEntity(position,
-									(Entity e) -> !e.equals(this) && e.blueprint.getFolder().equals(blueprint.getFolder()) && alc.getDna()
+									(Entity e) -> !e.equals(this) && e.partner != null && e.blueprint.getFolder().equals(blueprint.getFolder()) && alc.getDna()
 											.getAllosomeGeneData() != ((AnimalLifeComponent) e.getLifeComponent()).getDna()
 											.getAllosomeGeneData());
 							partner.setPartner(this);

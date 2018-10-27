@@ -110,6 +110,7 @@ public class River implements Serializable {
 		List<Float> list1 = new ArrayList<>();
 		List<Float> list2 = new ArrayList<>();
 		List<Float> list3 = new ArrayList<>();
+		sub = 0;
 		if (current.getVelocity().lengthSquared() != 0) {
 			Vector3f.cross(vel, UP, pos);
 			pos.normalise();
@@ -136,10 +137,10 @@ public class River implements Serializable {
 			list3.add(currentPos.x - pos.x * size * 2);
 			list3.add(currentPos.y);
 			list3.add(currentPos.z - pos.z * size * 2);
+		} else {
+			sub = 1;
 		}
-
-		sub = 1;
-		for (int i = 0; i < waterParticles.size(); i++) {
+		for (int i = 1; i < waterParticles.size(); i++) {
 			current = waterParticles.get(i);
 			currentPos = current.getPosition();
 			if (current.getVelocity().lengthSquared() != 0 && current.getPosition().lengthSquared() != 0f) {

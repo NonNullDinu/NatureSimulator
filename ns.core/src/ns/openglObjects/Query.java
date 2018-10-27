@@ -49,7 +49,7 @@ public class Query implements IOpenGLObject {
 			GU.sendRequestToMainThread(new CreateQueryRequest(this));
 		return this;
 	}
-	
+
 	public boolean isInUse() {
 		return isInUse;
 	}

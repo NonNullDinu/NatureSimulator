@@ -45,8 +45,8 @@ public class MovementComponent implements IComponent {
 				e.rotate(0, GU.random.genFloat() * 10f - 5f, 0);
 			}
 			float radyrot = (float) Math.toRadians(e.getRotY() + 180);
-			vel.x = (float) (SPEED * DisplayManager.getFrameTimeSeconds() * Math.sin(radyrot));
-			vel.z = (float) (SPEED * DisplayManager.getFrameTimeSeconds() * Math.cos(radyrot));
+			vel.x = (float) (SPEED * DisplayManager.getInGameTimeSeconds() * Math.sin(radyrot));
+			vel.z = (float) (SPEED * DisplayManager.getInGameTimeSeconds() * Math.cos(radyrot));
 			if (blueprint.withinLimits(world.getTerrain().getHeight(position.x + vel.x, position.z + vel.z))) {
 				position.x += vel.x;
 				position.z += vel.z;
@@ -63,7 +63,7 @@ public class MovementComponent implements IComponent {
 				vel.y = JUMP_POWER;
 			}
 			position.y += vel.y;
-			vel.y -= GRAVITY * DisplayManager.getFrameTimeSeconds();
+			vel.y -= GRAVITY * DisplayManager.getInGameTimeSeconds();
 		} else
 			position.y = world.getTerrain().getHeight(position.x, position.z);
 	}

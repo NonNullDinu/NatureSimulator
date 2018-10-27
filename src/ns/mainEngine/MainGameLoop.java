@@ -136,6 +136,7 @@ class MainGameLoop implements Runnable {
 	private void render() {
 		GU.updateWireFrame();
 		if (state == GS.GAME || state == GS.MENU || state == GS.OPTIONS) {
+			int e = 0;
 			GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 			fbos.bindReflection();
 			float distance = 2 * camera.getPosition().y;
