@@ -110,21 +110,23 @@ public class Entity implements SerializableWorldObject {
 									(Entity e) -> !e.equals(this) && e.partner != null && e.blueprint.getFolder().equals(blueprint.getFolder()) && alc.getDna()
 											.getAllosomeGeneData() != ((AnimalLifeComponent) e.getLifeComponent()).getDna()
 											.getAllosomeGeneData());
-							partner.setPartner(this);
+							if (partner != null)
+								partner.setPartner(this);
 						}
-						if (Vector3f.sub(partner.getPosition(), position, null).lengthSquared() <= 25f) {
-							alc.setOffspring(false);
-							Entity e = new Entity(this.blueprint.copy(), new Vector3f(position));
+						if (partner != null)
+							if (Vector3f.sub(partner.getPosition(), position, null).lengthSquared() <= 25f) {
+								alc.setOffspring(false);
+								Entity e = new Entity(this.blueprint.copy(), new Vector3f(position));
 
-							AnimalLifeComponent alc2 = ((AnimalLifeComponent) partner.getLifeComponent());
-							((AnimalLifeComponent) e.getLifeComponent()).withDNA(DNA.blend(alc.getDna().passedToOffspring(),
-									alc2.getDna().passedToOffspring()));
+								AnimalLifeComponent alc2 = ((AnimalLifeComponent) partner.getLifeComponent());
+								((AnimalLifeComponent) e.getLifeComponent()).withDNA(DNA.blend(alc.getDna().passedToOffspring(),
+										alc2.getDna().passedToOffspring()));
 
-							w.add(e);
-						} else {
-							blueprint.setMovementTarget(partner.position);
-							partner.blueprint.setMovementTarget(position);
-						}
+								w.add(e);
+							} else {
+								blueprint.setMovementTarget(partner.position);
+								partner.blueprint.setMovementTarget(position);
+							}
 					}
 				}
 			}
