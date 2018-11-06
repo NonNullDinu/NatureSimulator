@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/NS.iml" filepath="$PROJECT_DIR$/.idea/NS.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ns.core/ns.core.iml" filepath="$PROJECT_DIR$/ns.core/ns.core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/NS.iml" filepath="$PROJECT_DIR$/NS.iml" />
+      <module fileurl="file://$PROJECT_DIR$/golden.rose/golden.rose.iml" filepath="$PROJECT_DIR$/golden.rose/golden.rose.iml" />
       <module fileurl="file://$PROJECT_DIR$/ns.install/ns.install.iml" filepath="$PROJECT_DIR$/ns.install/ns.install.iml" />
       <module fileurl="file://$PROJECT_DIR$/utils/utils.iml" filepath="$PROJECT_DIR$/utils/utils.iml" />
     </modules>

@@ -1,7 +1,9 @@
 package ns.mainEngine;
 
 import data.GameData;
+import ns.components.BlueprintCreator;
 import ns.customFileFormat.TexFile;
+import ns.entities.Entity;
 import ns.fontMeshCreator.FontType;
 import ns.fontMeshCreator.GUIText;
 import ns.fontRendering.TextMaster;
@@ -9,6 +11,8 @@ import ns.parallelComputing.GLClearRequest;
 import ns.parallelComputing.GLRenderRequest;
 import ns.parallelComputing.GLRenderRequest.RenderMethod;
 import ns.parallelComputing.UpdateDisplayRequest;
+import ns.renderers.GUIRenderer;
+import ns.ui.loadingScreen.InGameLogo;
 import ns.utils.GU;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
@@ -19,6 +23,7 @@ import java.util.List;
 
 class LoadingScreenThread implements Runnable {
 	private static final float SPD = 0.01f;
+	private static final int logo_index = 3;
 
 	private float alphaCoef = 0.1f;
 	private int textI = 0;
@@ -38,7 +43,11 @@ class LoadingScreenThread implements Runnable {
 		List<GUIText> textToShow = new ArrayList<>();
 		textToShow.add(new GUIText("Made by", 5f, z003, new Vector2f(0.0f, 0.0f), 0.4f, true));
 		textToShow.add(new GUIText("NonNullDinu", 3f, caladea, new Vector2f(0.0f, 0.0f), 0.4f, true));
+		textToShow.add(new GUIText("And Mahou-sama666", 3f, caladea, new Vector2f(0.0f, 0.0f), 0.4f, true));
 		textToShow.add(new GUIText("Loading...", 2f, z003, new Vector2f(0.0f, 0.0f), 0.2f, true));
+		InGameLogo logo = new InGameLogo(new Entity(BlueprintCreator.createModelBlueprintFor("logo"), new Vector3f(0,
+				0, -8f
+		)));
 		text = textToShow.get(textI);
 		TextMaster.loadText(text);
 		text.setColour(0f, 0f, 0f);
@@ -51,23 +60,35 @@ class LoadingScreenThread implements Runnable {
 			} else {
 				addToAC(1.0f - alphaCoef);
 			}
-			if (alphaCoef <= 0.0f) {
+			if (alphaCoef <= 0.0f && textI != logo_index) {
 				if (READY) {
 					setText(textToShow.get(textI));
 					TextMaster.add(text);
 					TextMaster.render(alphaCoef);
 				} else {
 					addToAC(-alphaCoef);
-					text.remove();
+					if (textI != logo_index)
+						text.remove();
 					textI++;
-					setReady(textI >= textToShow.size() - 1);
+					setReady(textI >= textToShow.size());
 					setBreak(READY);
 					setIncr(true);
-					setText(textToShow.get(textI));
+					setText(textToShow.get(textI > logo_index ? textI - 1 : textI));
 					TextMaster.add(text);
 				}
 			}
-			TextMaster.render(alphaCoef);
+			if (textI == logo_index) {
+				logo.render(GUIRenderer.instance, null);
+				if (logo.done()) {
+					textI++;
+					setReady(textI >= textToShow.size());
+					setBreak(READY);
+					setIncr(true);
+					setText(textToShow.get(textI - 1));
+					TextMaster.add(text);
+				}
+			} else
+				TextMaster.render(alphaCoef);
 		};
 		GU.currentThread().finishLoading();
 		while (MainGameLoop.state == GS.LOADING || !READY) {
@@ -78,7 +99,7 @@ class LoadingScreenThread implements Runnable {
 			for (int i = textI + 1; i < textToShow.size(); i++)
 				TextMaster.loadTextIfNotLoadedAlready(textToShow.get(i));
 			try {
-				Thread.sleep(30);
+				Thread.sleep(50);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

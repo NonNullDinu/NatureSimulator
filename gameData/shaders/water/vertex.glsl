@@ -14,7 +14,7 @@ layout(location = 0) out vec4 pass_clipSpaceGrid;
 layout(location = 1) out vec4 pass_clipSpaceReal;
 layout(location = 2) flat out vec3 pass_normal;
 layout(location = 3) out vec3 pass_toCameraVector;
-layout(location = 4) flat out vec3 pass_specular;
+layout(location = 4) out vec3 pass_specular;
 layout(location = 5) flat out vec3 pass_diffuse;
 layout(location = 6) out float out_visibility;
 

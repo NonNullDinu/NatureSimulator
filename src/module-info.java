@@ -8,5 +8,5 @@ module ns.gameModule {
     requires java.desktop;
 	requires lwjgl;
 	requires lwjgl.util;
-	requires ns.core;
+	requires golden.rose;
 }

@@ -1,6 +1,6 @@
 module utils {
 	exports ns.structure;
-	requires ns.core;
+	requires golden.rose;
 	requires lwjgl.util;
 	requires java.desktop;
 }

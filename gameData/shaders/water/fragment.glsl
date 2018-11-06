@@ -14,13 +14,15 @@ layout(location = 0) in vec4 pass_clipSpaceGrid;
 layout(location = 1) in vec4 pass_clipSpaceReal;
 layout(location = 2) flat in vec3 pass_normal;
 layout(location = 3) in vec3 pass_toCameraVector;
-layout(location = 4) flat in vec3 pass_specular;
+layout(location = 4) in vec3 pass_specular;
 layout(location = 5) flat in vec3 pass_diffuse;
 layout(location = 6) in float in_visibility;
 
 uniform sampler2D reflectionTexture;
 uniform sampler2D refractionTexture;
 uniform sampler2D depthTexture;
+//uniform sampler2D reflectionBlured;
+//uniform sampler2D refractionBlured;
 uniform vec2 nearFarPlanes;
 uniform vec3 skyColor;
 
@@ -69,6 +71,10 @@ void main(void) {
 
 	vec3 refractColour = texture(refractionTexture, refractionTexCoords).rgb;
 	vec3 reflectColour = texture(reflectionTexture, reflectionTexCoords).rgb;
+//	vec3 reflectBluredColour = texture(reflectionBlured, reflectionTexCoords).rgb;
+//	vec3 refractBluredColour = texture(refractionBlured, refractionTexCoords).rgb;
+//	reflectColour = mix(reflectColour, reflectBluredColour, length(pass_toCameraVector) / 1000.0);
+//	refractColour = mix(refractColour, refractBluredColour, length(pass_toCameraVector) / 1000.0);
 
 	//apply some blueness
 	refractColour = applyMurkiness(refractColour, waterDepth);

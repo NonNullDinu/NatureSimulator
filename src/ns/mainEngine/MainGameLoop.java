@@ -31,9 +31,7 @@ import ns.water.WaterTile;
 import ns.world.World;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -41,7 +39,6 @@ import org.lwjgl.util.vector.Vector4f;
 
 class MainGameLoop implements Runnable {
 	static GS state = GS.LOADING;
-	public static int leaves = 10000;
 
 	private FBO bluredSceneFBO;
 	private Blurer blurer;
@@ -136,7 +133,6 @@ class MainGameLoop implements Runnable {
 	private void render() {
 		GU.updateWireFrame();
 		if (state == GS.GAME || state == GS.MENU || state == GS.OPTIONS) {
-			int e = 0;
 			GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 			fbos.bindReflection();
 			float distance = 2 * camera.getPosition().y;
@@ -151,6 +147,7 @@ class MainGameLoop implements Runnable {
 			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 			sceneFBO.bind();
 			renderer.renderScene(world, camera, sun, moon, new Vector4f(0, 0, 0, 0), false);
+//			fbos.blur(blurer);
 			waterRenderer.render(water, camera, fbos, sun, moon);
 			riverRenderer.render(rivers, camera);
 			flareManager.render();
@@ -199,6 +196,10 @@ class MainGameLoop implements Runnable {
 				() -> MainGameLoop.state = GS.MENU
 		});
 		DisplayManager.createDisplay();
+		GL11.glEnable(GL43.GL_DEBUG_OUTPUT);
+		GL43.glDebugMessageCallback(new KHRDebugCallback((int i, int i1, int i2, int i3, String s) -> {
+			System.out.println(i + " " + i1 + " " + i2 + " " + i3 + " " + s);
+		}));
 		TextMaster.init();
 		executeRequests();
 		WaterShader shader = new WaterShader();
@@ -256,10 +257,6 @@ class MainGameLoop implements Runnable {
 		renderer.cleanUp();
 		menuRenderer.cleanUp();
 		shader.cleanUp();
-		blurer.cleanUp();
-		shopRenderer.cleanUp();
-		sceneFBO.cleanUp();
-		bluredSceneFBO.cleanUp();
 		guiShader.cleanUp();
 		QuadRenderer.cleanUp();
 		Texture.cleanUp();
@@ -267,6 +264,7 @@ class MainGameLoop implements Runnable {
 		flareManager.cleanUp();
 		riverRenderer.cleanUp();
 		movingEntitySpotShader.cleanUp();
+		FBO.clearUp();
 		DisplayManager.closeDisplay();
 		GU.currentThread().finishExecution();
 	}
