@@ -36,8 +36,14 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
+import resources.Out;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 class MainGameLoop implements Runnable {
+	private OutputStream logOut;
 	static GS state = GS.LOADING;
 
 	private FBO bluredSceneFBO;
@@ -188,6 +194,7 @@ class MainGameLoop implements Runnable {
 
 	public void run() {
 		GU.init();
+		logOut = Out.create("GL_LOG").asOutputStream();
 		SetRequest.init((Object... o) -> set(o[0]));
 		VAO.init(MainGameLoop::requestExecuteRequests);
 		UILoader.init(new Action[]{() -> MainGameLoop.state = GS.GAME,
@@ -197,8 +204,17 @@ class MainGameLoop implements Runnable {
 		});
 		DisplayManager.createDisplay();
 		GL11.glEnable(GL43.GL_DEBUG_OUTPUT);
-		GL43.glDebugMessageCallback(new KHRDebugCallback((int i, int i1, int i2, int i3, String s) -> {
-			System.out.println(i + " " + i1 + " " + i2 + " " + i3 + " " + s);
+		GL43.glDebugMessageCallback(new KHRDebugCallback((int source, int type, int id, int severity, String message) -> {
+			System.out.println(source + " " + type + " " + id + " " + severity + " " + message);
+			try {
+				logOut.write((GU.getKHR_DEBUG_CALLBACK_FIELD(source) + " "+
+						GU.getKHR_DEBUG_CALLBACK_FIELD(type) + " " +
+						id + " " +
+						GU.getKHR_DEBUG_CALLBACK_FIELD(severity) + " " +
+						message + "\n").getBytes());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}));
 		TextMaster.init();
 		executeRequests();
@@ -230,10 +246,11 @@ class MainGameLoop implements Runnable {
 		MovingEntitySpotShader movingEntitySpotShader = new MovingEntitySpotShader();
 		moonTex = new TexFile("textures/moon.tex").load();
 		GU.currentThread().finishLoading();
+		state = GS.WAITING;
 		while (!SecondaryThread.READY || !ThirdThread.READY || !LoadingScreenThread.READY) {
 			executeRequests();
 			try {
-				Thread.sleep(10);
+				Thread.sleep(1);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -242,15 +259,12 @@ class MainGameLoop implements Runnable {
 		state = GS.MENU;
 		GU.rn_update();
 		camera.update(world);
-		int err;
 		while (!DisplayManager.isCloseRequested()) {
 			if (state == GS.EXIT)
 				break;
 			runLogicAndRender();
 			DisplayManager.updateDisplay();
 			executeRequests();
-			while ((err = GL11.glGetError()) != GL11.GL_NO_ERROR)
-				System.err.println("GL error " + err + "(" + GU.getGLErrorType(err) + ")");
 		}
 		state = GS.CLOSING;
 		VAOLoader.cleanUp();

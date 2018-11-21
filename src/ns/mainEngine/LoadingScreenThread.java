@@ -23,7 +23,7 @@ import java.util.List;
 
 class LoadingScreenThread implements Runnable {
 	private static final float SPD = 0.01f;
-	private static final int logo_index = 3;
+	private static final int logo_index = 2;
 
 	private float alphaCoef = 0.1f;
 	private int textI = 0;
@@ -43,7 +43,7 @@ class LoadingScreenThread implements Runnable {
 		List<GUIText> textToShow = new ArrayList<>();
 		textToShow.add(new GUIText("Made by", 5f, z003, new Vector2f(0.0f, 0.0f), 0.4f, true));
 		textToShow.add(new GUIText("NonNullDinu", 3f, caladea, new Vector2f(0.0f, 0.0f), 0.4f, true));
-		textToShow.add(new GUIText("And Mahou-sama666", 3f, caladea, new Vector2f(0.0f, 0.0f), 0.4f, true));
+//		textToShow.add(new GUIText("And Mahou-sama666", 3f, caladea, new Vector2f(0.0f, 0.0f), 0.4f, true));
 		textToShow.add(new GUIText("Loading...", 2f, z003, new Vector2f(0.0f, 0.0f), 0.2f, true));
 		InGameLogo logo = new InGameLogo(new Entity(BlueprintCreator.createModelBlueprintFor("logo"), new Vector3f(0,
 				0, -8f
@@ -91,7 +91,7 @@ class LoadingScreenThread implements Runnable {
 				TextMaster.render(alphaCoef);
 		};
 		GU.currentThread().finishLoading();
-		while (MainGameLoop.state == GS.LOADING || !READY) {
+		while (!READY || MainGameLoop.state == GS.LOADING || MainGameLoop.state == GS.WAITING) {
 			GU.sendRequestToMainThread(
 					new GLClearRequest(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, new Vector3f(1, 1, 1)));
 			GU.sendRequestToMainThread(new GLRenderRequest(renderMethod));
@@ -99,7 +99,7 @@ class LoadingScreenThread implements Runnable {
 			for (int i = textI + 1; i < textToShow.size(); i++)
 				TextMaster.loadTextIfNotLoadedAlready(textToShow.get(i));
 			try {
-				Thread.sleep(50);
+				Thread.sleep(MainGameLoop.state == GS.WAITING ? 5 : 100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

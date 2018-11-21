@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="/utils/src"/>
+	<classpathentry kind="lib" path="/NS/lib/jar/lwjgl_util.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/golden.rose"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

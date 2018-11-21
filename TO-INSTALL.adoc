@@ -22,7 +22,7 @@ The only dependency: java jre or jdk installed and added to $PATH.
 TO BE implemented...
 
 == Installing
-=== Linux
+=== Linux & MacOS
 The following line will do everything.
 [source, bash]
 ----

@@ -44,7 +44,7 @@ class SecondaryThread implements Runnable {
 		ModelsLibrary.getModel("models/1002/tree.mdl");
 		ModelsLibrary.getModel("models/1003/mushroom.mdl");
 		ModelsLibrary.getModel("models/1004/tree.mdl");
-		Sun sun = new Sun(new Vector3f(0.5f, 0f, 0), new Vector3f(1, 1, 1), new Vector2f(0.1f, 0.5f));
+		Sun sun = new Sun(new Vector3f(0.5f, 0f, 0), new Vector3f(1, 1, 1), new Vector2f(0.2f, 0.4f));
 		GU.sendRequestToMainThread(new SetRequest(sun));
 		Moon moon = new Moon(new Vector3f(0.5f, 0f, 0), new Vector3f(0.5f, 0.5f, 0.5f), new Vector2f(0.1f, 0.5f));
 		GU.sendRequestToMainThread(new SetRequest(moon));
