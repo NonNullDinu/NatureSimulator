@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<eclipse-userlibraries>
-  <library name="jar">
-    <archive path="/home/Dinu/NS/lib/jar/lwjgl.jar" />
-    <archive path="/home/Dinu/NS/lib/jar/lwjgl_util.jar" />
-  </library>
-</eclipse-userlibraries>
-

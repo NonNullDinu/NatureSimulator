@@ -4,12 +4,10 @@ import data.SaveData;
 import ns.parallelComputing.ThreadMaster;
 import ns.utils.GU;
 import ns.world.WorldGenerator;
+import ns.worldLoad.WorldLoadMaster;
 import ns.worldSave.SaveWorldMaster;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -37,7 +35,7 @@ class Initializer {
 						+ "java.specification.version:" + getProperty("java.specification.version") + "\n"//
 						+ "os.name:" + getProperty("os.name") + "\n"//
 						+ "java.vm.specification.version:" + getProperty("java.vm.specification.version") + "\n" //
-						+ "java.runtime.version:" + getProperty("java.runtime.version") + "\n"  //
+						+ "java.runtime.version:" + getProperty("java.runtime.version") + "\n" //
 						+ "os.version:" + getProperty("os.version") + "\n" //
 						+ "java.runtime.name:" + getProperty("java.runtime.name") + "\n" //
 						+ "java.vm.name:" + getProperty("java.vm.name") + "\n" //
@@ -61,7 +59,13 @@ class Initializer {
 			}
 			if (WorldGenerator.generatedWorld != null)
 				try {
-					SaveWorldMaster.save(WorldGenerator.generatedWorld, SaveData.openOutput("save0." + GU.WORLD_SAVE_FILE_FORMAT));
+					SaveWorldMaster.save(WorldGenerator.generatedWorld,
+							SaveData.openOutput("save" + WorldLoadMaster.count + "." + GU.WORLD_SAVE_FILE_FORMAT));
+					try (OutputStream savesDirCount = SaveData.openOutput("saves.dir").asOutputStream()) {
+						savesDirCount.write(Integer.toString(WorldLoadMaster.count).getBytes());
+					} catch (IOException ex) {
+						ex.printStackTrace();
+					}
 				} catch (Throwable thr) {
 					msg = "";
 					for (StackTraceElement elem : thr.getStackTrace()) {
@@ -99,8 +103,8 @@ class Initializer {
 	private static int hashCode(Throwable e) {
 		String s = e.getLocalizedMessage();
 		for (StackTraceElement ste : e.getStackTrace()) {
-			s += "\n" + ste.getFileName() + " " + ste.getClassName() + " " + ste.getMethodName() + " " + ste.getModuleName() +
-					" " + ste.getLineNumber();
+			s += "\n" + ste.getFileName() + " " + ste.getClassName() + " " + ste.getMethodName() + " "
+					+ ste.getModuleName() + " " + ste.getLineNumber();
 		}
 		return Arrays.hashCode(s.getBytes());
 	}
@@ -109,8 +113,9 @@ class Initializer {
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].equals("-p") || args[i].equals("--path")) {
 				i++;
-				GU.path = args[i];
-			} else System.out.println("Unknown arg:" + args[i]);
+				GU.path = args[i] + (!args[i].endsWith("/") ? "/" : "");
+			} else
+				System.out.println("Unknown arg:" + args[i]);
 		}
 	}
 }

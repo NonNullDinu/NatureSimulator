@@ -29,6 +29,7 @@ import ns.utils.MousePicker;
 import ns.water.WaterFBOs;
 import ns.water.WaterTile;
 import ns.world.World;
+import ns.worldLoad.WorldLoadMaster;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
@@ -38,7 +39,6 @@ import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 import resources.Out;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -120,6 +120,14 @@ class MainGameLoop implements Runnable {
 			}
 		} else if (state == GS.OPTIONS) {
 			options.update();
+		} else if (state == GS.LOAD_WORLD_SCREEN) {
+			World wld = WorldLoadMaster.returnSelected();
+			if (wld != null) {
+				world = wld;
+				state = GS.GAME;
+				rivers = wld.getRivers();
+				water.recreateModel(wld.getTerrain());
+			}
 		}
 		GU.update();
 	}
@@ -138,7 +146,7 @@ class MainGameLoop implements Runnable {
 
 	private void render() {
 		GU.updateWireFrame();
-		if (state == GS.GAME || state == GS.MENU || state == GS.OPTIONS) {
+		if (state == GS.GAME || state == GS.MENU || state == GS.OPTIONS || state == GS.LOAD_WORLD_SCREEN) {
 			GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 			fbos.bindReflection();
 			float distance = 2 * camera.getPosition().y;
@@ -153,13 +161,13 @@ class MainGameLoop implements Runnable {
 			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 			sceneFBO.bind();
 			renderer.renderScene(world, camera, sun, moon, new Vector4f(0, 0, 0, 0), false);
-//			fbos.blur(blurer);
 			waterRenderer.render(water, camera, fbos, sun, moon);
 			riverRenderer.render(rivers, camera);
 			flareManager.render();
 
-			Vector2f moonOnScreen = convertToScreenSpace(new Vector3f(camera.getPosition().x - moon.dir.x * 1000,
-							camera.getPosition().y - moon.dir.y * 1000, camera.getPosition().z - moon.dir.z * 1000),
+			Vector2f moonOnScreen = convertToScreenSpace(
+					new Vector3f(camera.getPosition().x - moon.dir.x * 1000, camera.getPosition().y - moon.dir.y * 1000,
+							camera.getPosition().z - moon.dir.z * 1000),
 					camera.getViewMatrix(), camera.getProjectionMatrix());
 			if (moonOnScreen != null) {
 				GL11.glEnable(GL11.GL_BLEND);
@@ -174,7 +182,7 @@ class MainGameLoop implements Runnable {
 			if (state == GS.GAME) {
 				sceneFBO.blitToScreen();
 				shopRenderer.render(shop);
-			} else if (state == GS.MENU || state == GS.OPTIONS) {
+			} else if (state == GS.MENU || state == GS.OPTIONS || state == GS.LOAD_WORLD_SCREEN) {
 				MasterRenderer.prepare();
 				blurer.apply(sceneFBO, bluredSceneFBO);
 				bluredSceneFBO.blitToScreen();
@@ -182,6 +190,8 @@ class MainGameLoop implements Runnable {
 					menuRenderer.render(menu);
 				} else if (state == GS.OPTIONS) {
 					options.render();
+				} else if (state == GS.LOAD_WORLD_SCREEN) {
+					WorldLoadMaster.renderUI();
 				}
 			}
 		}
@@ -197,25 +207,22 @@ class MainGameLoop implements Runnable {
 		logOut = Out.create("GL_LOG").asOutputStream();
 		SetRequest.init((Object... o) -> set(o[0]));
 		VAO.init(MainGameLoop::requestExecuteRequests);
-		UILoader.init(new Action[]{() -> MainGameLoop.state = GS.GAME,
-				() -> MainGameLoop.state = GS.OPTIONS,
-				() -> MainGameLoop.state = GS.EXIT,
-				() -> MainGameLoop.state = GS.MENU
-		});
+		UILoader.init(new Action[]{() -> MainGameLoop.state = GS.GAME, () -> MainGameLoop.state = GS.OPTIONS,
+				() -> MainGameLoop.state = GS.EXIT, () -> MainGameLoop.state = GS.LOAD_WORLD_SCREEN,
+				() -> MainGameLoop.state = GS.MENU});
 		DisplayManager.createDisplay();
 		GL11.glEnable(GL43.GL_DEBUG_OUTPUT);
-		GL43.glDebugMessageCallback(new KHRDebugCallback((int source, int type, int id, int severity, String message) -> {
-			System.out.println(source + " " + type + " " + id + " " + severity + " " + message);
-			try {
-				logOut.write((GU.getKHR_DEBUG_CALLBACK_FIELD(source) + " "+
-						GU.getKHR_DEBUG_CALLBACK_FIELD(type) + " " +
-						id + " " +
-						GU.getKHR_DEBUG_CALLBACK_FIELD(severity) + " " +
-						message + "\n").getBytes());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}));
+		GL43.glDebugMessageCallback(
+				new KHRDebugCallback((int source, int type, int id, int severity, String message) -> {
+					System.out.println(source + " " + type + " " + id + " " + severity + " " + message);
+					try {
+						logOut.write((GU.getKHR_DEBUG_CALLBACK_FIELD(source) + " "
+								+ GU.getKHR_DEBUG_CALLBACK_FIELD(type) + " " + id + " "
+								+ GU.getKHR_DEBUG_CALLBACK_FIELD(severity) + " " + message + "\n").getBytes());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}));
 		TextMaster.init();
 		executeRequests();
 		WaterShader shader = new WaterShader();
@@ -245,6 +252,7 @@ class MainGameLoop implements Runnable {
 		riverRenderer = new RiverRenderer(camera.getProjectionMatrix());
 		MovingEntitySpotShader movingEntitySpotShader = new MovingEntitySpotShader();
 		moonTex = new TexFile("textures/moon.tex").load();
+		WorldLoadMaster.buildUI();
 		GU.currentThread().finishLoading();
 		state = GS.WAITING;
 		while (!SecondaryThread.READY || !ThirdThread.READY || !LoadingScreenThread.READY) {
@@ -286,23 +294,23 @@ class MainGameLoop implements Runnable {
 	private void set(Object o) {
 		if (o instanceof Shop)
 			this.shop = (Shop) o;
-		if (o instanceof World)
+		else if (o instanceof World)
 			this.world = (World) o;
-		if (o instanceof ICamera)
+		else if (o instanceof ICamera)
 			this.camera = (ICamera) o;
-		if (o instanceof Sun)
+		else if (o instanceof Sun)
 			this.sun = (Sun) o;
-		if (o instanceof Moon)
+		else if (o instanceof Moon)
 			this.moon = (Moon) o;
-		if (o instanceof WaterTile)
+		else if (o instanceof WaterTile)
 			this.water = (WaterTile) o;
-		if (o instanceof MainMenu)
+		else if (o instanceof MainMenu)
 			this.menu = (MainMenu) o;
-		if (o instanceof Options)
+		else if (o instanceof Options)
 			this.options = (Options) o;
-		if (o instanceof FlareManager)
+		else if (o instanceof FlareManager)
 			this.flareManager = (FlareManager) o;
-		if (o instanceof RiverList)
+		else if (o instanceof RiverList)
 			this.rivers = (RiverList) o;
 	}
 }

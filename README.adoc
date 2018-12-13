@@ -13,8 +13,6 @@ Still has a long way to go before the objective is reached
 System requirements
 Only requires JRE 10.0.2 or later to be installed to run
 
-Developed on Fedora 28
-
 == How to update?
 === Linux and MacOS
 Just run the following and the application will update:
@@ -27,7 +25,7 @@ sh ~/.ns-install/update.sh
 No auto-update, have to download the new version.
 
 .OS Dependent Features
-[cols=4*]
+[cols=4]
 |===
 |Feature
 |Linux

@@ -43,11 +43,9 @@ class LoadingScreenThread implements Runnable {
 		List<GUIText> textToShow = new ArrayList<>();
 		textToShow.add(new GUIText("Made by", 5f, z003, new Vector2f(0.0f, 0.0f), 0.4f, true));
 		textToShow.add(new GUIText("NonNullDinu", 3f, caladea, new Vector2f(0.0f, 0.0f), 0.4f, true));
-//		textToShow.add(new GUIText("And Mahou-sama666", 3f, caladea, new Vector2f(0.0f, 0.0f), 0.4f, true));
 		textToShow.add(new GUIText("Loading...", 2f, z003, new Vector2f(0.0f, 0.0f), 0.2f, true));
-		InGameLogo logo = new InGameLogo(new Entity(BlueprintCreator.createModelBlueprintFor("logo"), new Vector3f(0,
-				0, -8f
-		)));
+		InGameLogo logo = new InGameLogo(
+				new Entity(BlueprintCreator.createModelBlueprintFor("logo"), new Vector3f(0, 0, -8f)));
 		text = textToShow.get(textI);
 		TextMaster.loadText(text);
 		text.setColour(0f, 0f, 0f);
@@ -71,7 +69,6 @@ class LoadingScreenThread implements Runnable {
 						text.remove();
 					textI++;
 					setReady(textI >= textToShow.size());
-					setBreak(READY);
 					setIncr(true);
 					setText(textToShow.get(textI > logo_index ? textI - 1 : textI));
 					TextMaster.add(text);
@@ -82,7 +79,6 @@ class LoadingScreenThread implements Runnable {
 				if (logo.done()) {
 					textI++;
 					setReady(textI >= textToShow.size());
-					setBreak(READY);
 					setIncr(true);
 					setText(textToShow.get(textI - 1));
 					TextMaster.add(text);
@@ -104,12 +100,8 @@ class LoadingScreenThread implements Runnable {
 				e.printStackTrace();
 			}
 		}
-		TextMaster.remove(text);
+		TextMaster.removeAll(textToShow);
 		GU.currentThread().finishExecution();
-	}
-
-	private void setBreak(boolean b) {
-		boolean toBreak = b;
 	}
 
 	private void setIncr(boolean b) {

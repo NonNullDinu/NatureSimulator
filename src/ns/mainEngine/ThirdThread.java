@@ -10,11 +10,13 @@ import ns.utils.GU;
 import ns.utils.MousePicker;
 import ns.world.World;
 import ns.world.WorldGenerator;
+import ns.worldLoad.WorldLoadMaster;
 import ns.worldSave.SaveWorldMaster;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 
 class ThirdThread implements Runnable {
 	public static boolean READY = false;
@@ -52,16 +54,23 @@ class ThirdThread implements Runnable {
 			Thread.yield();
 		}
 
-		SaveWorldMaster.save(world, SaveData.openOutput("save0." + GU.WORLD_SAVE_FILE_FORMAT));
+		SaveWorldMaster.save(world,
+				SaveData.openOutput("save" + WorldLoadMaster.count++ + "." + GU.WORLD_SAVE_FILE_FORMAT));
+		try (OutputStream savesDirCount = SaveData.openOutput("saves.dir").asOutputStream()) {
+			savesDirCount.write(Integer.toString(WorldLoadMaster.count).getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		GU.currentThread().finishExecution();
 	}
 
 	private void execute(String ln) throws NumberFormatException {
 		if (ln.equals("show-time")) {
-			System.out.print("Simulation seconds since begun: " + GU.time.t + "; days passed in simulation " + GU.time.day() + "\n>");
+			System.out.print("Simulation seconds since begun: " + GU.time.t + "; days passed in simulation "
+					+ GU.time.day() + "\n>");
 		} else if (ln.equals("h") || ln.equals("help")) {
-			System.out.print("Commands available:\n\tshow-time --- shows the time since the begin of the " +
-					"simulation\n\th[elp] --- shows this list\n>");
+			System.out.print("Commands available:\n\tshow-time --- shows the time since the begin of the "
+					+ "simulation\n\th[elp] --- shows this list\n>");
 		} else if (ln.startsWith("time-rate ")) {
 			float arg = Float.parseFloat(ln.substring(10));
 			DisplayManager.time_rate(arg);
