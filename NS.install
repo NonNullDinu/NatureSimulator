@@ -1,0 +1,23 @@
+pre_install(){
+	echo "PREINSTALL"
+}
+
+post_install(){
+	echo "POSTINSTALL"
+}
+
+pre_upgrade(){
+	echo "PREUPGRADE"
+}
+
+post_upgrade(){
+	echo "POSTUPGRADE"
+}
+
+pre_remove(){
+	echo "PREREMOVE"
+}
+
+post_remove(){
+	echo "POSTREMOVE"
+}

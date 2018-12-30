@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/NS.iml" filepath="$PROJECT_DIR$/NS.iml" />
       <module fileurl="file://$PROJECT_DIR$/golden.rose/golden.rose.iml" filepath="$PROJECT_DIR$/golden.rose/golden.rose.iml" />
+      <module fileurl="file://$PROJECT_DIR$/main/main.iml" filepath="$PROJECT_DIR$/main/main.iml" />
       <module fileurl="file://$PROJECT_DIR$/utils/utils.iml" filepath="$PROJECT_DIR$/utils/utils.iml" />
     </modules>
   </component>

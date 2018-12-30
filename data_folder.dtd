@@ -1,13 +1,30 @@
-<!ELEMENT root_folder (version, description, root_tree)>
-		<!ATTLIST root_folder name CDATA #REQUIRED path CDATA #IMPLIED>
-		<!ELEMENT version EMPTY>
-		<!ATTLIST version v CDATA #REQUIRED>
-		<!ELEMENT description (#PCDATA)>
-		<!ELEMENT root_tree (folder*, file*)>
-		<!ELEMENT folder (folder*, file*)>
-		<!ATTLIST folder name CDATA #REQUIRED>
-		<!ELEMENT file EMPTY>
-		<!ATTLIST file
-				name CDATA #REQUIRED
-				extension CDATA #REQUIRED
-				>
+<!--
+  ~ Copyright (C) 2018  Dinu Blanovschi
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+        <!ELEMENT root_folder (version, description, root_tree)>
+        <!ATTLIST root_folder name CDATA #REQUIRED path CDATA #IMPLIED>
+        <!ELEMENT version EMPTY>
+        <!ATTLIST version v CDATA #REQUIRED>
+        <!ELEMENT description (#PCDATA)>
+        <!ELEMENT root_tree (folder*, file*)>
+        <!ELEMENT folder (folder*, file*)>
+        <!ATTLIST folder name CDATA #REQUIRED>
+        <!ELEMENT file EMPTY>
+        <!ATTLIST file
+                name CDATA #REQUIRED
+                extension CDATA #REQUIRED
+                >
