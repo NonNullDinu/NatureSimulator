@@ -1,4 +1,4 @@
-![NS_ICON](gameData/textures/ns_icon.png)
+![NS_ICON](./gameData/textures/ns_icon.png)
 
 # Description
 This application is an open-source attempt to simulate nature.
@@ -17,12 +17,11 @@ sh ~/.ns-install/update.sh
 ### Windows
 No auto-update, have to download the new version.
 
-<table>
-<caption>OS Dependent Features</caption>
-<tr><th>Feature</th><th>Linux</th><th>macOS</th><th>Windows</th></tr>
-<tr><td>BASH-based update</td><td>✓</td><td>✓</td><td></td></tr>
-<tr><td>Dependency native libraries</td><td>✓</td><td>@FIXME</td><td>✓</td></tr>
-</table>
+### OS Dependent Features
+|Feature|Linux|macOS|Windows|
+|------|:-:|:-:|:-:|
+|BASH-based update |✓|✓||
+|Dependency native libraries|✓|FIXME|✓|
 
 Update log
 * NS v.1.3.3.-alpha

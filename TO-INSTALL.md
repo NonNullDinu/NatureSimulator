@@ -11,7 +11,7 @@ The only dependency: java jre or jdk installed and added to $PATH.
 ## Specifications for CLI
 ### BASH
 #### Commands
-.The packages that contain these commands should be installed.
+The packages that contain these commands should be installed.
 1. `java`
 2. `md5sum`
 3. `curl`
