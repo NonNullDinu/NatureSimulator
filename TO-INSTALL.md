@@ -1,30 +1,27 @@
-:toc: right
-
-== System requirements
-=== Linux
+# System requirements
+## Linux
 The only dependency: java jre or jdk installed and added to $PATH.
 
-=== Windows
+## Windows
 The only dependency: java jre or jdk installed and added to %PATH%.
 
-=== MacOS
+## MacOS
 The only dependency: java jre or jdk installed and added to $PATH.
 
-=== Specifications for CLI
-==== BASH
-===== Commands
+## Specifications for CLI
+### BASH
+#### Commands
 .The packages that contain these commands should be installed.
 1. `java`
 2. `md5sum`
 3. `curl`
 
-=== Windows CMD
+## Windows CMD
 TO BE implemented...
 
-== Installing
-=== Linux & MacOS
+# Installing
+## Linux & MacOS
 The following line will do everything.
-[source, bash]
-----
+```bash
 curl https://raw.githubusercontent.com/NonNullDinu/NatureSimulator/master/installScripts/1.3.2.sh | sh
-----
+```
