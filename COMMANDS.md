@@ -1,15 +1,15 @@
 # In-game console comands
-Meaning of simbols are as follows<br/>
-<> - mandatory<br/>
-[] - optional<br/>
-$sarg* - string argument (referenced as arg*)<br/>
-$narg* - numeric argument (same as sarg*, referenced as arg*)<br/>
+Meaning of simbols are as follows\
+<> - mandatory\
+[] - optional\
+$sarg* - string argument (referenced as arg*)\
+$narg* - numeric argument (same as sarg*, referenced as arg*)\
 
 ## SYNTAX
 `action-identifier arg...`
 Command structure is as follows:
 	1.`Action identifier`. Is a structure of only one word.
-	If there are multiple words they will be separated by `-`<br/>
+	If there are multiple words they will be separated by `-`\
 	2.`Action arguments`. Can be either string arguments or numeric arguments
 
 IMPORTANT: No modification to the `action identifier` is allowed if not specified with optional part.
