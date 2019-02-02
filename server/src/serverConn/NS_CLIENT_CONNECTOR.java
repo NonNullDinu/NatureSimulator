@@ -34,7 +34,7 @@ public class NS_CLIENT_CONNECTOR {
 	public NS_CLIENT_CONNECTOR() throws IOException {
 	}
 
-	public void connectToServer() {
+	public void connectToClient() {
 		try {
 			socket = server.accept();
 			reader = new InputStreamReader(socket.getInputStream());
@@ -56,7 +56,7 @@ public class NS_CLIENT_CONNECTOR {
 		}
 	}
 
-	public void sendMessageToServer(int code) {
+	public void sendMessageToClient(int code) {
 		try {
 			writer.write(code);
 			writer.flush();

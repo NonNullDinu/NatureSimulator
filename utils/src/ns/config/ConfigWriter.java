@@ -28,7 +28,7 @@ class ConfigWriter {
 	public static void main(String[] args) throws IOException {
 		OutputStream stream = Out.create("gameData/config/gameConfiguration.config").asOutputStream();
 		while (true) {
-			System.out.println("Full screen?Y/N");
+			System.out.println("Full screen?y/n");
 			int in = System.in.read();
 			if (in == 89 || in == 121) {
 				stream.write(GU.binaryInt("0001 0001"));

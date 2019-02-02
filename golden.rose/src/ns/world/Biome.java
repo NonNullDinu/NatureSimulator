@@ -29,11 +29,13 @@ public enum Biome {
 	SWAMP(2, new Vector3f(0.659f, 0.569f, 0.62f), (Terrain terrain, Vector3f point) -> {
 		List<RiverEnd> riverEnds = terrain.getRiverEnds();
 		for (RiverEnd riverEnd : riverEnds) {
-			if (Vector3f.sub(point, riverEnd.getPosition(), null).lengthSquared() < 22500f)
+			if (Vector3f.sub(point, riverEnd.getPosition(), null).lengthSquared() < 22500f) // (< 150.0)
 				return true;
 		}
 		return false;
-	}), SNOW_LANDS(3, new Vector3f(0.9f, 0.9f, 0.9f), null), GRASS_LAND(4, new Vector3f(0f, 0.9f, 0f), null),
+	}),
+	SNOW_LANDS(3, new Vector3f(0.9f, 0.9f, 0.9f), null),
+	GRASS_LAND(4, new Vector3f(0f, 0.9f, 0f), null),
 	RIVER_LAND(5, new Vector3f(0.722f, 0.639f, 0.102f), null),
 	;
 

@@ -18,6 +18,8 @@
 package ns.display;
 
 import data.GameData;
+import ns.configuration.Config;
+import ns.configuration.GameConfig;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
@@ -45,12 +47,12 @@ public class DisplayManager {
 	public static void createDisplay() {
 		try {
 			BufferedImage icon = ImageIO.read(GameData.getResourceAt("textures/ns_icon.png").asInputStream());
-			Display.setTitle("Nature Simulator");
+			if (GameConfig.getConfig(GameConfig.FULLSCREEN) == Config.TRUE)
+				Display.setTitle("Nature Simulator");
 			Display.setIcon(new ByteBuffer[]{loadIconInstance(icon, 128), loadIconInstance(icon, 32),
 					loadIconInstance(icon, 16)});
 			Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
 			Display.setVSyncEnabled(true);
-//			Display.create();
 			Display.create(new PixelFormat().withDepthBits(24),
 					new ContextAttribs(4, 3).withForwardCompatible(true).withProfileCore(true));
 			Mouse.create();
@@ -99,7 +101,7 @@ public class DisplayManager {
 		if (image.getWidth() > scaledIcon.getWidth()) {
 			ratio = (double) (scaledIcon.getWidth()) / image.getWidth();
 		} else {
-			ratio = scaledIcon.getWidth() / image.getWidth();
+			ratio = scaledIcon.getWidth() / (double) image.getWidth();
 		}
 		if (image.getHeight() > scaledIcon.getHeight()) {
 			double r2 = (double) (scaledIcon.getHeight()) / image.getHeight();
@@ -107,7 +109,7 @@ public class DisplayManager {
 				ratio = r2;
 			}
 		} else {
-			double r2 = (scaledIcon.getHeight() / image.getHeight());
+			double r2 = (scaledIcon.getHeight() / (double) image.getHeight());
 			if (r2 < ratio) {
 				ratio = r2;
 			}

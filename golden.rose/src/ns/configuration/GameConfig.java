@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-class GameConfig {
+public class GameConfig {
 	public static final int FULLSCREEN = 0;
 	static final int TOTAL = 1;
 	private static final Map<Integer, Config> configuration = new HashMap<>();

@@ -61,7 +61,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class GU {
 	public static final Random random = new Random();
@@ -417,7 +416,7 @@ public class GU {
 	}
 
 	public static boolean isStringOfPattern(String string, String pattern) {
-		return Pattern.compile(pattern).matcher(string).matches();
+		return string.matches(pattern);
 	}
 
 	public static Vector3f mix(Vector3f a, Vector3f b, float blend) {

@@ -1,8 +1,0 @@
-GL_DEBUG_SOURCE_SHADER_COMPILER GL_DEBUG_TYPE_OTHER 5 GL_DEBUG_SEVERITY_NOTIFICATION FS SIMD8 shader: 14 inst, 0 loops, 308 cycles, 0:0 spills:fills, Promoted 0 constants, compacted 224 to 160 bytes.
-GL_DEBUG_SOURCE_SHADER_COMPILER GL_DEBUG_TYPE_OTHER 6 GL_DEBUG_SEVERITY_NOTIFICATION FS SIMD16 shader: 14 inst, 0 loops, 322 cycles, 0:0 spills:fills, Promoted 0 constants, compacted 224 to 160 bytes.
-GL_DEBUG_SOURCE_SHADER_COMPILER GL_DEBUG_TYPE_OTHER 7 GL_DEBUG_SEVERITY_NOTIFICATION FS SIMD8 shader: 14 inst, 0 loops, 308 cycles, 0:0 spills:fills, Promoted 0 constants, compacted 224 to 160 bytes.
-GL_DEBUG_SOURCE_SHADER_COMPILER GL_DEBUG_TYPE_OTHER 8 GL_DEBUG_SEVERITY_NOTIFICATION FS SIMD16 shader: 14 inst, 0 loops, 322 cycles, 0:0 spills:fills, Promoted 0 constants, compacted 224 to 160 bytes.
-GL_DEBUG_SOURCE_SHADER_COMPILER GL_DEBUG_TYPE_OTHER 9 GL_DEBUG_SEVERITY_NOTIFICATION FS SIMD8 shader: 14 inst, 0 loops, 106 cycles, 0:0 spills:fills, Promoted 0 constants, compacted 224 to 144 bytes.
-GL_DEBUG_SOURCE_SHADER_COMPILER GL_DEBUG_TYPE_OTHER 10 GL_DEBUG_SEVERITY_NOTIFICATION FS SIMD16 shader: 14 inst, 0 loops, 118 cycles, 0:0 spills:fills, Promoted 0 constants, compacted 224 to 144 bytes.
-GL_DEBUG_SOURCE_SHADER_COMPILER GL_DEBUG_TYPE_OTHER 11 GL_DEBUG_SEVERITY_NOTIFICATION FS SIMD8 shader: 14 inst, 0 loops, 106 cycles, 0:0 spills:fills, Promoted 0 constants, compacted 224 to 144 bytes.
-GL_DEBUG_SOURCE_SHADER_COMPILER GL_DEBUG_TYPE_OTHER 12 GL_DEBUG_SEVERITY_NOTIFICATION FS SIMD16 shader: 14 inst, 0 loops, 118 cycles, 0:0 spills:fills, Promoted 0 constants, compacted 224 to 144 bytes.

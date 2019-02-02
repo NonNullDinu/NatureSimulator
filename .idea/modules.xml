@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/NS.iml" filepath="$PROJECT_DIR$/NS.iml" />
       <module fileurl="file://$PROJECT_DIR$/golden.rose/golden.rose.iml" filepath="$PROJECT_DIR$/golden.rose/golden.rose.iml" />
       <module fileurl="file://$PROJECT_DIR$/main/main.iml" filepath="$PROJECT_DIR$/main/main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ns.nus/ns.nus.iml" filepath="$PROJECT_DIR$/ns.nus/ns.nus.iml" />
       <module fileurl="file://$PROJECT_DIR$/server/server.iml" filepath="$PROJECT_DIR$/server/server.iml" />
       <module fileurl="file://$PROJECT_DIR$/utils/utils.iml" filepath="$PROJECT_DIR$/utils/utils.iml" />
     </modules>
