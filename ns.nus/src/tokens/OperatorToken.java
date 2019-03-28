@@ -18,7 +18,7 @@
 package tokens;
 
 public class OperatorToken extends Token {
-	Math_Operator mop;
+	public Math_Operator mop;
 
 	public OperatorToken(Math_Operator op) {
 		this.mop = op;
@@ -26,6 +26,10 @@ public class OperatorToken extends Token {
 
 	public int result(int a, int b) {
 		return mop.res.op(a, b);
+	}
+
+	public String asm_code(String a, String b) {
+		return mop.asm_code(a, b);
 	}
 
 	public enum Math_Operator {
@@ -39,6 +43,25 @@ public class OperatorToken extends Token {
 
 		public float op(int a, int b) {
 			return res.op(a, b);
+		}
+
+		public String asm_code(String a, String b) {
+			String asm = "";
+			switch (this) {
+				case ADD:
+					asm = "add " + a + ", " + b + "\n";
+					break;
+				case SUBTRACT:
+					asm = "sub " + a + ", " + b + "\n";
+					break;
+				case DIVIDE:
+					asm = "mov ax, " + a + "\n\tdiv " + b + "\n\tmov " + a + ", al\n";
+					break;
+				case MULTIPLY:
+					asm = "mov al, " + a + "\n\tmul " + b + "\n\tmov " + a + ", ah\n\tshl " + a + ", 8\n\tadd " + a + "al\n";
+					break;
+			}
+			return asm;
 		}
 	}
 

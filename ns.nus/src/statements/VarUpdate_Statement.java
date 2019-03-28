@@ -29,8 +29,8 @@ import variables.Variable_STRING;
 import java.util.Map;
 
 public class VarUpdate_Statement extends Statement {
-	private final Token[] value;
-	private final String name;
+	public final Token[] value;
+	public final String name;
 
 	public VarUpdate_Statement(String name, Token[] value) {
 		super(Statement_TYPE.VAR_UPDATE);

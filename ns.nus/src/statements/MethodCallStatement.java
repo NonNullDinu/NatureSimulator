@@ -50,4 +50,8 @@ public class MethodCallStatement extends Statement {
 			method.call(val);
 		} else method.call(new Value[0]);
 	}
+
+	public String assembly() {
+		return method.assembly(argTokens);
+	}
 }

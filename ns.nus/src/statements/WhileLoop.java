@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.Objects;
 
 public class WhileLoop extends Statement {
-	private final Token[] conditionTokens;
-	private final Statements statements;
+	public final Token[] conditionTokens;
+	public final Statements statements;
 
 	public WhileLoop(Token[] conditionTokens, Statements statements) {
 		super(Statement_TYPE.WHILE_LOOP);

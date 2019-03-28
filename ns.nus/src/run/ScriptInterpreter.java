@@ -15,6 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+package run;
+
 import exceptions.ParsingError;
 import exceptions.TokenException;
 import lang.METHOD;

@@ -15,13 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package lang;
+package resources;
 
-import tokens.Token;
-import tokens.Value;
+import ns.utils.GU;
 
-public interface CALLBACK {
-	int call(Value[] values);
+public interface DirectoryPointer {
+	String onWindowsLoc();
 
-	String assembly(Token[][] argTokens);
+	String onLinuxLoc();
+
+	default String loc() {
+		return GU.OS_LINUX ? onLinuxLoc() : onWindowsLoc();
+	}
 }

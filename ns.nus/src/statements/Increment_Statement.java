@@ -17,39 +17,21 @@
 
 package statements;
 
-import exceptions.RedeclarationException;
-import variables.*;
+import variables.Variable;
+import variables.Variable_INT;
 
 import java.util.Map;
 
-public class VarDeclare_Statement extends Statement {
+public class Increment_Statement extends Statement {
 	public String name;
-	public DATA_TYPE type;
 
-	public VarDeclare_Statement(String name, DATA_TYPE type) {
-		super(Statement_TYPE.VAR_DECLARE);
+	public Increment_Statement(String name) {
+		super(Statement_TYPE.INCREMENT);
 		this.name = name;
-		this.type = type;
 	}
 
 	@Override
 	public void run(Map<String, Variable> variables) {
-		if (variables.containsKey(name)) {
-			throw new RedeclarationException("Cannot redefine variable \"" + name + "\"");
-		} else {
-			Variable v = null;
-			switch (type) {
-				case INT:
-					v = new Variable_INT();
-					break;
-				case BOOL:
-					v = new Variable_BOOL();
-					break;
-				case STRING:
-					v = new Variable_STRING();
-					break;
-			}
-			variables.put(name, v);
-		}
+		((Variable_INT) variables.get(name)).v++;
 	}
 }

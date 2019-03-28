@@ -17,6 +17,7 @@
 
 package tokens;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 public class Payload {
@@ -32,5 +33,9 @@ public class Payload {
 
 	public static Payload payload(String name) {
 		return payloads.get(name);
+	}
+
+	public static Collection<Payload> allPayloads() {
+		return payloads.values();
 	}
 }

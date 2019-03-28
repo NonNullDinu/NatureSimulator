@@ -18,11 +18,12 @@
 package data;
 
 import ns.utils.GU;
+import resources.DirectoryPointer;
 import resources.IReadWriteFolder;
 import resources.In;
 import resources.Out;
 
-public class SaveData implements IReadWriteFolder {
+public class SaveData implements IReadWriteFolder, DirectoryPointer {
 	private static SaveData folder;
 
 	private SaveData() {
@@ -46,16 +47,26 @@ public class SaveData implements IReadWriteFolder {
 
 	@Override
 	public In _getResourceAt(String location) {
-		return In.create("saveData/" + location);
+		return In.create(loc() + "/" + location);
 	}
 
 	@Override
 	public In _getResourceAt(String location, boolean version) {
-		return In.create("saveData/" + location, version);
+		return In.create(loc() + "/" + location, version);
 	}
 
 	@Override
 	public Out _openOutput(String location) {
-		return Out.create(GU.path + "/saveData/" + location);
+		return Out.create(loc() + "/" + location);
+	}
+
+	@Override
+	public String onWindowsLoc() {
+		return GU.path + "saveData";
+	}
+
+	@Override
+	public String onLinuxLoc() {
+		return System.getenv("HOME") + "/ns/saveData";
 	}
 }

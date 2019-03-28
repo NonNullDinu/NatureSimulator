@@ -8,5 +8,6 @@ for(int i = 0; i<k; i++) do
 done
 delete i
 delete j
+debug print("this is a test")
 debug print(c)
 exit()

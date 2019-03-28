@@ -22,13 +22,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import resources.DirectoryPointer;
 import resources.IFolder;
 import resources.In;
 
 import java.io.InputStream;
 import java.util.Objects;
 
-public class GameData implements IFolder {
+public class GameData implements IFolder, DirectoryPointer {
 	private static GameData folder;
 
 	private GameData(int version, int patch) {
@@ -75,5 +76,15 @@ public class GameData implements IFolder {
 	@Override
 	public In _getResourceAt(String location, boolean version) {
 		return In.create("gameData/" + location, version);
+	}
+
+	@Override
+	public String onWindowsLoc() {
+		return GU.path + "gameData/";
+	}
+
+	@Override
+	public String onLinuxLoc() {
+		return "/usr/share/ns/gameData/";
 	}
 }
