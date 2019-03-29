@@ -26,6 +26,7 @@ public class PayloadToken extends Token {
 	}
 
 	public void bind() {
-		this.payload = Payload.payload(name);
+		if (this.payload == null)
+			this.payload = Payload.payload(name);
 	}
 }

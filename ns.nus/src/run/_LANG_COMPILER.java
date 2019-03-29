@@ -34,6 +34,9 @@ import java.util.regex.Pattern;
 
 public class _LANG_COMPILER {
 	public static int strCode = 0;
+	private static final String functions_code = "print_char:\n\tpush rax\n\tmov ecx, eax\n\tmov eax, 4\n\tmov ebx, 1\n\tmov edx, 1\n\tint 0x80\n\tpop rax\n\tret\n\n" +
+			"printNumber:\n\tpush rax\n\tpush rdx\n\txor edx,edx\n\tdiv dword[const10]\n\ttest eax,eax\n\tje .l1\n\tcall printNumber\n.l1:\n\tlea eax,[digits+edx]\n\tcall print_char\n\tpop rdx\n\tpop rax\n\tret\n\n" +
+			"printNewLine:\n\tmov eax, 4\n\tmov ebx, 1\n\tmov ecx, new_line\n\tmov edx, 1\n\tint 0x80\n\tret\n\n";
 	static int tg = 1;
 	static List<VAR_> vars = new ArrayList<>();
 	static List<VAR_> dataVars = new ArrayList<>();
@@ -47,6 +50,7 @@ public class _LANG_COMPILER {
 	private static Statement[] statements;
 	private static String assembly;
 	private static byte[] compiledAssembly; // MACHINE CODE
+	public static int fileCode = 0;
 
 	public static void readProgram() {
 		try (FileInputStream fin = new FileInputStream(program_file_name)) {
@@ -92,8 +96,15 @@ public class _LANG_COMPILER {
 		dataVars.add(new VAR_(name, DATA_TYPE.STRING, value));
 	}
 
+	public static void addNewVar(String name, byte[] value) {
+		String content = "";
+		for (byte b : value)
+			content += Byte.toUnsignedInt(b) + ", ";
+		dataVars.add(new VAR_(name, DATA_TYPE.STRING, content.substring(0, content.length() - 2)));
+	}
+
 	public static void makeAssembly() {
-		assembly = "section .text\n\tglobal _start\n_start:\n";
+		assembly = "section .text\n" + functions_code + "\n\tglobal _start\n_start:\n";
 		for (Statement statement : statements) {
 			if (statement.type == Statement_TYPE.VAR_DECLARE) {
 				vars.add(new VAR_(((VarDeclare_Statement) statement).name, ((VarDeclare_Statement) statement).type));
@@ -106,31 +117,28 @@ public class _LANG_COMPILER {
 				assembly += conditional(((WhileLoop) statement).conditionTokens);
 				assembly += "\tCMP r10, 0\n\tJNE WHILE" + a + "\n";
 			} else if (statement.type == Statement_TYPE.INCREMENT) {
-				assembly += "\tINC WORD [" + ((VarUpdate_Statement) statement).name + "]\n";
+				assembly += "\tINC QWORD [" + ((VarUpdate_Statement) statement).name + "]\n";
 			} else if (statement.type == Statement_TYPE.METHOD_CALL) {
 				assembly += ((MethodCallStatement) statement).assembly();
 			}
 		}
-		assembly += "\tmov eax, 1\n\tmov ebx, 0\n\tint 0x80\n";
 		String asm_vars = "section .bss\n";
 		for (VAR_ var : vars) {
 			asm_vars += "\t" + var.name + " " + (var.type == DATA_TYPE.INT ? "RESQ" : "RESW") + " 1\n";
 		}
 		asm_vars += "\tINTERNAL____CACHE RESQ 65536\n";//INTERNAL____CACHE
 		assembly = asm_vars + "\n\n" + assembly;
-		if (Payload.allPayloads().size() != 0 || dataVars.size() != 0) {
-			asm_vars = "\n\nsection .data\n";
-			for (Payload p : Payload.allPayloads()) {
-				asm_vars += "\t" + p.identifier + " DB ";
-				for (byte b : p.payload)
-					asm_vars += b + ", ";
-				asm_vars = asm_vars.substring(0, asm_vars.length() - 2) + "\n";
-			}
-			for (VAR_ var : dataVars) {
-				asm_vars += "\t" + var.name + " DB \"" + var.value + "\", 10, 0\n";
-			}
-			assembly += asm_vars;
+		asm_vars = "\n\nsection .data\n\tconst10 dd 10\n\tdigits db 48,49,50,51,52,53,54,55,56,57\n\tnew_line DB 10\n";
+		for (Payload p : Payload.allPayloads()) {
+			asm_vars += "\t" + p.identifier + " DB ";
+			for (byte b : p.payload)
+				asm_vars += b + ", ";
+			asm_vars = asm_vars.substring(0, asm_vars.length() - 2) + "\n";
 		}
+		for (VAR_ var : dataVars) {
+			asm_vars += "\t" + var.name + " DB " + var.value + "\n";
+		}
+		assembly += asm_vars;
 		System.out.println("Assembly:\n" + assembly);
 	}
 
@@ -148,7 +156,7 @@ public class _LANG_COMPILER {
 				asm += conditional(((WhileLoop) statement).conditionTokens);
 				asm += "\tCMP r10, 0\n\tJNE WHILE" + a + "\n";
 			} else if (statement.type == Statement_TYPE.INCREMENT) {
-				asm += "\tINC WORD [" + ((Increment_Statement) statement).name + "]\n";
+				asm += "\tINC QWORD [" + ((Increment_Statement) statement).name + "]\n";
 			} else if (statement.type == Statement_TYPE.METHOD_CALL) {
 				assembly += ((MethodCallStatement) statement).assembly();
 			}
@@ -372,6 +380,8 @@ public class _LANG_COMPILER {
 			value = value.substring(1);
 		while (value.endsWith(" ") || value.endsWith("\t"))
 			value = value.substring(0, value.length() - 1);
+		if (value.startsWith("\"") && value.endsWith("\""))
+			return new Token[]{new StringToken(value)};
 		List<Token> tokens = new ArrayList<>();
 		String[] parts = value.split("(\\s)*([(+\\-*/)]|&&|\\|\\||==|>=|>|<|<=|!=)(\\s)*");
 		for (int i = 0; i < parts.length; i++) {
@@ -452,13 +462,17 @@ public class _LANG_COMPILER {
 		return tokens.toArray(new Token[tokens.size()]);
 	}
 
-	public static String intToString(Token token) {
+	public static String printIdentifier(Token token) {
 		if (token instanceof IdentifierToken) {
 			String name = ((IdentifierToken) token).identifier;
 			parse_index++;
-			String asm = "\tmov r10, [" + name + "]\n\tmov r11, str_" + strCode + "\n\tadd r11, 64\nPARSE_" + parse_index + ":\n\tmovzx al, r10\n\tdiv 0xA\n\tmovzx r10, al\n\tadd ah, 48\n\tmov BYTE [r11], ah\n\tsub r11, 8\n\tCMP r10, 0\n\tJNE PARSE_" + parse_index + "\n";
+			String asm = "\tmov eax, [" + name + "]\n\tcall printNumber\n\tcall printNewLine\n";
 			return asm;
 		} else return "\n";
+	}
+
+	public static void addNewRESWVar(String name) {
+		vars.add(new VAR_(name, DATA_TYPE.SHORT_INT));
 	}
 
 	private static class VAR_ {
