@@ -18,4 +18,8 @@
 package tokens;
 
 public class ParenthesisClosedToken extends Token {
+	@Override
+	public String toString() {
+		return "PCT(')')";
+	}
 }

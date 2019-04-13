@@ -18,4 +18,8 @@
 package tokens;
 
 public class VariableTypeToken extends Token {
+	@Override
+	public String toString() {
+		return "VAR_TYPE_TOKEN";
+	}
 }

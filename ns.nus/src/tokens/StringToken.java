@@ -23,4 +23,9 @@ public class StringToken extends Token {
 	public StringToken(String str) {
 		this.str = str;
 	}
+
+	@Override
+	public String toString() {
+		return "ST(\"" + str + "\")";
+	}
 }

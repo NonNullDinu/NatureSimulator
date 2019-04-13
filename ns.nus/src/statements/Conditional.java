@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Conditional extends Statement {
-	private Token[] condition;
-	private Statements onTrue, onFalse;
+	public Token[] condition;
+	public Statements onTrue, onFalse;
 
 	public Conditional(Token[] condition, Statements onTrue, Statements onFalse) {
 		super(Statement_TYPE.CONDITIONAL);

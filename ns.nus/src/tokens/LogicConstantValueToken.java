@@ -23,4 +23,9 @@ public class LogicConstantValueToken extends Token {
 	public LogicConstantValueToken(boolean v) {
 		this.v = v;
 	}
+
+	@Override
+	public String toString() {
+		return "LCVT(" + v + ")";
+	}
 }

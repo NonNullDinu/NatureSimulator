@@ -32,6 +32,11 @@ public class OperatorToken extends Token {
 		return mop.asm_code(a, b);
 	}
 
+	@Override
+	public String toString() {
+		return "OP(" + mop.name() + ")";
+	}
+
 	public enum Math_Operator {
 		ADD((a, b) -> a + b), SUBTRACT((a, b) -> a - b), MULTIPLY((a, b) -> a * b), DIVIDE((a, b) -> a / b), LOGIC_AND((a, b) -> a != 0 && b != 0 ? 1 : 0), LOGIC_OR((a, b) -> a != 0 || b != 0 ? 1 : 0), LOGIC_XOR((a, b) -> a != 0 ^ b != 0 ? 1 : 0),
 		LOGIC_E((a, b) -> a == b ? 1 : 0), LOGIC_NE((a, b) -> a != b ? 1 : 0), LOGIC_G((a, b) -> a > b ? 1 : 0), LOGIC_GE((a, b) -> a >= b ? 1 : 0), LOGIC_S((a, b) -> a < b ? 1 : 0), LOGIC_SE((a, b) -> a <= b ? 1 : 0);
@@ -55,13 +60,13 @@ public class OperatorToken extends Token {
 					asm = "sub " + a + ", " + b + "\n";
 					break;
 				case DIVIDE:
-					asm = "mov ax, " + a + "\n\tdiv " + b + "\n\tmov " + a + ", al\n";
+					asm = "mov eax, " + a + "d\n\tshr " + a + ", 32\n\tmov edx, " + a + "d\n\tdiv " + b + "d\n\tmov " + a + "d, eax\n";
 					break;
 				case MULTIPLY:
-					asm = "mov al, " + a + "\n\tmul " + b + "\n\tmov " + a + ", ah\n\tshl " + a + ", 8\n\tadd " + a + "al\n";
+					asm = "mov edx, 0\n\tmov eax, " + a + "d\n\tmul " + b + "d\n\tmov " + a + "d, edx\n\tshl " + a + ", 32\n\tadd " + a + "d, eax\n";
 					break;
 			}
-			return asm;
+			return "\t" + asm;
 		}
 	}
 

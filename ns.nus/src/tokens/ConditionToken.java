@@ -18,4 +18,8 @@
 package tokens;
 
 public class ConditionToken extends Token {
+	@Override
+	public String toString() {
+		return "COND";
+	}
 }

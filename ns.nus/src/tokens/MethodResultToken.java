@@ -37,4 +37,9 @@ public class MethodResultToken extends Token {
 			values[i] = ValueEvaluator.evaluate(tokenArgs[i], variables);
 		return method.call(values);
 	}
+
+	@Override
+	public String toString() {
+		return "MRT";
+	}
 }

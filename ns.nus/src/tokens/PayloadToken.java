@@ -29,4 +29,9 @@ public class PayloadToken extends Token {
 		if (this.payload == null)
 			this.payload = Payload.payload(name);
 	}
+
+	@Override
+	public String toString() {
+		return "PT(" + name + ")";
+	}
 }

@@ -18,4 +18,8 @@
 package tokens;
 
 public class ParenthesisOpenedToken extends Token {
+	@Override
+	public String toString() {
+		return "POT('(')";
+	}
 }

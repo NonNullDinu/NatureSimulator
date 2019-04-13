@@ -15,40 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package tree;
+package lang.exceptions;
 
-import statements.Statement;
-import variables.Variable;
-
-import java.util.Iterator;
-import java.util.Map;
-
-public class Statements implements Iterable<Statement> {
-	public Statement[] statements;
-
-	public Statements(Statement[] statements) {
-		this.statements = statements;
-	}
-
-	public void run(Map<String, Variable> variables) {
-		for (Statement s : statements)
-			s.run(variables);
-	}
-
-	int ind = 0;
-
-	@Override
-	public Iterator iterator() {
-		return new Iterator() {
-			@Override
-			public boolean hasNext() {
-				return ind < statements.length;
-			}
-
-			@Override
-			public Statement next() {
-				return statements[ind++];
-			}
-		};
+public class InvalidExpressionException extends RuntimeException {
+	public InvalidExpressionException(String message) {
+		super(message);
 	}
 }

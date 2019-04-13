@@ -69,7 +69,7 @@ public enum METHOD {
 				_LANG_COMPILER.addNewVar("file_" + ++_LANG_COMPILER.fileCode + "_path", name + ", 0");
 				_LANG_COMPILER.addNewRESWVar("file_" + _LANG_COMPILER.fileCode + "_desc");
 				_LANG_COMPILER.addNewVar("file_" + _LANG_COMPILER.fileCode + "_content", pl.payload);
-				asm = "\tmov eax, 8\n\tmov ebx, file_" + _LANG_COMPILER.fileCode + "_path\n\tmov ecx, 0420\n\tint 0x80\n\tmov [file_" + _LANG_COMPILER.fileCode + "_desc], eax\n\tmov eax, 4\n\tmov ebx, [file_" + _LANG_COMPILER.fileCode + "_desc]\n\tmov ecx, file_" + _LANG_COMPILER.fileCode + "_content\n\tmov edx, " + pl.payload.length + "\n\tint 0x80\n\tmov eax, 6\n\tmov ebx, [file_" + _LANG_COMPILER.fileCode + "_desc]\n\tint 0x80\n";
+				asm = "\tmov eax, 8\n\tmov ebx, file_" + _LANG_COMPILER.fileCode + "_path\n\tmov ecx, 0q644\n\tint 0x80\n\tmov [file_" + _LANG_COMPILER.fileCode + "_desc], eax\n\tmov eax, 4\n\tmov ebx, [file_" + _LANG_COMPILER.fileCode + "_desc]\n\tmov ecx, file_" + _LANG_COMPILER.fileCode + "_content\n\tmov edx, " + pl.payload.length + "\n\tint 0x80\n\tmov eax, 6\n\tmov ebx, [file_" + _LANG_COMPILER.fileCode + "_desc]\n\tint 0x80\n";
 			}
 			return asm;
 		}
@@ -87,16 +87,17 @@ public enum METHOD {
 
 		@Override
 		public String assembly(Token[][] argTokens) {
+			System.out.println("DEBUG_PRINT : " + argTokens.length + " " + argTokens[0].length);
 			if (argTokens.length == 1 && argTokens[0].length == 1) {
 				if (argTokens[0][0] instanceof StringToken) {
-					_LANG_COMPILER.addNewVar("str_" + ++_LANG_COMPILER.strCode, "\"" + ((StringToken) argTokens[0][0]).str + "\", 10, 0");
+					_LANG_COMPILER.addNewVar("str_" + ++_LANG_COMPILER.strCode, ((StringToken) argTokens[0][0]).str + ", 10, 0");
 					return "\tmov eax, 4\n\tmov ebx, 1\n\tmov ecx, str_" + _LANG_COMPILER.strCode + "\n\tmov edx, " + (((StringToken) argTokens[0][0]).str.length() + 2) + "\n\tint 0x80\n";
 				} else if (argTokens[0][0] instanceof NumberToken) {
 					String val = Integer.toString(((NumberToken) argTokens[0][0]).v);
 					_LANG_COMPILER.addNewVar("str_" + ++_LANG_COMPILER.strCode, val);
-					return "\tmov eax, 4\n\tmov ebx, 1\n\tmov ecx, str_" + _LANG_COMPILER.strCode + "\n\tmov edx, " + (val.length() + 2) + "\n\tint 0x80\n";
+					return "\tmov eax, 4\n\tmov ebx, 1\n\tmov ecx, str_" + _LANG_COMPILER.strCode + "\n\tmov edx, " + (val.length()) + "\n\tint 0x80\n\tcall printNewLine\n";
 				} else if (argTokens[0][0] instanceof IdentifierToken) {
-					return _LANG_COMPILER.printIdentifier(argTokens[0][0]);
+					return "\tmov r8, 1\n" + _LANG_COMPILER.printIdentifier(argTokens[0][0]);
 				}
 			}
 			return "";

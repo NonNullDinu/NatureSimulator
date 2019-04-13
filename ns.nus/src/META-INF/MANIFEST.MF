@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: run.ScriptInterpreter
+Main-Class: run._LANG_COMPILER
 

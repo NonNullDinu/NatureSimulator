@@ -23,4 +23,9 @@ public class NumberToken extends Token {
 	public NumberToken(int v) {
 		this.v = v;
 	}
+
+	@Override
+	public String toString() {
+		return "NT(" + v + ")";
+	}
 }
