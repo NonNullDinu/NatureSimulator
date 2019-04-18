@@ -38,8 +38,8 @@ public class Statements implements Iterable<Statement> {
 	int ind = 0;
 
 	@Override
-	public Iterator iterator() {
-		return new Iterator() {
+	public Iterator<Statement> iterator() {
+		return new Iterator<>() {
 			@Override
 			public boolean hasNext() {
 				return ind < statements.length;

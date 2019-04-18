@@ -87,11 +87,10 @@ public enum METHOD {
 
 		@Override
 		public String assembly(Token[][] argTokens) {
-			System.out.println("DEBUG_PRINT : " + argTokens.length + " " + argTokens[0].length);
 			if (argTokens.length == 1 && argTokens[0].length == 1) {
 				if (argTokens[0][0] instanceof StringToken) {
 					_LANG_COMPILER.addNewVar("str_" + ++_LANG_COMPILER.strCode, ((StringToken) argTokens[0][0]).str + ", 10, 0");
-					return "\tmov eax, 4\n\tmov ebx, 1\n\tmov ecx, str_" + _LANG_COMPILER.strCode + "\n\tmov edx, " + (((StringToken) argTokens[0][0]).str.length() + 2) + "\n\tint 0x80\n";
+					return "\tmov eax, 4\n\tmov ebx, 1\n\tmov ecx, str_" + _LANG_COMPILER.strCode + "\n\tmov edx, " + (((StringToken) argTokens[0][0]).str.length()) + "\n\tint 0x80\n";
 				} else if (argTokens[0][0] instanceof NumberToken) {
 					String val = Integer.toString(((NumberToken) argTokens[0][0]).v);
 					_LANG_COMPILER.addNewVar("str_" + ++_LANG_COMPILER.strCode, val);
@@ -136,6 +135,30 @@ public enum METHOD {
 		@Override
 		public String assembly(Token[][] argTokens) {
 			return null;
+		}
+	}),
+
+	ERROR(new CALLBACK() {
+		@Override
+		public int call(Value[] values) {
+			throw new Error((values[0].type == DATA_TYPE.STRING ? values[0].vs : Integer.toString(values[0].vi)));
+		}
+
+		@Override
+		public String assembly(Token[][] argTokens) {
+			if (argTokens.length == 1 && argTokens[0].length == 1) {
+				if (argTokens[0][0] instanceof StringToken) {
+					_LANG_COMPILER.addNewVar("str_" + ++_LANG_COMPILER.strCode, ((StringToken) argTokens[0][0]).str + ", 10, 0");
+					return "\tmov eax, 4\n\tmov ebx, 2\n\tmov ecx, str_" + _LANG_COMPILER.strCode + "\n\tmov edx, " + (((StringToken) argTokens[0][0]).str.length()) + "\n\tint 0x80\n";
+				} else if (argTokens[0][0] instanceof NumberToken) {
+					String val = Integer.toString(((NumberToken) argTokens[0][0]).v);
+					_LANG_COMPILER.addNewVar("str_" + ++_LANG_COMPILER.strCode, val);
+					return "\tmov eax, 4\n\tmov ebx, 2\n\tmov ecx, str_" + _LANG_COMPILER.strCode + "\n\tmov edx, " + (val.length()) + "\n\tint 0x80\n\tcall printNewLine\n";
+				} else if (argTokens[0][0] instanceof IdentifierToken) {
+					return "\tmov r8, 2\n" + _LANG_COMPILER.printIdentifier(argTokens[0][0]);
+				}
+			}
+			return "";
 		}
 	});
 	private CALLBACK callback;

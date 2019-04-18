@@ -47,7 +47,6 @@ public class _LANG_COMPILER {
 	private static StringBuilder parsed_src;
 	private static Statement[] statements;
 	private static StringBuilder assembly;
-	private static byte[] compiledAssembly; // MACHINE CODE
 	public static int fileCode = 0;
 	private static String asm_source_file;
 	private static int rec_ind = 0;
@@ -154,16 +153,15 @@ public class _LANG_COMPILER {
 			asm_vars.append("\t").append(var.name).append(" DB ").append(var.value).append("\n");
 		}
 		assembly.append(asm_vars);
+		assembly = new StringBuilder(assembly.toString().replaceAll("\\t{2,}", "\t"));
 		System.out.println("Assembly:\n" + assembly.toString());
 	}
 
 	private static String assemblyInstructions(Statements statements) {
 		StringBuilder asm = new StringBuilder();
 		int i = 1;
-		System.out.println(statements.statements.length);
 		for (Statement statement : statements) {
 			asm.append("\t;" + i + "\n");
-			System.out.println(statement.type);
 			if (statement.type == Statement_TYPE.VAR_DECLARE) {
 				vars.add(new VAR_(((VarDeclare_Statement) statement).name, ((VarDeclare_Statement) statement).type));
 			} else if (statement.type == Statement_TYPE.VAR_UPDATE) {
@@ -178,7 +176,6 @@ public class _LANG_COMPILER {
 				asm.append("\tINC QWORD [").append(((Increment_Statement) statement).name).append("]\n");
 			} else if (statement.type == Statement_TYPE.METHOD_CALL) {
 				asm.append(((MethodCallStatement) statement).assembly());
-				System.out.println("CALL " + asm.toString());
 			}
 			rec_ind = 0;
 			i++;
@@ -327,7 +324,6 @@ public class _LANG_COMPILER {
 		String[] split = lines.split("\n");
 		List<Statement> statements = new ArrayList<>();
 		int i;
-		System.out.println("LINE SPLIT LENGTH: " + split.length);
 		for (i = 0; i < split.length; i++) {
 			String line = split[i];
 			if (line.isEmpty())
@@ -385,7 +381,6 @@ public class _LANG_COMPILER {
 									StringBuilder code = new StringBuilder();
 									for (String line_ : lines_arr)
 										code.append(line_).append("\n");
-									System.out.println("CONDITIONAL CODE: " + code.toString());
 									onTrue = new Statements(getStatements(code.toString(), d + 1));
 									i--;
 								}
@@ -433,9 +428,7 @@ public class _LANG_COMPILER {
 						case METHOD_CALL: {
 							String methodName = line.substring(0, line.indexOf('(')).toUpperCase().replaceAll(" ", "_");
 							METHOD method = METHOD.valueOf(methodName);
-							System.out.println("CALL TO METHOD " + method.name());
 							String argfull = line.substring(line.indexOf('(') + 1, line.lastIndexOf(')'));
-							System.out.println("WITH ARGS : " + argfull);
 							if (!argfull.isEmpty()) {
 								String[] args = argfull.split(",");
 								Token[][] v = new Token[args.length][];
@@ -538,7 +531,6 @@ public class _LANG_COMPILER {
 				value = value.substring(1);
 			if (part.matches("^\".*\"$")) {
 				tokens.add(new StringToken(part.substring(1, part.length() - 1)));
-				System.out.println("String token: " + part);
 			} else if (part.matches("^\\d+$")) {
 				tokens.add(new NumberToken(Integer.parseInt(part)));
 			} else if (part.matches("^(true|false)$")) {

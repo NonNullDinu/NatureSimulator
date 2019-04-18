@@ -3,7 +3,7 @@
  *
  * @author Dinu
  */
-module golden.rose {
+module ns.core {
 	requires java.xml;
 	requires java.se;
 	requires transitive lwjgl;

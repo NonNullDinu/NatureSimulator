@@ -28,4 +28,4 @@ If applicable, add screenshots to help explain your problem.
 **Additional context**
 Add any other context about the problem here.
 
-If the bug led to a crash, please add the crash report.
+If the bug led to a crash, please add the crash report and the GL_LOG file that was generated.
