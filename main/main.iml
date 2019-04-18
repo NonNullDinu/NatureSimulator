@@ -8,6 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="jar" level="project" />
-    <orderEntry type="module" module-name="golden.rose" />
+    <orderEntry type="module" module-name="ns.core" />
   </component>
 </module>

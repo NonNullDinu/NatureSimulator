@@ -67,6 +67,6 @@ public class SaveData implements IReadWriteFolder, DirectoryPointer {
 
 	@Override
 	public String onLinuxLoc() {
-		return System.getenv("HOME") + "/ns/saveData";
+		return GU.path + "saveData";
 	}
 }
