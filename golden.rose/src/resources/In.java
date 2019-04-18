@@ -1,4 +1,23 @@
+/*
+ * Copyright (C) 2018-2019  Dinu Blanovschi
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package resources;
+
+import ns.utils.GU;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -60,8 +79,10 @@ public class In {
 	public InputStream asInputStream() throws NullPointerException {
 		if (asInputStream != null)
 			return asInputStream;
-		else
+		else {
+			System.err.println("File not found: " + location.relativeLocation() + ". Is the path " + GU.path.substring(0, GU.path.length() - 1) + " correct?");
 			throw new NullPointerException("File at " + location.relativeLocation() + " could not be found");
+		}
 	}
 
 	public boolean exists() {

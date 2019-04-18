@@ -1,6 +1,25 @@
+/*
+ * Copyright (C) 2018-2019  Dinu Blanovschi
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package ns.display;
 
 import data.GameData;
+import ns.configuration.Config;
+import ns.configuration.GameConfig;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
@@ -28,7 +47,8 @@ public class DisplayManager {
 	public static void createDisplay() {
 		try {
 			BufferedImage icon = ImageIO.read(GameData.getResourceAt("textures/ns_icon.png").asInputStream());
-			Display.setTitle("Nature Simulator");
+			if (GameConfig.getConfig(GameConfig.FULLSCREEN) == Config.TRUE)
+				Display.setTitle("Nature Simulator");
 			Display.setIcon(new ByteBuffer[]{loadIconInstance(icon, 128), loadIconInstance(icon, 32),
 					loadIconInstance(icon, 16)});
 			Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
@@ -81,7 +101,7 @@ public class DisplayManager {
 		if (image.getWidth() > scaledIcon.getWidth()) {
 			ratio = (double) (scaledIcon.getWidth()) / image.getWidth();
 		} else {
-			ratio = scaledIcon.getWidth() / image.getWidth();
+			ratio = scaledIcon.getWidth() / (double) image.getWidth();
 		}
 		if (image.getHeight() > scaledIcon.getHeight()) {
 			double r2 = (double) (scaledIcon.getHeight()) / image.getHeight();
@@ -89,7 +109,7 @@ public class DisplayManager {
 				ratio = r2;
 			}
 		} else {
-			double r2 = (scaledIcon.getHeight() / image.getHeight());
+			double r2 = (scaledIcon.getHeight() / (double) image.getHeight());
 			if (r2 < ratio) {
 				ratio = r2;
 			}
