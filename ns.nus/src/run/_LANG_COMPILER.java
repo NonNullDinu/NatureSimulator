@@ -17,10 +17,10 @@
 
 package run;
 
-import exceptions.ParsingError;
-import exceptions.TokenException;
 import lang.METHOD;
 import lang.exceptions.InvalidExpressionException;
+import lang.exceptions.ParsingError;
+import lang.exceptions.TokenException;
 import statements.*;
 import tokens.*;
 import tree.Statements;
@@ -105,11 +105,12 @@ public class _LANG_COMPILER {
 		dataVars.add(new VAR_(name, DATA_TYPE.STRING, content.substring(0, content.length() - 2)));
 	}
 
+	private static int instrind = 1;
+
 	private static void makeAssembly() {
 		assembly = new StringBuilder(";DO NOT EDIT\n;THIS FILE IS COMPUTER GENERATED\n;AS A RESULT OF THE COMPILATION OF \"" + program_file_name + "\"\nsection .text\n" + functions_code + "\n\tglobal _start\n_start:\n");
-		int i = 1;
 		for (Statement statement : statements) {
-			assembly.append("\t;" + i + "\n");
+			assembly.append("\t;").append(instrind++).append("\n");
 			if (statement.type == Statement_TYPE.VAR_DECLARE) {
 				vars.add(new VAR_(((VarDeclare_Statement) statement).name, ((VarDeclare_Statement) statement).type));
 			} else if (statement.type == Statement_TYPE.VAR_UPDATE) {
@@ -125,30 +126,23 @@ public class _LANG_COMPILER {
 			} else if (statement.type == Statement_TYPE.METHOD_CALL) {
 				assembly.append(((MethodCallStatement) statement).assembly());
 			} else if (statement.type == Statement_TYPE.CONDITIONAL) {
-				assembly.append(conditional(((Conditional) statement).condition)).append("\nCMP r10, 0\n\tJE COND_" + cond_code + "_FALSE\nCOND_" + cond_code + "_TRUE:\n\t");
+				assembly.append(conditional(((Conditional) statement).condition)).append("\nCMP r10, 0\n\tJE COND_").append(cond_code).append("_FALSE\nCOND_").append(cond_code).append("_TRUE:\n\t");
 				int cnd = cond_code;
-				assembly.append(assemblyInstructions(((Conditional) statement).onTrue)).append("\n\tJMP COND_" + cnd + "_FINAL_END\nCOND_" + cnd + "_FALSE:\n");
+				assembly.append(assemblyInstructions(((Conditional) statement).onTrue)).append("\n\tJMP COND_").append(cnd).append("_FINAL_END\n");
 				if (((Conditional) statement).onFalse != null) {
-					assembly.append(assemblyInstructions(((Conditional) statement).onFalse));
+					assembly.append("COND_").append(cnd).append("_FALSE:\n").append(assemblyInstructions(((Conditional) statement).onFalse));
 				}
-				assembly.append("COND_" + cnd + "_FINAL_END:\n");
+				assembly.append("COND_").append(cnd).append("_FINAL_END:\n");
 			}
 			rec_ind = 0;
-			i++;
 		}
 		StringBuilder asm_vars = new StringBuilder("section .bss\n");
 		for (VAR_ var : vars) {
-			asm_vars.append("\t").append(var.name).append(" ").append(var.type == DATA_TYPE.INT ? "RESQ" : "RESW").append(" 1\n");
+			asm_vars.append("\t").append(var.name).append(" ").append(var.type.asm_type).append(" 1\n");
 		}
 		asm_vars.append("\tINTERNAL____CACHE RESQ 65536\n");//INTERNAL____CACHE
 		assembly = new StringBuilder(asm_vars + "\n\n" + assembly.toString());
-		asm_vars = new StringBuilder("\n\nsection .data\n\tconst10 dd 10\n\tdigits db 48,49,50,51,52,53,54,55,56,57\n\tnew_line DB 10\n");
-//		for (Payload p : Payload.allPayloads()) {
-//			asm_vars.append("\t").append(p.identifier).append(" DB ");
-//			for (byte b : p.payload)
-//				asm_vars.append(b).append(", ");
-//			asm_vars = new StringBuilder(asm_vars.substring(0, asm_vars.length() - 2) + "\n");
-//		}
+		asm_vars = new StringBuilder("\n\nsection .rodata\n\tconst10 dd 10\n\tdigits db 48,49,50,51,52,53,54,55,56,57\n\tnew_line DB 10\n");
 		for (VAR_ var : dataVars) {
 			asm_vars.append("\t").append(var.name).append(" DB ").append(var.value).append("\n");
 		}
@@ -159,9 +153,8 @@ public class _LANG_COMPILER {
 
 	private static String assemblyInstructions(Statements statements) {
 		StringBuilder asm = new StringBuilder();
-		int i = 1;
 		for (Statement statement : statements) {
-			asm.append("\t;" + i + "\n");
+			asm.append("\t;").append(instrind++).append("\n");
 			if (statement.type == Statement_TYPE.VAR_DECLARE) {
 				vars.add(new VAR_(((VarDeclare_Statement) statement).name, ((VarDeclare_Statement) statement).type));
 			} else if (statement.type == Statement_TYPE.VAR_UPDATE) {
@@ -178,42 +171,33 @@ public class _LANG_COMPILER {
 				asm.append(((MethodCallStatement) statement).assembly());
 			}
 			rec_ind = 0;
-			i++;
 		}
 		return asm.toString();
 	}
 
 	private static String conditional(Token[] conditionTokens) {
-		String v = "\tmov eax, " + value(conditionTokens[0]) + "\n\tmov ebx, " + value(conditionTokens[2]) + "\n\tCMP eax, ebx\n";
-		OperatorToken tkn = ((OperatorToken) conditionTokens[1]);
-		cond_code++;
-		if (tkn.mop == OperatorToken.Math_Operator.LOGIC_E)
-			v += "\tJE COND_" + cond_code + "\n\tmov r10, 0\n\tJMP COND_" + cond_code + "END\n";
-		else if (tkn.mop == OperatorToken.Math_Operator.LOGIC_NE)
-			v += "\tJNE COND_" + cond_code + "\n\tmov r10, 0\n\tJMP COND_" + cond_code + "END\n";
-		else if (tkn.mop == OperatorToken.Math_Operator.LOGIC_G)
-			v += "\tJG COND_" + cond_code + "\n\tmov r10, 0\n\tJMP COND_" + cond_code + "END\n";
-		else if (tkn.mop == OperatorToken.Math_Operator.LOGIC_GE)
-			v += "\tJGE COND_" + cond_code + "\n\tmov r10, 0\n\tJMP COND_" + cond_code + "END\n";
-		else if (tkn.mop == OperatorToken.Math_Operator.LOGIC_S)
-			v += "\tJL COND_" + cond_code + "\n\tmov r10, 0\n\tJMP COND_" + cond_code + "END\n";
-		else if (tkn.mop == OperatorToken.Math_Operator.LOGIC_SE)
-			v += "\tJLE COND_" + cond_code + "\n\tmov r10, 0\n\tJMP COND_" + cond_code + "END\n";
-
-		v += "COND_" + cond_code + ":\n\tmov r10, 1\nCOND_" + cond_code + "END:\n";
-		return v;
+		return valueInstructions(conditionTokens);
 	}
 
-	public static String valueInstructions(Token[] valueTokens) {
+	private static String valueInstructions(Token[] valueTokens) {
 		if (rec_ind == 0) {
 			internal_cache_index = 0;
 			cache_ptr = 0;
 		}
-		rec_ind++;
+		int depth = rec_ind++;
+		boolean constant = true;
+		for (int i = 0; i < valueTokens.length && constant; i++)
+			constant = !(valueTokens[i] instanceof IdentifierToken || valueTokens[i] instanceof INTERNAL____CACHE_TOKEN);
+
+		if (constant) {
+			Value v = evaluate(valueTokens);
+			System.out.println(Arrays.toString(valueTokens) + " results " + v.vi);
+			return "mov " + (depth == 0 ? "r10" : "QWORD [INTERNAL____CACHE + " + (8 * (cache_ptr = internal_cache_index++)) + "]") + ", " + v.vi + "\n";
+		}
 		if (valueTokens.length == 1) {
-			return "\tmov r10, " + value(valueTokens[0]) + "\n\tmov QWORD[INTERNAL____CACHE + " + (8 * (cache_ptr = internal_cache_index++)) + "], r10\n";
+			return "\tmov r10, " + value(valueTokens[0]) + "\n\tmov QWORD [INTERNAL____CACHE + " + (8 * (cache_ptr = internal_cache_index++)) + "], r10\n";
 		} else if (valueTokens.length == 3) {
-			return "\tmov r10, " + value(valueTokens[0]) + "\n\tmov r11, " + value(valueTokens[2]) + "\n\t" + ((OperatorToken) valueTokens[1]).asm_code("r10", "r11") + "\n\tmov QWORD[INTERNAL____CACHE + " + (8 * (cache_ptr = internal_cache_index++)) + "], r10\n";
+			return "\tmov r10, " + value(valueTokens[0]) + "\n\tmov r11, " + value(valueTokens[2]) + "\n\t" + ((OperatorToken) valueTokens[1]).asm_code("r10", "r11") + "\n" + (depth == 0 ? "" : "\tmov QWORD [INTERNAL____CACHE + " + (8 * (cache_ptr = internal_cache_index++)) + "], r10\n");
 		} else {
 			int i;
 			int cnt = 0;
@@ -229,6 +213,7 @@ public class _LANG_COMPILER {
 			if (cnt != 0)
 				throw new InvalidExpressionException(Arrays.deepToString(valueTokens));
 			String asm = "";
+
 			for (i = valueTokens.length - 1; i >= 0; i--) {
 				if (valueTokens[i] instanceof ParenthesisClosedToken) {
 					int d_ = 1, j;
@@ -251,6 +236,61 @@ public class _LANG_COMPILER {
 					i = j - 1;
 				}
 			}
+
+			for (i = valueTokens.length - 1; i >= 0; i--) {
+				if (valueTokens[i] instanceof OperatorToken)
+					switch (((OperatorToken) valueTokens[i]).mop) {
+						case LOGIC_AND:
+						case LOGIC_OR:
+						case LOGIC_XOR:
+							Token[] tokens1 = new Token[i];
+							Token[] tokens2 = new Token[valueTokens.length - i - 1];
+							System.arraycopy(valueTokens, 0, tokens1, 0, i);
+							System.arraycopy(valueTokens, i + 1, tokens2, 0, valueTokens.length - i - 1);
+							int a, b;
+							asm += valueInstructions(tokens1);
+							a = 8 * cache_ptr;
+							asm += valueInstructions(tokens2);
+							b = 8 * cache_ptr;
+							asm += "\tmov r12, QWORD [INTERNAL____CACHE + " + a + "]\n";
+							asm += "\tmov r13, QWORD [INTERNAL____CACHE + " + b + "]\n";
+							asm += ((OperatorToken) valueTokens[i]).asm_code("r12", "r13");
+							if (depth == 0)
+								asm += "\n\tmov r10, r12\n";
+							else
+								asm += "\n\tmov QWORD [INTERNAL____CACHE + " + (8 * (cache_ptr = internal_cache_index++)) + "], r12\n";
+							return asm;
+					}
+			}
+
+			for (i = valueTokens.length - 1; i >= 0; i--) {
+				if (valueTokens[i] instanceof OperatorToken)
+					switch (((OperatorToken) valueTokens[i]).mop) {
+						case LOGIC_E:
+						case LOGIC_G:
+						case LOGIC_GE:
+						case LOGIC_NE:
+						case LOGIC_S:
+						case LOGIC_SE:
+							Token[] tokens1 = new Token[i];
+							Token[] tokens2 = new Token[valueTokens.length - i - 1];
+							System.arraycopy(valueTokens, 0, tokens1, 0, i);
+							System.arraycopy(valueTokens, i + 1, tokens2, 0, valueTokens.length - i - 1);
+							int a, b;
+							asm += valueInstructions(tokens1);
+							a = 8 * cache_ptr;
+							asm += valueInstructions(tokens2);
+							b = 8 * cache_ptr;
+							asm += "\tmov r12, QWORD [INTERNAL____CACHE + " + a + "]\n";
+							asm += "\tmov r13, QWORD [INTERNAL____CACHE + " + b + "]\n";
+							asm += ((OperatorToken) valueTokens[i]).asm_code("r12", "r13");
+							if (depth == 0)
+								asm += "\n\tmov r10, r12\n";
+							else
+								asm += "\n\tmov QWORD [INTERNAL____CACHE + " + (8 * (cache_ptr = internal_cache_index++)) + "], r12\n";
+							return asm;
+					}
+			}
 			for (i = valueTokens.length - 1; i >= 0; i--) {
 				if (valueTokens[i] instanceof OperatorToken)
 					switch (((OperatorToken) valueTokens[i]).mop) {
@@ -261,12 +301,17 @@ public class _LANG_COMPILER {
 							System.arraycopy(valueTokens, 0, tokens1, 0, i);
 							System.arraycopy(valueTokens, i + 1, tokens2, 0, valueTokens.length - i - 1);
 							int a, b;
-							asm += valueInstructions(tokens1) + "\tmov r10, QWORD [INTERNAL____CACHE + " + (8 * cache_ptr) + "]\n\tmov QWORD [INTERNAL____CACHE + " + (8 * (a = internal_cache_index++)) + "], r10\n";
-							asm += valueInstructions(tokens2) + "\tmov r10, QWORD [INTERNAL____CACHE + " + (8 * cache_ptr) + "]\n\tmov QWORD [INTERNAL____CACHE + " + (8 * (b = internal_cache_index++)) + "], r10\n";
-							asm += "\tmov r12, QWORD [INTERNAL____CACHE + " + (8 * a) + "]\n";
-							asm += "\tmov r13, QWORD [INTERNAL____CACHE + " + (8 * b) + "]\n";
+							asm += valueInstructions(tokens1);
+							a = 8 * cache_ptr;
+							asm += valueInstructions(tokens2);
+							b = 8 * cache_ptr;
+							asm += "\tmov r12, QWORD [INTERNAL____CACHE + " + a + "]\n";
+							asm += "\tmov r13, QWORD [INTERNAL____CACHE + " + b + "]\n";
 							asm += ((OperatorToken) valueTokens[i]).asm_code("r12", "r13");
-							asm += "\n\tmov QWORD [INTERNAL____CACHE + " + (8 * (cache_ptr = internal_cache_index++)) + "], r12\n\tmov r10, QWORD [INTERNAL____CACHE + " + (8 * cache_ptr) + "]\n";
+							if (depth == 0)
+								asm += "\n\tmov r10, r12\n";
+							else
+								asm += "\n\tmov QWORD [INTERNAL____CACHE + " + (8 * (cache_ptr = internal_cache_index++)) + "], r12\n";
 							return asm;
 					}
 			}
@@ -280,12 +325,17 @@ public class _LANG_COMPILER {
 							System.arraycopy(valueTokens, 0, tokens1, 0, i);
 							System.arraycopy(valueTokens, i + 1, tokens2, 0, valueTokens.length - i - 1);
 							int a, b;
-							asm += valueInstructions(tokens1) + "\tmov r10, QWORD [INTERNAL____CACHE + " + (8 * cache_ptr) + "]\n\tmov QWORD [INTERNAL____CACHE + " + (8 * (a = internal_cache_index++)) + "], r10\n";
-							asm += valueInstructions(tokens2) + "\tmov r10, QWORD [INTERNAL____CACHE + " + (8 * cache_ptr) + "]\n\tmov QWORD [INTERNAL____CACHE + " + (8 * (b = internal_cache_index++)) + "], r10\n";
-							asm += "\tmov r12, QWORD [INTERNAL____CACHE + " + (8 * a) + "]\n";
-							asm += "\tmov r13, QWORD [INTERNAL____CACHE + " + (8 * b) + "]\n";
+							asm += valueInstructions(tokens1);
+							a = 8 * cache_ptr;
+							asm += valueInstructions(tokens2);
+							b = 8 * cache_ptr;
+							asm += "\tmov r12, QWORD [INTERNAL____CACHE + " + a + "]\n";
+							asm += "\tmov r13, QWORD [INTERNAL____CACHE + " + b + "]\n";
 							asm += ((OperatorToken) valueTokens[i]).asm_code("r12", "r13");
-							asm += "\n\tmov QWORD [INTERNAL____CACHE + " + (8 * (cache_ptr = internal_cache_index++)) + "], r12\n\tmov r10, QWORD [INTERNAL____CACHE + " + (8 * cache_ptr) + "]\n";
+							if (depth == 0)
+								asm += "\n\tmov r10, r12\n";
+							else
+								asm += "\n\tmov QWORD [INTERNAL____CACHE + " + (8 * (cache_ptr = internal_cache_index++)) + "], r12\n";
 							return asm;
 					}
 			}
@@ -299,7 +349,9 @@ public class _LANG_COMPILER {
 		else if (token instanceof IdentifierToken)
 			return "[" + ((IdentifierToken) token).identifier + "]";
 		else if (token instanceof INTERNAL____CACHE_TOKEN)
-			return "[INTERNAL____CACHE + " + (((INTERNAL____CACHE_TOKEN) token).qwordoffset * 8) + "]";
+			return "QWORD [INTERNAL____CACHE + " + (((INTERNAL____CACHE_TOKEN) token).qwordoffset * 8) + "]";
+		else if (token instanceof LogicConstantValueToken)
+			return ((LogicConstantValueToken) token).v ? "1" : "0";
 		else return "";
 	}
 
@@ -477,7 +529,7 @@ public class _LANG_COMPILER {
 		if (value.startsWith("\"") && value.endsWith("\""))
 			return new Token[]{new StringToken(value)};
 		List<Token> tokens = new ArrayList<>();
-		String[] parts = value.split("(\\s)*([(+\\-*/)]|&&|\\|\\||==|>=|>|<=|<|!=)(\\s)*");
+		String[] parts = value.split("(\\s)*([(+\\-*/)]|&&|\\|\\||\\^|==|>=|>|<=|<|!=)(\\s)*");
 		for (String part : parts) {
 			int l = 0;
 			if (value.startsWith("&&")) {
@@ -540,7 +592,7 @@ public class _LANG_COMPILER {
 			} else if (part.matches("^[a-zA-Z_][a-zA-Z0-9_]*\\(.*\\)$")) {
 				String name = part.substring(0, part.indexOf('(')).toUpperCase().replaceAll(" ", "_");
 				METHOD method = METHOD.valueOf(name);
-				String[] args = part.substring(part.indexOf("("), part.lastIndexOf(')')).split(",(\\s)?");
+				String[] args = part.substring(part.indexOf("("), part.lastIndexOf(')')).split("\\s*,\\s*");
 				Token[][] tkns = new Token[args.length][];
 				for (int j = 0; j < args.length; j++)
 					tkns[j] = tokensOfValue(args[j]);
@@ -551,6 +603,10 @@ public class _LANG_COMPILER {
 			value = value.replaceFirst(Pattern.quote(part), "");
 			while (value.matches("^\\s+.*$"))
 				value = value.substring(1);
+		}
+		while (value.endsWith(")")) {
+			value = value.substring(0, value.length() - 1);
+			tokens.add(new ParenthesisClosedToken());
 		}
 		return tokens.toArray(new Token[0]);
 	}
@@ -593,5 +649,99 @@ public class _LANG_COMPILER {
 		public String toString() {
 			return "ICT(" + qwordoffset + ")";
 		}
+	}
+
+	private static Value evaluate(Token[] valueTokens) {
+		int i;
+		for (i = valueTokens.length - 1; i >= 0; i--) {
+			if (valueTokens[i] instanceof ParenthesisClosedToken) {
+				int d_ = 1, j;
+				for (j = i - 1; j >= 0; j--) {
+					if (valueTokens[j] instanceof ParenthesisOpenedToken) {
+						--d_;
+						if (d_ == 0)
+							break;
+					} else if (valueTokens[j] instanceof ParenthesisClosedToken)
+						d_++;
+				}
+				Token[] t = new Token[i - j - 1];
+				System.arraycopy(valueTokens, j + 1, t, 0, i - j - 1);
+				Value pv = evaluate(t);
+				t = new Token[valueTokens.length - i + j];
+				System.arraycopy(valueTokens, 0, t, 0, j);
+				System.arraycopy(valueTokens, i + 1, t, j + 1, valueTokens.length - i - 1);
+				t[j] = new NumberToken(pv.vi);
+				valueTokens = t;
+				i = j - 1;
+			}
+		}
+
+		for (i = valueTokens.length - 1; i >= 0; i--) {
+			if (valueTokens[i] instanceof OperatorToken)
+				switch (((OperatorToken) valueTokens[i]).mop) {
+					case LOGIC_AND:
+					case LOGIC_OR:
+					case LOGIC_XOR:
+						Token[] tokens1 = new Token[i];
+						Token[] tokens2 = new Token[valueTokens.length - i - 1];
+						System.arraycopy(valueTokens, 0, tokens1, 0, i);
+						System.arraycopy(valueTokens, i + 1, tokens2, 0, valueTokens.length - i - 1);
+						Value va = evaluate(tokens1);
+
+						Value vb = evaluate(tokens2);
+						return new Value(((OperatorToken) valueTokens[i]).result(va.vi, vb.vi));
+				}
+		}
+
+		for (i = valueTokens.length - 1; i >= 0; i--) {
+			if (valueTokens[i] instanceof OperatorToken)
+				switch (((OperatorToken) valueTokens[i]).mop) {
+					case LOGIC_E:
+					case LOGIC_G:
+					case LOGIC_GE:
+					case LOGIC_NE:
+					case LOGIC_S:
+					case LOGIC_SE:
+						Token[] tokens1 = new Token[i];
+						Token[] tokens2 = new Token[valueTokens.length - i - 1];
+						System.arraycopy(valueTokens, 0, tokens1, 0, i);
+						System.arraycopy(valueTokens, i + 1, tokens2, 0, valueTokens.length - i - 1);
+						Value va = evaluate(tokens1);
+
+						Value vb = evaluate(tokens2);
+						return new Value(((OperatorToken) valueTokens[i]).result(va.vi, vb.vi));
+				}
+		}
+		for (i = valueTokens.length - 1; i >= 0; i--) {
+			if (valueTokens[i] instanceof OperatorToken)
+				switch (((OperatorToken) valueTokens[i]).mop) {
+					case SUBTRACT:
+					case ADD:
+						Token[] tokens1 = new Token[i];
+						Token[] tokens2 = new Token[valueTokens.length - i - 1];
+						System.arraycopy(valueTokens, 0, tokens1, 0, i);
+						System.arraycopy(valueTokens, i + 1, tokens2, 0, valueTokens.length - i - 1);
+						Value va = evaluate(tokens1);
+
+						Value vb = evaluate(tokens2);
+						return new Value(((OperatorToken) valueTokens[i]).result(va.vi, vb.vi));
+				}
+		}
+		for (i = valueTokens.length - 1; i >= 0; i--) {
+			if (valueTokens[i] instanceof OperatorToken)
+				switch (((OperatorToken) valueTokens[i]).mop) {
+					case DIVIDE:
+					case MULTIPLY:
+						Token[] tokens1 = new Token[i];
+						Token[] tokens2 = new Token[valueTokens.length - i - 1];
+						System.arraycopy(valueTokens, 0, tokens1, 0, i);
+						System.arraycopy(valueTokens, i + 1, tokens2, 0, valueTokens.length - i - 1);
+						Value va = evaluate(tokens1);
+
+						Value vb = evaluate(tokens2);
+						return new Value(((OperatorToken) valueTokens[i]).result(va.vi, vb.vi));
+				}
+		}
+		return new Value(valueTokens[0] instanceof NumberToken ? ((NumberToken) valueTokens[0]).v : (((LogicConstantValueToken) valueTokens[0]).v ? 1 : 0));
 	}
 }

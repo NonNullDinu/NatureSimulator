@@ -15,10 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package exceptions;
+package lang;
 
-public class ParsingError extends Error {
-	public ParsingError(String msg) {
-		super(msg);
-	}
+public class STDLIB {
 }

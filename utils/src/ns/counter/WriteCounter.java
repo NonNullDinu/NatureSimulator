@@ -30,7 +30,7 @@ class WriteCounter {
 
 	public static void main(String[] args) {
 		int totalCounter = 0, totalLineCounter = 0;
-		File sourceFolder = new File("../src");
+		File sourceFolder = new File("main/src");
 		count(sourceFolder);
 		System.out.println("src = " + counter + "(" + lineCounter + " lines)");
 		totalCounter += counter;
@@ -38,7 +38,7 @@ class WriteCounter {
 		counter = 0;
 		lineCounter = 0;
 
-		sourceFolder = new File("../utils");
+		sourceFolder = new File("utils");
 		count(sourceFolder);
 		System.out.println("utils = " + counter + "(" + lineCounter + " lines)");
 		totalCounter += counter;
@@ -46,7 +46,7 @@ class WriteCounter {
 		counter = 0;
 		lineCounter = 0;
 
-		sourceFolder = new File("../ns.core");
+		sourceFolder = new File("ns.core");
 		count(sourceFolder);
 		System.out.println("ns.core = " + counter + "(" + lineCounter + " lines)");
 		totalCounter += counter;
@@ -54,15 +54,15 @@ class WriteCounter {
 		counter = 0;
 		lineCounter = 0;
 
-		sourceFolder = new File("../ns.patch");
+		sourceFolder = new File("ns.nus");
 		count(sourceFolder);
-		System.out.println("ns.patch = " + counter + "(" + lineCounter + " lines)");
+		System.out.println("ns.nus = " + counter + "(" + lineCounter + " lines)");
 		totalCounter += counter;
 		totalLineCounter += lineCounter;
 		counter = 0;
 		lineCounter = 0;
 
-		sourceFolder = new File("../gameData/shaders");
+		sourceFolder = new File("gameData/shaders");
 		count(sourceFolder);
 		System.out.println("shaders = " + counter + "(" + lineCounter + " lines)");
 		totalCounter += counter;

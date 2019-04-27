@@ -17,7 +17,7 @@
 
 package tokens;
 
-import exceptions.TokenException;
+import lang.exceptions.TokenException;
 import variables.Variable;
 import variables.Variable_INT;
 
@@ -42,7 +42,7 @@ public class ValueEvaluator {
 			} else if (tokens[0] instanceof MethodResultToken) {
 				return new Value(((MethodResultToken) tokens[0]).result(variables));
 			} else {
-				System.out.println("One token unknown type value");
+				System.out.println("One token unknown type value: " + tokens[0]);
 				return null;
 			}
 		} else {
@@ -67,19 +67,26 @@ public class ValueEvaluator {
 					i = e + 1;
 					Token[] tkns = Arrays.copyOfRange(tokens, b, e + 1);
 					int len = e - b + 2;
-					for (int j = 1; j <= 5; j++)
+					System.out.println(Arrays.toString(tkns));
+					for (int j = 1; j <= 5; j++) {
 						tkns = evaluate(tkns, variables, j);
+						System.out.println(Arrays.toString(tkns));
+					}
 					if (tkns.length != 1)
 						throw new TokenException("Could not resolve the value");
 					Token[] tt = new Token[tokens.length - len];
 					if (b - 1 >= 0) System.arraycopy(tokens, 0, tt, 0, b - 1);
 					tt[b - 1] = tkns[0];
 					if (tokens.length - len - b >= 0) System.arraycopy(tokens, b + len, tt, b, tokens.length - len - b);
+					System.out.println(Arrays.toString(tokens));
 					tokens = tt;
 				}
 			}
+			System.out.println(Arrays.toString(tokens));
 			for (int j = 2; j <= 5; j++)
 				tokens = evaluate(tokens, variables, j);
+			System.out.println(Arrays.toString(tokens));
+
 			current = ((NumberToken) tokens[0]).v;
 			return new Value(current);
 		}
@@ -108,8 +115,10 @@ public class ValueEvaluator {
 						throw new TokenException("Parenthesis not closed");
 					i = e + 1;
 					Token[] tkns = Arrays.copyOfRange(tokens, b, e + 1);
-					for (int j = 1; j <= 5; j++)
+					for (int j = 1; j <= 5; j++) {
 						tkns = evaluate(tkns, variables, j);
+						System.out.println(Arrays.toString(tkns));
+					}
 					if (tkns.length != 1)
 						throw new TokenException("Could not resolve the value");
 					return tkns;
@@ -149,8 +158,8 @@ public class ValueEvaluator {
 			for (int i = 0; i < tokens.length; i++) {
 				if (tokens[i] instanceof OperatorToken) {
 					if (((OperatorToken) tokens[i]).mop.name().matches("^(LOGIC_E|LOGIC_G|LOGIC_GE|LOGIC_NE|LOGIC_S|LOGIC_SE)$")) {
-						int vim1 = tokens[i - 1] instanceof NumberToken ? ((NumberToken) tokens[i - 1]).v : ((Variable_INT) variables.get(((IdentifierToken) tokens[i - 1]).identifier)).v;
-						int vip1 = tokens[i + 1] instanceof NumberToken ? ((NumberToken) tokens[i + 1]).v : ((Variable_INT) variables.get(((IdentifierToken) tokens[i + 1]).identifier)).v;
+						int vim1 = tokens[i - 1] instanceof NumberToken ? ((NumberToken) tokens[i - 1]).v : (tokens[i - 1] instanceof LogicConstantValueToken ? (((LogicConstantValueToken) tokens[i - 1]).v ? 1 : 0) : ((Variable_INT) variables.get(((IdentifierToken) tokens[i - 1]).identifier)).v);
+						int vip1 = tokens[i + 1] instanceof NumberToken ? ((NumberToken) tokens[i + 1]).v : (tokens[i + 1] instanceof LogicConstantValueToken ? (((LogicConstantValueToken) tokens[i + 1]).v ? 1 : 0) : ((Variable_INT) variables.get(((IdentifierToken) tokens[i + 1]).identifier)).v);
 						int v = ((OperatorToken) tokens[i]).result(vim1, vip1);
 						Token[] tkns = new Token[tokens.length - 2];
 						if (i - 1 >= 0) System.arraycopy(tokens, 0, tkns, 0, i - 1);

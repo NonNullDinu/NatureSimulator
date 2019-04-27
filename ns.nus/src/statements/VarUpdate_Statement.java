@@ -17,7 +17,7 @@
 
 package statements;
 
-import exceptions.WrongValueTypeException;
+import lang.exceptions.WrongValueTypeException;
 import tokens.Token;
 import tokens.Value;
 import tokens.ValueEvaluator;

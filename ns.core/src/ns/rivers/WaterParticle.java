@@ -25,12 +25,16 @@ import org.lwjgl.util.vector.Vector3f;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 class WaterParticle implements Serializable {
 	private static final long serialVersionUID = -5191206774216962023L;
+	private static final int merge_coef = 2;
 	final int idx;
 	private final Vector2f velocity;
+	public Map<Integer, Boolean> merges = new HashMap<>();
 	private WaterParticle previous;
 	private Vector3f position;
 	private float size;
@@ -38,6 +42,7 @@ class WaterParticle implements Serializable {
 	private boolean reachedBaseLake;
 	private Vector3f[] prevPos = new Vector3f[River.COUNT];
 	private List<WaterParticle> follows;
+	private int mergecount = 0;
 
 	WaterParticle(Vector3f position, int idx) {
 		this.position = position;
@@ -56,6 +61,8 @@ class WaterParticle implements Serializable {
 			prevPos[i] = new Vector3f(position);
 		this.idx = idx;
 		this.previous = previous;
+		if (previous != null)
+			previous.addFollows(this);
 	}
 
 	private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
@@ -77,13 +84,13 @@ class WaterParticle implements Serializable {
 
 		for (int i = prevPos.length - 1; i > 0; i--)
 			prevPos[i] = prevPos[i - 1];
-		prevPos[0] = new Vector3f(position);
+		prevPos[0] = position;
 		position.x += velocity.x * spd;
 		position.z += velocity.y * spd;
 		deltaY = -position.y;
 		position.y = terrain.getHeight(position.x, position.z);
 		deltaY += position.y;
-		size = (sourceHeight - position.y) / sourceHeight * 3f;
+		size = (sourceHeight - position.y) / sourceHeight * 3f + (float) (merge_coef * mergecount);
 		return velocity.length() < 0.1f || (reachedBaseLake = position.y <= -4f);
 	}
 
@@ -122,9 +129,9 @@ class WaterParticle implements Serializable {
 		this.deltaY = position.y - this.position.y;
 		for (int i = prevPos.length - 1; i > 0; i--)
 			prevPos[i] = prevPos[i - 1];
-		prevPos[0] = new Vector3f(position);
+		prevPos[0] = position;
 		this.position = position;
-		size = (srcY - position.y) / srcY * 3f;
+		size = (srcY - position.y) / srcY * 3f + (float) (merge_coef * mergecount);
 	}
 
 
@@ -134,7 +141,7 @@ class WaterParticle implements Serializable {
 		this.deltaY = deltaY;
 		for (int i = prevPos.length - 1; i > 0; i--)
 			prevPos[i] = prevPos[i - 1];
-		prevPos[0] = new Vector3f(position);
+		prevPos[0] = position;
 		this.position = position;
 		size = (srcY - position.y) / srcY * 3f;
 	}
@@ -161,5 +168,17 @@ class WaterParticle implements Serializable {
 		if (follows != null)
 			for (WaterParticle particle : follows)
 				particle.setPrevious(null);
+	}
+
+	public void merge_increment() {
+		mergecount++;
+	}
+
+	public WaterParticle getPrevious() {
+		return previous;
+	}
+
+	public int getMerges() {
+		return mergecount;
 	}
 }

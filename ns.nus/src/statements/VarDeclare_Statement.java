@@ -17,7 +17,7 @@
 
 package statements;
 
-import exceptions.RedeclarationException;
+import lang.exceptions.RedeclarationException;
 import variables.*;
 
 import java.util.Map;

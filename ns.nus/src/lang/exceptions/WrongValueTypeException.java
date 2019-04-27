@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package exceptions;
+package lang.exceptions;
 
 public class WrongValueTypeException extends Error {
 	public WrongValueTypeException(String s) {

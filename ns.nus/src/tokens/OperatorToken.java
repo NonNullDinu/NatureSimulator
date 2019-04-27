@@ -37,6 +37,8 @@ public class OperatorToken extends Token {
 		return "OP(" + mop.name() + ")";
 	}
 
+	static int LOGIC_TAG = 0;
+
 	public enum Math_Operator {
 		ADD((a, b) -> a + b), SUBTRACT((a, b) -> a - b), MULTIPLY((a, b) -> a * b), DIVIDE((a, b) -> a / b), LOGIC_AND((a, b) -> a != 0 && b != 0 ? 1 : 0), LOGIC_OR((a, b) -> a != 0 || b != 0 ? 1 : 0), LOGIC_XOR((a, b) -> a != 0 ^ b != 0 ? 1 : 0),
 		LOGIC_E((a, b) -> a == b ? 1 : 0), LOGIC_NE((a, b) -> a != b ? 1 : 0), LOGIC_G((a, b) -> a > b ? 1 : 0), LOGIC_GE((a, b) -> a >= b ? 1 : 0), LOGIC_S((a, b) -> a < b ? 1 : 0), LOGIC_SE((a, b) -> a <= b ? 1 : 0);
@@ -52,6 +54,7 @@ public class OperatorToken extends Token {
 
 		public String asm_code(String a, String b) {
 			String asm = "";
+			assert a.matches("^r\\d{1,2}$") && b.matches("^r\\d{1,2}$");
 			switch (this) {
 				case ADD:
 					asm = "add " + a + ", " + b + "\n";
@@ -64,6 +67,39 @@ public class OperatorToken extends Token {
 					break;
 				case MULTIPLY:
 					asm = "mov edx, 0\n\tmov eax, " + a + "d\n\tmul " + b + "d\n\tmov " + a + "d, edx\n\tshl " + a + ", 32\n\tadd " + a + "d, eax\n";
+					break;
+				case LOGIC_E:
+					++LOGIC_TAG;
+					asm = "cmp " + a + ", " + b + "\n\tjne LOGIC_" + (LOGIC_TAG) + "_FALSE\n\tmov " + a + ", 1\n\tJMP LOGIC_" + LOGIC_TAG + "_END\nLOGIC_" + (LOGIC_TAG) + "_FALSE:\n\t mov " + a + ", 0\nLOGIC_" + LOGIC_TAG + "_END:\n";
+					break;
+				case LOGIC_NE:
+					++LOGIC_TAG;
+					asm = "cmp " + a + ", " + b + "\n\tje LOGIC_" + (LOGIC_TAG) + "_FALSE\n\tmov " + a + ", 1\n\tJMP LOGIC_" + LOGIC_TAG + "_END\nLOGIC_" + (LOGIC_TAG) + "_FALSE:\n\t mov " + a + ", 0\nLOGIC_" + LOGIC_TAG + "_END:\n";
+					break;
+				case LOGIC_S:
+					++LOGIC_TAG;
+					asm = "cmp " + a + ", " + b + "\n\tjge LOGIC_" + (LOGIC_TAG) + "_FALSE\n\tmov " + a + ", 1\n\tJMP LOGIC_" + LOGIC_TAG + "_END\nLOGIC_" + (LOGIC_TAG) + "_FALSE:\n\t mov " + a + ", 0\nLOGIC_" + LOGIC_TAG + "_END:\n";
+					break;
+				case LOGIC_SE:
+					++LOGIC_TAG;
+					asm = "cmp " + a + ", " + b + "\n\tjg LOGIC_" + (LOGIC_TAG) + "_FALSE\n\tmov " + a + ", 1\n\tJMP LOGIC_" + LOGIC_TAG + "_END\nLOGIC_" + (LOGIC_TAG) + "_FALSE:\n\t mov " + a + ", 0\nLOGIC_" + LOGIC_TAG + "_END:\n";
+					break;
+				case LOGIC_G:
+					++LOGIC_TAG;
+					asm = "cmp " + a + ", " + b + "\n\tjse LOGIC_" + (LOGIC_TAG) + "_FALSE\n\tmov " + a + ", 1\n\tJMP LOGIC_" + LOGIC_TAG + "_END\nLOGIC_" + (LOGIC_TAG) + "_FALSE:\n\t mov " + a + ", 0\nLOGIC_" + LOGIC_TAG + "_END:\n";
+					break;
+				case LOGIC_GE:
+					++LOGIC_TAG;
+					asm = "cmp " + a + ", " + b + "\n\tjs LOGIC_" + (LOGIC_TAG) + "_FALSE\n\tmov " + a + ", 1\n\tJMP LOGIC_" + LOGIC_TAG + "_END\nLOGIC_" + (LOGIC_TAG) + "_FALSE:\n\t mov " + a + ", 0\nLOGIC_" + LOGIC_TAG + "_END:\n";
+					break;
+				case LOGIC_AND:
+					asm = "and " + a + ", " + b + "\n\tand " + a + ", 1\n";
+					break;
+				case LOGIC_OR:
+					asm = "or " + a + ", " + b + "\n\tand " + a + ", 1\n";
+					break;
+				case LOGIC_XOR:
+					asm = "xor " + a + ", " + b + "\n\tand " + a + ", 1\n";
 					break;
 			}
 			return "\t" + asm;

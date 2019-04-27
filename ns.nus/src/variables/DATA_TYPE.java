@@ -18,10 +18,12 @@
 package variables;
 
 public enum DATA_TYPE {
-	INT("int"), STRING("[Ss]tring"), BOOL("bool(ean)?"), BYTE_STREAM("[^.]*"), SHORT_INT("short(\\sint)?");
+	INT("int", "resd"), STRING("[Ss]tring", "resb"), BOOL("bool(ean)?", "resb"), BYTE_STREAM("[^.]*", "resb"), SHORT_INT("short(\\sint)?", "resw");
+	public String asm_type;
 	public String pattern;
 
-	DATA_TYPE(String regex) {
+	DATA_TYPE(String regex, String asm_type) {
 		this.pattern = regex;
+		this.asm_type = asm_type;
 	}
 }

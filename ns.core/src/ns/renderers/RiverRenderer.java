@@ -47,7 +47,7 @@ public class RiverRenderer {
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		int vaolen;
 		for (River river : rivers) {
-			if ((vaolen = river.vao_length()) != 0) {
+			if ((vaolen = river.vao_length()) > 2) {
 				VAO model = river.getModel();
 				model.bind(0, 1, 2);
 				shader.loc.load(0);

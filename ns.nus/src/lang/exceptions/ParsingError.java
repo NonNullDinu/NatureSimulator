@@ -15,22 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package statements;
+package lang.exceptions;
 
-public enum Statement_TYPE {
-	DELETE_VAR("^\\s*delete\\s[a-zA-Z_][a-zA-Z0-9_]*$"),
-	VAR_DECLARE("^\\s*[a-zA-Z]+\\s[a-zA-Z_][a-zA-Z0-9_]*(\\s*=\\s*.*)?$"),
-	VAR_UPDATE("^\\s*[a-zA-Z_][a-zA-Z0-9_]*\\s?=\\s?.*$"),
-	CONDITIONAL("^\\s*if\\s*\\(.+\\)$"),
-	WHILE_LOOP("^\\s*D\\d+while\\s*\\(.*\\)\\s*do\\s*$"),
-	LOOP_END("^\\s*D\\d+done$"),
-	INCREMENT("^\\s*[a-zA-Z_][a-zA-Z0-9_]*(\\+\\+|--)$"),
-	METHOD_CALL("^\\s*[a-zA-Z_][a-zA-Z0-9_\\s]*\\(.*\\)$"),
-	METHOD_DECLARE("^void\\s*[a-zA-Z_][a-zA-Z0-9_\\s]*\\(.*\\)\\s*{$");
-
-	public String pattern;
-
-	Statement_TYPE(String regex) {
-		this.pattern = regex;
+public class ParsingError extends Error {
+	public ParsingError(String msg) {
+		super(msg);
 	}
 }

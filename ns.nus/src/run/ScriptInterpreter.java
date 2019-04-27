@@ -17,9 +17,9 @@
 
 package run;
 
-import exceptions.ParsingError;
-import exceptions.TokenException;
 import lang.METHOD;
+import lang.exceptions.ParsingError;
+import lang.exceptions.TokenException;
 import statements.*;
 import tokens.*;
 import tree.Statements;
