@@ -18,10 +18,7 @@
 package lang;
 
 import tokens.Token;
-import tokens.Value;
 
 public interface CALLBACK {
-	int call(Value[] values);
-
-	String assembly(Token[][] argTokens);
+	String assembly(Method m, Token[][] argTokens);
 }

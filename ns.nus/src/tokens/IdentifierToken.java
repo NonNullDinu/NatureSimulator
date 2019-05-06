@@ -17,15 +17,35 @@
 
 package tokens;
 
-public class IdentifierToken extends Token {
-	public String identifier;
+import run._LANG_COMPILER;
+import variables.DATA_TYPE;
 
-	public IdentifierToken(String identifier) {
+import java.util.ArrayList;
+import java.util.List;
+
+public class IdentifierToken extends Token {
+	public static final List<IdentifierToken> identifiers = new ArrayList<>();
+	public _LANG_COMPILER.VAR_ var;
+	public String identifier;
+	public boolean local = false;
+	public int stacklocation = 0;
+	public DATA_TYPE data_type;
+
+	public IdentifierToken(String identifier, DATA_TYPE dt, _LANG_COMPILER.VAR_ var) {
 		this.identifier = identifier;
+		this.data_type = dt;
+		this.var = var;
+		identifiers.add(this);
+	}
+
+	public IdentifierToken(String identifier, boolean local, int stacklocation) {
+		this.identifier = identifier;
+		this.local = local;
+		this.stacklocation = stacklocation;
 	}
 
 	@Override
 	public String toString() {
-		return "IDENTIFIER(" + identifier + ")";
+		return "IDENTIFIER(" + identifier + ", " + local + ", " + stacklocation + ")";
 	}
 }

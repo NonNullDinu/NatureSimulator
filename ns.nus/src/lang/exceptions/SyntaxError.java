@@ -15,16 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package statements;
+package lang.exceptions;
 
-import variables.DATA_TYPE;
-
-public class Increment_Statement extends Statement {
-	public String name;
-	public DATA_TYPE dt;
-
-	public Increment_Statement(String name) {
-		super(Statement_TYPE.INCREMENT);
-		this.name = name;
+public class SyntaxError extends ParsingError {
+	public SyntaxError(String msg) {
+		super(msg);
 	}
 }

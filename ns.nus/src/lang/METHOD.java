@@ -19,147 +19,89 @@ package lang;
 
 import run._LANG_COMPILER;
 import tokens.*;
-import variables.DATA_TYPE;
-
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 public enum METHOD {
-	EXIT(new CALLBACK() {
-		@Override
-		public int call(Value[] values) {
-			System.out.print("\n\nExecution finished");
-			System.exit(values.length == 0 ? 0 : values[0].vi);
-			return 0;
-		}
-
-		@Override
-		public String assembly(Token[][] argTokens) {
-			if (argTokens != null && argTokens.length == 1 && argTokens[0].length == 1) {
-				return "\tmov eax, 1\n\tmov ebx, " + ((NumberToken) argTokens[0][0]).v + "\n\tint 0x80\n";
-			} else return "\tmov eax, 1\n\tmov ebx, 0\n\tint 0x80\n";
-		}
+	EXIT((m, argTokens) -> {
+		if (argTokens != null && argTokens.length == 1) {
+			return _LANG_COMPILER.valueInstructions(argTokens[0]) + "\tmov eax, 4\n\tmov ebx, 1\n\tmov ecx, ___end\n\tmov edx, ___end_len\n\tint 0x80\n\tmov rax, r10\n\tcall printNumber\n\tcall printNewLine\n\tmov eax, 1\n\tmov ebx, r10d\n\tint 0x80\n";
+		} else return "\tmov eax, 1\n\tmov ebx, 0\n\tint 0x80\n";
 	}),
 
-	WRITE_TO(new CALLBACK() {
-		@Override
-		public int call(Value[] values) {
-			if (values.length != 2) {
-				System.err.println("2 arguments needed for write_to");
-				System.exit(2);
-			}
-			String s = values[0].vs;
-			try (FileOutputStream fout = new FileOutputStream(s)) {
-				fout.write(values[1].vbs);
-				return 0;
-			} catch (IOException e) {
-				e.printStackTrace();
-				return -1;
-			}
+	WRITE_TO((m, argTokens) -> {
+		String asm = "NULL\n";
+		if (argTokens != null && argTokens.length == 2) {
+			String name = ((StringToken) argTokens[0][0]).str;
+			((PayloadToken) argTokens[1][0]).bind();
+			Payload pl = ((PayloadToken) argTokens[1][0]).payload;
+			_LANG_COMPILER.addNewVar("file_" + ++_LANG_COMPILER.fileCode + "_path", name + ", 0");
+			_LANG_COMPILER.addNewRESWVar("file_" + _LANG_COMPILER.fileCode + "_desc");
+			_LANG_COMPILER.addNewVar("file_" + _LANG_COMPILER.fileCode + "_content", pl.payload);
+			asm = "\tmov eax, 8\n\tmov ebx, file_" + _LANG_COMPILER.fileCode + "_path\n\tmov ecx, 0q644\n\tint 0x80\n\tmov [file_" + _LANG_COMPILER.fileCode + "_desc], eax\n\tmov eax, 4\n\tmov ebx, [file_" + _LANG_COMPILER.fileCode + "_desc]\n\tmov ecx, file_" + _LANG_COMPILER.fileCode + "_content\n\tmov edx, " + pl.payload.length + "\n\tint 0x80\n\tmov eax, 6\n\tmov ebx, [file_" + _LANG_COMPILER.fileCode + "_desc]\n\tint 0x80\n";
 		}
-
-		@Override
-		public String assembly(Token[][] argTokens) {
-			String asm = "NULL\n";
-			if (argTokens != null && argTokens.length == 2) {
-				String name = ((StringToken) argTokens[0][0]).str;
-				((PayloadToken) argTokens[1][0]).bind();
-				Payload pl = ((PayloadToken) argTokens[1][0]).payload;
-				_LANG_COMPILER.addNewVar("file_" + ++_LANG_COMPILER.fileCode + "_path", name + ", 0");
-				_LANG_COMPILER.addNewRESWVar("file_" + _LANG_COMPILER.fileCode + "_desc");
-				_LANG_COMPILER.addNewVar("file_" + _LANG_COMPILER.fileCode + "_content", pl.payload);
-				asm = "\tmov eax, 8\n\tmov ebx, file_" + _LANG_COMPILER.fileCode + "_path\n\tmov ecx, 0q644\n\tint 0x80\n\tmov [file_" + _LANG_COMPILER.fileCode + "_desc], eax\n\tmov eax, 4\n\tmov ebx, [file_" + _LANG_COMPILER.fileCode + "_desc]\n\tmov ecx, file_" + _LANG_COMPILER.fileCode + "_content\n\tmov edx, " + pl.payload.length + "\n\tint 0x80\n\tmov eax, 6\n\tmov ebx, [file_" + _LANG_COMPILER.fileCode + "_desc]\n\tint 0x80\n";
-			}
-			return asm;
-		}
+		return asm;
 	}),
 
-	DEBUG_PRINT(new CALLBACK() {
-		@Override
-		public int call(Value[] values) {
-			System.out.print("Debug: ");
-			for (int i = 0; i < values.length; i++)
-				System.out.print(values[i].type == DATA_TYPE.INT ? values[i].vi : values[i].vs);
-			System.out.println();
-			return 0;
-		}
-
-		@Override
-		public String assembly(Token[][] argTokens) {
-			if (argTokens.length == 1 && argTokens[0].length == 1) {
-				if (argTokens[0][0] instanceof StringToken) {
-					_LANG_COMPILER.addNewVar("str_" + ++_LANG_COMPILER.strCode, ((StringToken) argTokens[0][0]).str + ", 10, 0");
-					return "\tmov eax, 4\n\tmov ebx, 1\n\tmov ecx, str_" + _LANG_COMPILER.strCode + "\n\tmov edx, " + (((StringToken) argTokens[0][0]).str.length()) + "\n\tint 0x80\n";
-				} else if (argTokens[0][0] instanceof NumberToken) {
-					String val = Integer.toString(((NumberToken) argTokens[0][0]).v);
-					_LANG_COMPILER.addNewVar("str_" + ++_LANG_COMPILER.strCode, val);
-					return "\tmov eax, 4\n\tmov ebx, 1\n\tmov ecx, str_" + _LANG_COMPILER.strCode + "\n\tmov edx, " + (val.length()) + "\n\tint 0x80\n\tcall printNewLine\n";
-				} else if (argTokens[0][0] instanceof IdentifierToken) {
-					return "\tmov r8, 1\n" + _LANG_COMPILER.printIdentifier(argTokens[0][0]);
-				}
+	DEBUG_PRINT((m, argTokens) -> {
+		if (argTokens.length == 1 && argTokens[0].length == 1) {
+			if (argTokens[0][0] instanceof StringToken) {
+				_LANG_COMPILER.addNewVar("str_" + ++_LANG_COMPILER.strCode, ((StringToken) argTokens[0][0]).str + ", 10, 0");
+				return "\tmov eax, 4\n\tmov ebx, 1\n\tmov ecx, str_" + _LANG_COMPILER.strCode + "\n\tmov edx, " + (((StringToken) argTokens[0][0]).str.length()) + "\n\tint 0x80\n";
+			} else if (argTokens[0][0] instanceof NumberToken) {
+				String val = Integer.toString(((NumberToken) argTokens[0][0]).v);
+				_LANG_COMPILER.addNewVar("str_" + ++_LANG_COMPILER.strCode, val);
+				return "\tmov eax, 4\n\tmov ebx, 1\n\tmov ecx, str_" + _LANG_COMPILER.strCode + "\n\tmov edx, " + (val.length()) + "\n\tint 0x80\n\tcall printNewLine\n";
+			} else if (argTokens[0][0] instanceof IdentifierToken) {
+				return "\tmov r8, 1\n" + _LANG_COMPILER.printIdentifier(argTokens[0][0]);
 			}
-			return "";
 		}
+		return "";
 	}),
 
-	CONTENT_OF_FILE_EQUALS(new CALLBACK() {
-		@Override
-		public int call(Value[] values) {
-			String name = values[0].vs.substring(1);
-			String loc = values[0].vs.substring(0, 1);
-			if (loc.equals("n")) {
-				String path = "/usr/share/ns/" + name;
-				String content;
-				try (FileInputStream fin = new FileInputStream(path)) {
-					content = new String(fin.readAllBytes());
-				} catch (IOException e) {
-					e.printStackTrace();
-					return -1;
-				}
-				return content.equals(values[1].type == DATA_TYPE.BYTE_STREAM ? new String(values[1].vbs) : values[1].vs) ? 1 : 0;
-			} else if (loc.equals("j")) {
-				String path = "/usr/share/java/ns/" + name;
-				String content;
-				try (FileInputStream fin = new FileInputStream(path)) {
-					content = new String(fin.readAllBytes());
-				} catch (IOException e) {
-					e.printStackTrace();
-					return -1;
-				}
-				return content.equals(values[1].type == DATA_TYPE.BYTE_STREAM ? new String(values[1].vbs) : values[1].vs) ? 1 : 0;
-			}
-			return -1;
-		}
+	CONTENT_OF_FILE_EQUALS((m, argTokens) -> null),
 
-		@Override
-		public String assembly(Token[][] argTokens) {
-			return null;
+	ERROR((m, argTokens) -> {
+		if (argTokens.length == 1 && argTokens[0].length == 1) {
+			if (argTokens[0][0] instanceof StringToken) {
+				_LANG_COMPILER.addNewVar("str_" + ++_LANG_COMPILER.strCode, ((StringToken) argTokens[0][0]).str + ", 10, 0");
+				return "\tmov eax, 4\n\tmov ebx, 2\n\tmov ecx, str_" + _LANG_COMPILER.strCode + "\n\tmov edx, " + (((StringToken) argTokens[0][0]).str.length()) + "\n\tint 0x80\n";
+			} else if (argTokens[0][0] instanceof NumberToken) {
+				String val = Integer.toString(((NumberToken) argTokens[0][0]).v);
+				_LANG_COMPILER.addNewVar("str_" + ++_LANG_COMPILER.strCode, val);
+				return "\tmov eax, 4\n\tmov ebx, 2\n\tmov ecx, str_" + _LANG_COMPILER.strCode + "\n\tmov edx, " + (val.length()) + "\n\tint 0x80\n\tcall printNewLine\n";
+			} else if (argTokens[0][0] instanceof IdentifierToken) {
+				return "\tmov r8, 2\n" + _LANG_COMPILER.printIdentifier(argTokens[0][0]);
+			}
 		}
+		return "";
 	}),
-
-	ERROR(new CALLBACK() {
-		@Override
-		public int call(Value[] values) {
-			throw new Error((values[0].type == DATA_TYPE.STRING ? values[0].vs : Integer.toString(values[0].vi)));
-		}
-
-		@Override
-		public String assembly(Token[][] argTokens) {
-			if (argTokens.length == 1 && argTokens[0].length == 1) {
-				if (argTokens[0][0] instanceof StringToken) {
-					_LANG_COMPILER.addNewVar("str_" + ++_LANG_COMPILER.strCode, ((StringToken) argTokens[0][0]).str + ", 10, 0");
-					return "\tmov eax, 4\n\tmov ebx, 2\n\tmov ecx, str_" + _LANG_COMPILER.strCode + "\n\tmov edx, " + (((StringToken) argTokens[0][0]).str.length()) + "\n\tint 0x80\n";
-				} else if (argTokens[0][0] instanceof NumberToken) {
-					String val = Integer.toString(((NumberToken) argTokens[0][0]).v);
-					_LANG_COMPILER.addNewVar("str_" + ++_LANG_COMPILER.strCode, val);
-					return "\tmov eax, 4\n\tmov ebx, 2\n\tmov ecx, str_" + _LANG_COMPILER.strCode + "\n\tmov edx, " + (val.length()) + "\n\tint 0x80\n\tcall printNewLine\n";
-				} else if (argTokens[0][0] instanceof IdentifierToken) {
-					return "\tmov r8, 2\n" + _LANG_COMPILER.printIdentifier(argTokens[0][0]);
-				}
+	DEFINED_METHOD((m, argTokens) -> {
+		StringBuilder methodBody = new StringBuilder();
+		if (argTokens != null && argTokens.length != 0)
+			for (int i = argTokens.length - 1; i >= 0; i--) {
+				_LANG_COMPILER.rec_ind = 0;
+				methodBody.append(_LANG_COMPILER.valueInstructions(argTokens[i])).append("\tpush r10\n");
 			}
-			return "";
+		methodBody.append("\tcall ").append(m.name).append("\n");
+		if (argTokens != null && argTokens.length != 0)
+			methodBody.append("\tpop r10\n".repeat(argTokens.length));
+		return methodBody.toString();
+	}),
+	PRINT_DIGIT((m, argTokens) -> _LANG_COMPILER.valueInstructions(argTokens[0]) + "\tlea eax, [digits + r10]\n\tcall print_char\n"),
+	ASM((m, argTokens) -> {
+		StringBuilder asm = new StringBuilder();
+		for (Token[] t : argTokens) asm.append(((StringToken) t[0]).str.replaceAll("\"", "")).append('\n');
+		return asm.toString();
+	}),
+	READ((m, argTokens) -> {
+		StringBuilder methodBody = new StringBuilder();
+		for (Token[] tk :
+				argTokens) {
+			_LANG_COMPILER.rec_ind = 0;
+			methodBody.append(_LANG_COMPILER.valueInstructions(tk)).append("\tpush r10\n");
+			methodBody.append("\tcall readValue\n");
+			methodBody.append("\tpop r10\n\tmov [r10], rax\n");
 		}
+		return methodBody.toString();
 	});
 	private CALLBACK callback;
 
@@ -167,11 +109,11 @@ public enum METHOD {
 		this.callback = callback;
 	}
 
-	public int call(Value[] values) {
-		return callback.call(values);
+	public String assembly(Token[][] argTokens) {
+		return callback.assembly(null, argTokens);
 	}
 
-	public String assembly(Token[][] argTokens) {
-		return callback.assembly(argTokens);
+	public String assembly(Method m, Token[][] argTokens) {
+		return callback.assembly(m, argTokens);
 	}
 }

@@ -18,16 +18,13 @@
 package statements;
 
 import lang.METHOD;
+import lang.Method;
 import tokens.Token;
-import tokens.Value;
-import tokens.ValueEvaluator;
-import variables.Variable;
-
-import java.util.Map;
 
 public class MethodCallStatement extends Statement {
 	private final Token[][] argTokens;
 	private final METHOD method;
+	public Method def_m = null;
 
 	public MethodCallStatement(METHOD method, Token[][] v) {
 		super(Statement_TYPE.METHOD_CALL);
@@ -41,17 +38,7 @@ public class MethodCallStatement extends Statement {
 		argTokens = null;
 	}
 
-	@Override
-	public void run(Map<String, Variable> variables) {
-		if (argTokens != null) {
-			Value[] val = new Value[argTokens.length];
-			for (int i = 0; i < val.length; i++)
-				val[i] = ValueEvaluator.evaluate(argTokens[i], variables);
-			method.call(val);
-		} else method.call(new Value[0]);
-	}
-
 	public String assembly() {
-		return method.assembly(argTokens);
+		return method.assembly(def_m, argTokens);
 	}
 }

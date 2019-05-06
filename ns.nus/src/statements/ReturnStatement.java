@@ -17,14 +17,8 @@
 
 package statements;
 
-import variables.DATA_TYPE;
-
-public class Increment_Statement extends Statement {
-	public String name;
-	public DATA_TYPE dt;
-
-	public Increment_Statement(String name) {
-		super(Statement_TYPE.INCREMENT);
-		this.name = name;
+public class ReturnStatement extends Statement {
+	public ReturnStatement() {
+		super(Statement_TYPE.METHOD_RETURN);
 	}
 }

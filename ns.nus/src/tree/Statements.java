@@ -18,21 +18,14 @@
 package tree;
 
 import statements.Statement;
-import variables.Variable;
 
 import java.util.Iterator;
-import java.util.Map;
 
 public class Statements implements Iterable<Statement> {
 	public Statement[] statements;
 
 	public Statements(Statement[] statements) {
 		this.statements = statements;
-	}
-
-	public void run(Map<String, Variable> variables) {
-		for (Statement s : statements)
-			s.run(variables);
 	}
 
 	int ind = 0;

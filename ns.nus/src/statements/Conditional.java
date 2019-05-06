@@ -18,12 +18,7 @@
 package statements;
 
 import tokens.Token;
-import tokens.ValueEvaluator;
 import tree.Statements;
-import variables.Variable;
-
-import java.util.Map;
-import java.util.Objects;
 
 public class Conditional extends Statement {
 	public Token[] condition;
@@ -34,11 +29,5 @@ public class Conditional extends Statement {
 		this.condition = condition;
 		this.onTrue = onTrue;
 		this.onFalse = onFalse;
-	}
-
-	public void run(Map<String, Variable> variables) {
-		if (Objects.requireNonNull(ValueEvaluator.evaluate(condition, variables)).vi == 1)
-			onTrue.run(variables);
-		else if (onFalse != null) onFalse.run(variables);
 	}
 }

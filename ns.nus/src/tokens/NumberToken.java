@@ -18,6 +18,7 @@
 package tokens;
 
 public class NumberToken extends Token {
+	public static final String number = "^\\d+$";
 	public int v;
 
 	public NumberToken(int v) {

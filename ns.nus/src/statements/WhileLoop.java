@@ -18,12 +18,7 @@
 package statements;
 
 import tokens.Token;
-import tokens.ValueEvaluator;
 import tree.Statements;
-import variables.Variable;
-
-import java.util.Map;
-import java.util.Objects;
 
 public class WhileLoop extends Statement {
 	public final Token[] conditionTokens;
@@ -33,11 +28,5 @@ public class WhileLoop extends Statement {
 		super(Statement_TYPE.WHILE_LOOP);
 		this.conditionTokens = conditionTokens;
 		this.statements = statements;
-	}
-
-	@Override
-	public void run(Map<String, Variable> variables) {
-		while (Objects.requireNonNull(ValueEvaluator.evaluate(conditionTokens, variables)).vi == 1)
-			statements.run(variables);
 	}
 }

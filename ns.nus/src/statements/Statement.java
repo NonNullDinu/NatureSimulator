@@ -17,16 +17,10 @@
 
 package statements;
 
-import variables.Variable;
-
-import java.util.Map;
-
 public abstract class Statement {
 	public Statement_TYPE type;
 
 	public Statement(Statement_TYPE type) {
 		this.type = type;
 	}
-
-	public abstract void run(Map<String, Variable> variables);
 }

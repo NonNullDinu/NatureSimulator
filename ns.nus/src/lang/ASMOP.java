@@ -15,16 +15,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package statements;
+package lang;
 
-import variables.DATA_TYPE;
+public class ASMOP {
 
-public class Increment_Statement extends Statement {
-	public String name;
-	public DATA_TYPE dt;
+	public final String OP;
+	public final OPERAND arg1, arg2;
+	public String comment;
+	public boolean isLabel;
 
-	public Increment_Statement(String name) {
-		super(Statement_TYPE.INCREMENT);
-		this.name = name;
+	public ASMOP(String OP, OPERAND arg1, OPERAND arg2) {
+		this.OP = OP;
+		this.arg1 = arg1;
+		this.arg2 = arg2;
+		isLabel = OP.endsWith(":");
+	}
+
+	public void SET_COMMENT(String comment) {
+		this.comment = comment;
+	}
+
+	public void setLabel(boolean isLabel) {
+		this.isLabel = isLabel;
 	}
 }

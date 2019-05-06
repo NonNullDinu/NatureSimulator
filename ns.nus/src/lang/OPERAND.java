@@ -15,16 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package statements;
+package lang;
 
-import variables.DATA_TYPE;
+import run._LANG_COMPILER;
 
-public class Increment_Statement extends Statement {
-	public String name;
-	public DATA_TYPE dt;
+public class OPERAND {
+	public String value;
+	public boolean value_is_immediate;
 
-	public Increment_Statement(String name) {
-		super(Statement_TYPE.INCREMENT);
-		this.name = name;
+	public OPERAND(String value) {
+		this.value = value;
+		this.value_is_immediate = _LANG_COMPILER.isConstant(value);
 	}
 }

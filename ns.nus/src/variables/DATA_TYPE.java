@@ -18,12 +18,24 @@
 package variables;
 
 public enum DATA_TYPE {
-	INT("int", "resd"), STRING("[Ss]tring", "resb"), BOOL("bool(ean)?", "resb"), BYTE_STREAM("[^.]*", "resb"), SHORT_INT("short(\\sint)?", "resw");
+	LONG("^long(\\sint)?$", "resq", "QWORD", "QWORD", 8),
+	INT("^int$", "resd", "DWORD", "DWORD", 4),
+	STRING("^[Ss]tring$", "resb", "BYTE", "BYTE", 8),
+	BOOL("^bool(ean)?$", "resb", "BYTE", "BYTE", 1),
+	SHORT_INT("^short(\\sint)?$", "resw", "WORD", "WORD", 2),
+	POINTER("^(.|\\s)+\\*+$", "resq", "QWORD", "QWORD", 8),
+	BYTE_STREAM("[^.]*", "resb", "BYTE", "BYTE", 8);
+	public String wrdtype;
 	public String asm_type;
 	public String pattern;
+	public String pushkeyword;
+	public int bytesize;
 
-	DATA_TYPE(String regex, String asm_type) {
+	DATA_TYPE(String regex, String asm_type, String wrdtype, String pushkeyword, int bytesize) {
 		this.pattern = regex;
 		this.asm_type = asm_type;
+		this.wrdtype = wrdtype;
+		this.pushkeyword = pushkeyword;
+		this.bytesize = bytesize;
 	}
 }

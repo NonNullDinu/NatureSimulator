@@ -15,16 +15,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package statements;
+package lang;
 
-import variables.DATA_TYPE;
-
-public class Increment_Statement extends Statement {
+public class REGISTER {
+	public int size;//bytes
 	public String name;
-	public DATA_TYPE dt;
+	public REGISTER_ADDRESSING_SET addressing;// one single register - multiple parts
 
-	public Increment_Statement(String name) {
-		super(Statement_TYPE.INCREMENT);
+	public REGISTER(int size, String name) {
+		this.size = size;
 		this.name = name;
+	}
+
+	public void setAddressing(REGISTER_ADDRESSING_SET regaddr) {
+		addressing = regaddr;
 	}
 }

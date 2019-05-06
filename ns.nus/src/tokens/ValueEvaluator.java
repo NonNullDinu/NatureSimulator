@@ -39,8 +39,6 @@ public class ValueEvaluator {
 				return new Value(((PayloadToken) tokens[0]).payload);
 			} else if (tokens[0] instanceof StringToken) {
 				return new Value(((StringToken) tokens[0]).str);
-			} else if (tokens[0] instanceof MethodResultToken) {
-				return new Value(((MethodResultToken) tokens[0]).result(variables));
 			} else {
 				System.out.println("One token unknown type value: " + tokens[0]);
 				return null;

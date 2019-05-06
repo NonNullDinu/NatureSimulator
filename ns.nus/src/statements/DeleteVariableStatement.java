@@ -17,20 +17,11 @@
 
 package statements;
 
-import variables.Variable;
-
-import java.util.Map;
-
 public class DeleteVariableStatement extends Statement {
 	private final String name;
 
 	public DeleteVariableStatement(String name) {
 		super(Statement_TYPE.DELETE_VAR);
 		this.name = name;
-	}
-
-	@Override
-	public void run(Map<String, Variable> variables) {
-		variables.remove(name);
 	}
 }

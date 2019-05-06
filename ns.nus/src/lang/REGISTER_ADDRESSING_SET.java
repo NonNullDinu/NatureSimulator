@@ -15,16 +15,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package statements;
+package lang;
 
-import variables.DATA_TYPE;
+public class REGISTER_ADDRESSING_SET {
+	public REGISTER x64;
+	public REGISTER x32;
+	public REGISTER x16;
+	public REGISTER x8;
 
-public class Increment_Statement extends Statement {
-	public String name;
-	public DATA_TYPE dt;
-
-	public Increment_Statement(String name) {
-		super(Statement_TYPE.INCREMENT);
-		this.name = name;
+	public REGISTER_ADDRESSING_SET(REGISTER x64, REGISTER x32, REGISTER x16, REGISTER x8) {
+		this.x64 = x64;
+		this.x32 = x32;
+		this.x16 = x16;
+		this.x8 = x8;
+		x64.setAddressing(this);
+		x32.setAddressing(this);
+		x16.setAddressing(this);
+		x8.setAddressing(this);
 	}
 }

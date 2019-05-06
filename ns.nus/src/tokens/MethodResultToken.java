@@ -18,9 +18,6 @@
 package tokens;
 
 import lang.METHOD;
-import variables.Variable;
-
-import java.util.Map;
 
 public class MethodResultToken extends Token {
 	private final METHOD method;
@@ -29,13 +26,6 @@ public class MethodResultToken extends Token {
 	public MethodResultToken(METHOD method, Token[][] tkns) {
 		this.method = method;
 		this.tokenArgs = tkns;
-	}
-
-	public int result(Map<String, Variable> variables) {
-		Value[] values = new Value[tokenArgs.length];
-		for (int i = 0; i < values.length; i++)
-			values[i] = ValueEvaluator.evaluate(tokenArgs[i], variables);
-		return method.call(values);
 	}
 
 	@Override

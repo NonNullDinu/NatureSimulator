@@ -17,10 +17,7 @@
 
 package statements;
 
-import lang.exceptions.RedeclarationException;
-import variables.*;
-
-import java.util.Map;
+import variables.DATA_TYPE;
 
 public class VarDeclare_Statement extends Statement {
 	public String name;
@@ -30,26 +27,5 @@ public class VarDeclare_Statement extends Statement {
 		super(Statement_TYPE.VAR_DECLARE);
 		this.name = name;
 		this.type = type;
-	}
-
-	@Override
-	public void run(Map<String, Variable> variables) {
-		if (variables.containsKey(name)) {
-			throw new RedeclarationException("Cannot redefine variable \"" + name + "\"");
-		} else {
-			Variable v = null;
-			switch (type) {
-				case INT:
-					v = new Variable_INT();
-					break;
-				case BOOL:
-					v = new Variable_BOOL();
-					break;
-				case STRING:
-					v = new Variable_STRING();
-					break;
-			}
-			variables.put(name, v);
-		}
 	}
 }

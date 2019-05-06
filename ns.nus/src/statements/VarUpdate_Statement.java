@@ -17,46 +17,17 @@
 
 package statements;
 
-import lang.exceptions.WrongValueTypeException;
 import tokens.Token;
-import tokens.Value;
-import tokens.ValueEvaluator;
-import variables.Variable;
-import variables.Variable_BOOL;
-import variables.Variable_INT;
-import variables.Variable_STRING;
-
-import java.util.Map;
+import variables.DATA_TYPE;
 
 public class VarUpdate_Statement extends Statement {
 	public final Token[] value;
 	public final String name;
+	public DATA_TYPE dt;
 
 	public VarUpdate_Statement(String name, Token[] value) {
 		super(Statement_TYPE.VAR_UPDATE);
 		this.value = value;
 		this.name = name;
-	}
-
-	@Override
-	public void run(Map<String, Variable> variables) {
-		Value v = ValueEvaluator.evaluate(value, variables);
-		Variable var = variables.get(name);
-		if (v == null)
-			for (Token t : value)
-				System.out.println(t);
-		if (v.type != var.type)
-			throw new WrongValueTypeException("The type " + var.type.name() + " cannot accept values of type " + v.type.name());
-		else switch (v.type) {
-			case INT:
-				((Variable_INT) var).v = v.vi;
-				break;
-			case BOOL:
-				((Variable_BOOL) var).v = v.vb;
-				break;
-			case STRING:
-				((Variable_STRING) var).v = v.vs;
-				break;
-		}
 	}
 }

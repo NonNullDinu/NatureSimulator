@@ -15,16 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package statements;
+package lang;
 
-import variables.DATA_TYPE;
+import tree.Statements;
 
-public class Increment_Statement extends Statement {
+public class Method {
 	public String name;
-	public DATA_TYPE dt;
+	public Statements body;
 
-	public Increment_Statement(String name) {
-		super(Statement_TYPE.INCREMENT);
+	public Method(String name, Statements body) {
 		this.name = name;
+		this.body = body;
 	}
 }
