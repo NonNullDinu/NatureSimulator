@@ -17,29 +17,12 @@
 
 package lang;
 
-public class ASMOP {
+public class OptimizationStrategy {
+	public String instructions;
+	public String optimized;
 
-	public final String OP;
-	public final OPERAND arg1, arg2;
-	public String comment;
-	public boolean isLabel;
-
-	public ASMOP(String OP, OPERAND arg1, OPERAND arg2) {
-		this.OP = OP;
-		this.arg1 = arg1;
-		this.arg2 = arg2;
-		isLabel = OP.endsWith(":");
-	}
-
-	public ASMOP withComment(String comment) {
-		this.comment = comment;
-		return this;
-	}
-
-	public void print() {
-		System.out.print(OP);
-		if (arg1 != null) System.out.print(" " + arg1.value);
-		if (arg2 != null) System.out.print(", " + arg2.value);
-		System.out.println();
+	public OptimizationStrategy(String instructions, String optimized) {
+		this.instructions = instructions;
+		this.optimized = optimized;
 	}
 }

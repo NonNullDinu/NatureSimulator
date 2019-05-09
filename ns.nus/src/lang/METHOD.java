@@ -99,7 +99,7 @@ public enum METHOD {
 			_LANG_COMPILER.rec_ind = 0;
 			methodBody.append(_LANG_COMPILER.valueInstructions(tk)).append("\tpush r10\n");
 			methodBody.append("\tcall readValue\n");
-			methodBody.append("\tpop r10\n\tmov [r10], rax\n");
+			methodBody.append("\tpop r10\n\tmov [r10], rax//POINTER\n");
 		}
 		return methodBody.toString();
 	});

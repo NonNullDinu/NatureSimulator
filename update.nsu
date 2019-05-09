@@ -1,4 +1,5 @@
 long recind = 0
+
 void cout(arg1){
     long* var2 = &arg1
     recind++
@@ -20,12 +21,7 @@ void cout(arg1){
 }
 
 long a = (1 + (3 * (5 + (4/2))) * 2)
-###a = a * 4 / 3
 long b = a
-int x = a
-read(&a)
-debug print(a)
-debug print(x)
 if(a == b)
 then
 debug print(a)

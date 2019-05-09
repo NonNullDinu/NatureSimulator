@@ -17,14 +17,13 @@
 
 package lang;
 
-import run._LANG_COMPILER;
-
 public class OPERAND {
 	public String value;
 	public boolean value_is_immediate;
+	public boolean value_is_constant;
 
 	public OPERAND(String value) {
 		this.value = value;
-		this.value_is_immediate = _LANG_COMPILER.isConstant(value);
+		this.value_is_immediate = value.matches("^\\d+$");
 	}
 }

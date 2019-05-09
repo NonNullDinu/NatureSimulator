@@ -48,7 +48,7 @@ public class UnaryOperatorToken extends Token {
 			String asm = "";
 			switch (this) {
 				case REFERENCE:
-					asm = "lea " + reg + ", " + referenceVar + "";
+					asm = "lea " + reg + ", " + referenceVar;
 					break;
 				case DEREFERENCE:
 					asm = "mov " + reg + ", [" + reg + "]";

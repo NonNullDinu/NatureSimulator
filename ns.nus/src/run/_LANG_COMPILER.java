@@ -107,6 +107,12 @@ public class _LANG_COMPILER {
 	private static String regs = "rax%eax%ax%al%rcx%ecx%cx%cl%rdx%edx%dx%dl%rbx%ebx%bx%bl%rsi%esi%si%sil%rdi%edi%di%dil%rsp%esp%sp%spl%rbp%ebp%bp%bpl%r8%r8d%r8w%r8b%r9%r9d%r9w%r9b%r10%r10d%r10w%r10b%r11%r11d%r11w%r11b%r12%r12d%r12w%r12b%r13%r13d%r13w%r13b%r14%r14d%r14w%r14b%r15%r15d%r15w%r15b".replaceAll("%", " ");
 	private static List<REGISTER_ADDRESSING_SET> registerList = new ArrayList<>();
 	private static int ebpoff = 0;
+	private static Map<String, Boolean> memory_constant = new HashMap<>();
+	private static Map<String, Integer> memory_values = new HashMap<>();
+	private static List<OptimizationStrategy> optimizationStrategies = new ArrayList<>();
+	private static Map<String, Boolean> register_required = new HashMap<>();
+	private static Map<String, Boolean> memory_required = new HashMap<>();
+	private static String stackregs = "rsp%esp%sp%spl%rbp%ebp%bp%bpl".replaceAll("%", " ");
 
 	public static void addNewVar(String name, String value) {
 		dataVars.add(new VAR_(name, DATA_TYPE.STRING, value));
@@ -125,9 +131,10 @@ public class _LANG_COMPILER {
 		dataVars.add(new VAR_(name, DATA_TYPE.STRING, content.substring(0, content.length() - 2)));
 	}
 
-	private static int instrind = 1;
 	private static String jumpFalseLabel;
 	private static String jumpTrueLabel;
+	private static String nl = "\n";
+	private static String nlr = "\\n";
 
 	static {
 		for (String reg : regs.split(" ")) {
@@ -212,6 +219,7 @@ public class _LANG_COMPILER {
 			registerMap.put(reg, new REGISTER(sz, reg));
 			registers_values.put(reg, 0);
 			registers_constant.put(reg, false);
+			register_required.put(reg, false);
 		}
 		registerList.add(new REGISTER_ADDRESSING_SET(reg("rax"), reg("eax"), reg("ax"), reg("al")));
 		registerList.add(new REGISTER_ADDRESSING_SET(reg("rbx"), reg("ebx"), reg("bx"), reg("bl")));
@@ -229,6 +237,10 @@ public class _LANG_COMPILER {
 		registerList.add(new REGISTER_ADDRESSING_SET(reg("r13"), reg("r13d"), reg("r13w"), reg("r13b")));
 		registerList.add(new REGISTER_ADDRESSING_SET(reg("r14"), reg("r14d"), reg("r14w"), reg("r14b")));
 		registerList.add(new REGISTER_ADDRESSING_SET(reg("r15"), reg("r15d"), reg("r15w"), reg("r15b")));
+
+		optimizationStrategies.add(new OptimizationStrategy("mov (.*), (.*)" + nlr + "push \\1", "push $2"));//REPLACE MOV a,b PUSH a with PUSH b
+		optimizationStrategies.add(new OptimizationStrategy("mov (.*), (.*)" + nlr + "mov \\2, \\1", "mov $1, $2"));//REPLACE MOV a,b MOV b,a with MOV a,b
+		optimizationStrategies.add(new OptimizationStrategy("mov r10, (.*)" + nlr + "mov r11, (.*)" + nlr + "cmp r10, r11", "mov r10, $1" + nl + "cmp r10, $2"));
 	}
 
 	public static REGISTER reg(String name) {
@@ -281,7 +293,6 @@ public class _LANG_COMPILER {
 		assembly = new StringBuilder(";DO NOT EDIT\n;THIS FILE IS COMPUTER GENERATED\n;AS A RESULT OF THE COMPILATION OF \"" + program_file_name + "\"\nsection .text\n" + functions_code + "\n\tglobal _start\n_start:\n");
 		boolean prevdec = true;
 		for (Statement statement : statements) {
-			assembly.append("\t;").append(instrind++).append("\n");
 			switch (statement.type) {
 				case VAR_DECLARE:
 					if (!prevdec)
@@ -294,6 +305,9 @@ public class _LANG_COMPILER {
 							id.data_type = var.type;
 						}
 					});
+					memory_values.put(var.name, 0);
+					memory_constant.put(var.name, false);
+					memory_required.put(var.name, true);
 					break;
 				case VAR_UPDATE:
 					assembly.append(valueInstructions(((VarUpdate_Statement) statement).value));
@@ -383,7 +397,6 @@ public class _LANG_COMPILER {
 		boolean prevdec = true;
 		Map<String, VAR_> localvars_ = new HashMap<>(localvars);
 		for (Statement statement : statements) {
-			asm.append("\t;").append(instrind++).append("\n");
 			switch (statement.type) {
 				case VAR_DECLARE: {
 					if (!prevdec)
@@ -425,7 +438,7 @@ public class _LANG_COMPILER {
 					if (localvars_.containsKey(name))
 						name = _LANG_COMPILER.localvars.get(name);
 					if (ptr) {
-						asm.append("\tmov r11, ").append(((VarUpdate_Statement) statement).dt.wrdtype).append(" [").append(name).append("]\n\tmov [r11], r10\n");
+						asm.append("\tmov r11, ").append(((VarUpdate_Statement) statement).dt.wrdtype).append(" [").append(name).append("]\n\tmov [r11], r10//POINTER\n");
 					} else
 						asm.append("\tmov ").append(((VarUpdate_Statement) statement).dt.wrdtype).append(" [").append(name).append("], r10\n");
 					break;
@@ -468,7 +481,7 @@ public class _LANG_COMPILER {
 					} else jumpFalseLabel = ".COND_" + cnd + "_FINAL_END";
 					jumpTrueLabel = ".COND_" + cnd + "_TRUE";
 					asm.append(conditional(((Conditional) statement).condition)).append("\nCMP r10, 0\n\tJE .COND_").append(cond_code).append(((Conditional) statement).onFalse != null ? "_FALSE" : "_FINAL_END").append("\n");
-					asm.append(".COND_").append(cnd).append("_TRUE:").append(assemblyInstructions(((Conditional) statement).onTrue, localvars_));
+					asm.append(".COND_").append(cnd).append("_TRUE:\n").append(assemblyInstructions(((Conditional) statement).onTrue, localvars_));
 					if (((Conditional) statement).onFalse != null) {
 						asm.append("\n\tJMP .COND_").append(cnd).append("_FINAL_END\n").append(".COND_").append(cnd).append("_FALSE:\t;FORWARD JUMP\n").append(assemblyInstructions(((Conditional) statement).onFalse, localvars_));
 					}
@@ -676,6 +689,8 @@ public class _LANG_COMPILER {
 						else
 							UnaryOperatorToken.referenceVar = value(valueTokens[i + 1]);
 					asm += ((UnaryOperatorToken) valueTokens[i]).asm_code("r10");
+					if (((UnaryOperatorToken) valueTokens[i]).op == UnaryOperatorToken.OP.REFERENCE)
+						asm = asm.substring(0, asm.length() - 1) + "//POINTER\n";
 					if (depth != 0)
 						asm += "\n\tmov QWORD [INTERNAL____CACHE + " + (8 * cache_ptr) + "], r10\n";
 					return asm;
@@ -753,18 +768,127 @@ public class _LANG_COMPILER {
 			ASMOP asmop = OPERATIONS.get(i);
 			if (asmop.isLabel) {
 				for (String reg : regs.split(" ")) {
-					registers_constant.put(reg, false);
+					registers_constant.replace(reg, false);
 				}
-			} else if (asmop.arg2 != null && asmop.arg2.value_is_immediate) {
-				asmop.arg2.value = cvalue(asmop.arg2.value);
+				for (String mem : memory_constant.keySet()) {
+					memory_constant.replace(mem, false);
+				}
+			} else if (asmop.arg2 != null) {
+				OPERAND operand = asmop.arg2;
+				if (asmop.OP.matches("^mov(zx|sb)?$")) {
+					operand.value_is_constant = isConstant(operand.value);
+					if (operand.value_is_constant) {
+						operand.value = cvalue(operand.value);
+						setConstant(asmop.arg1.value, true, Integer.parseInt(operand.value));
+					} else setConstant(asmop.arg1.value, false, 0);
+				} else if (asmop.OP.matches("^lea$")) {
+					setConstant(asmop.arg1.value, false, 0);
+					setConstant(asmop.arg2.value, false, 0); // ASSUME IT IS GOING TO BE MODIFIED
+				} else if (asmop.OP.matches("^(add|sub)$")) {
+					operand.value_is_constant = isConstant(operand.value);
+					if (operand.value_is_constant) {
+						operand.value = cvalue(asmop.arg2.value);
+						int a = Integer.parseInt(operand.value);
+						boolean firstIsConstant = isConstant(asmop.arg1.value);
+						setConstant(asmop.arg1.value, firstIsConstant, firstIsConstant ? (Integer.parseInt(cvalue(asmop.arg1.value)) + (asmop.OP.equals("add") ? a : (-a))) : 0);
+					} else setConstant(asmop.arg1.value, false, 0);
+				} else if (asmop.OP.equals("cmp")) {
+//					operand.value_is_constant = isConstant(operand.value);
+//					if (operand.value_is_constant) {
+//						operand.value = cvalue(asmop.arg2.value);
+//					}
+				}
+			} else { // 1 or 0 args
+				if (asmop.OP.equals("int") && asmop.arg1.value.equals("0x80")) {
+					setConstant("rax", false, 0);
+				} else if (asmop.OP.matches("^(mul|div)$")) {
+					setConstant("rax", false, 0);
+					setConstant("rdx", false, 0);
+				} else if (asmop.OP.equals("call")) {
+					switch (asmop.arg1.value) {
+						case "readValue":
+							setConstant("rax", false, 0);
+							break;
+					}
+				}
 			}
 		}
+//		for(int i = 0; i < OPERATIONS.size(); i++){
+//			System.out.print((i+1) + " ");
+//			OPERATIONS.get(i).print();
+//		}
+		for (int i = OPERATIONS.size() - 1; i >= 0; i--) {
+			ASMOP op = OPERATIONS.get(i);
+			if (op.isLabel) {
+				for (String reg : register_required.keySet())
+					register_required.replace(reg, true);
+				for (String memloc : memory_required.keySet())
+					memory_required.replace(memloc, true);
+				continue;
+			}
+			if (op.OP.matches("^mov(zx|sb)?$")) {
+				if ((op.comment == null || !op.comment.equals("POINTER")) && !isRequired(op.arg1.value)) {
+					OPERATIONS.remove(i);
+					continue;
+				}
+				setrequired(op.arg1.value, false);
+				setrequired(op.arg2.value, true);
+			} else if (op.OP.equals("lea")) {
+				if ((op.comment == null || !op.comment.equals("POINTER")) && !isRequired(op.arg1.value)) {
+					OPERATIONS.remove(i);
+					continue;
+				}
+				setrequired(op.arg1.value, false);
+				setrequired(op.arg2.value, true);
+			} else if ((op.OP.equals("int") && op.arg1.value.equals("0x80")) || op.OP.equals("syscall")) {
+				setrequiredreg("rax", true);
+				setrequiredreg("rbx", true);
+				setrequiredreg("rcx", true);
+				setrequiredreg("rdx", true);
+			} else if (op.OP.equals("div")) {
+				setrequiredreg("rax", true);
+				setrequiredreg("rdx", true);
+				setrequired(op.arg1.value, true);
+			} else if (op.OP.equals("mul")) {
+				setrequiredreg("rax", true);
+				setrequired(op.arg1.value, true);
+			} else if (op.OP.equals("test")) {
+				setrequiredreg(op.arg1.value, true);
+				setrequiredreg(op.arg2.value, true);
+			} else if (op.OP.equals("call")) {
+				switch (op.arg1.value) {
+					case "print_char":
+					case "printNumber":
+						setrequiredreg("rax", true);
+						setrequiredreg("r8", true);
+						break;
+					case "readValue":
+						break;
+				}
+			} else if (op.OP.equals("push")) {
+				setrequired(op.arg1.value, true);
+			} else if (op.OP.equals("pop")) {
+				setrequired(op.arg1.value, false);
+			} else if (op.OP.equals("cmp")) {
+				setrequired(op.arg1.value, true);
+				setrequired(op.arg2.value, true);
+			}
+		}
+
 		for (ASMOP op : OPERATIONS) {
 			optimized.append(op.OP);
 			if (op.arg1 != null) optimized.append(' ').append(op.arg1.value);
 			if (op.arg2 != null) optimized.append(", ").append(op.arg2.value);
-			optimized.append('\n');
+			optimized.append(nl);
 		}
+		String optstr = optimized.toString();
+		for (OptimizationStrategy strategy : optimizationStrategies) {
+			optstr = optstr.replaceAll(strategy.instructions, strategy.optimized);
+		}
+
+		optstr = optstr.replaceAll(nlr, "\n");
+
+		optimized = new StringBuilder(optstr);
 
 		assembly = optimized;
 
@@ -779,17 +903,73 @@ public class _LANG_COMPILER {
 		}
 	}
 
+	private static void setrequiredreg(String name, boolean required) {
+		REGISTER_ADDRESSING_SET ras = reg(name).addressing;
+		register_required.replace(ras.x64.name, required);
+		register_required.replace(ras.x32.name, required);
+		register_required.replace(ras.x16.name, required);
+		register_required.replace(ras.x8.name, required);
+	}
+
+	private static boolean isRequired(String name) {
+		if (register.matcher(name).matches()) {
+			return register_required.get(name);
+		} else if (name.matches("^.*\\[.*].*$")) {
+			String n = name.substring(name.indexOf('[') + 1, name.indexOf(']'));
+			return (memory_required.containsKey(n) && memory_required.get(n));
+		}
+		return false;
+	}
+
+	private static void setrequired(String name, boolean required) {
+		if (register.matcher(name).matches()) {
+			setrequiredreg(name, required);
+		} else if (name.matches("^.*\\[.*].*$")) {
+			String n = name.substring(name.indexOf('[') + 1, name.indexOf(']'));
+			for (String reg : regs.split(" "))
+				if (n.matches("^.*" + reg + ".*$"))
+					setrequiredreg(reg, true);
+			memory_required.put(n, required);
+		}
+	}
+
+	private static void setConstant(String name, boolean constant, int val) {
+		if (register.matcher(name).matches()) {
+			REGISTER_ADDRESSING_SET ras = reg(name).addressing;
+			registers_constant.put(ras.x64.name, constant);
+			registers_constant.put(ras.x32.name, constant);
+			registers_constant.put(ras.x16.name, constant);
+			registers_constant.put(ras.x8.name, constant);
+			registers_values.put(ras.x64.name, val);
+			registers_values.put(ras.x32.name, val);
+			registers_values.put(ras.x16.name, val & (1 << 16 - 1));
+			registers_values.put(ras.x8.name, val & (1 << 8 - 1));
+		} else {
+			//MEMORY
+			if (name.matches(".*\\[.*]"))
+				name = name.substring(name.indexOf('[') + 1, name.indexOf(']'));
+			memory_constant.put(name, constant);
+			memory_values.put(name, val);
+		}
+	}
+
 	private static ASMOP operation(String line) {
-		if (!line.startsWith("\t"))
+		if (line.endsWith(":") || !line.contains(" "))
 			return new ASMOP(line, null, null);
 		String opcode = line.substring(0, line.indexOf(' '));
 		String argsfull = line.substring(line.indexOf(' ') + 1);
+		String comment = null;
+		if (argsfull.contains("//")) {
+			String[] parts = argsfull.split("//");
+			comment = parts[1];
+			argsfull = parts[0];
+		}
 		String[] args = argsfull.split("\\s*,\\s*");
 		if (args.length == 2)
-			return new ASMOP(opcode, new OPERAND(args[0]), new OPERAND(args[1]));
+			return new ASMOP(opcode, new OPERAND(args[0]), new OPERAND(args[1])).withComment(comment);
 		else if (args.length == 1)
-			return new ASMOP(opcode, new OPERAND(args[0]), null);
-		else return new ASMOP(opcode, null, null);
+			return new ASMOP(opcode, new OPERAND(args[0]), null).withComment(comment);
+		else return new ASMOP(opcode, null, null).withComment(comment);
 	}
 
 	private static Statement[] getStatements(String lines, int d) throws TokenException, ParsingError {
@@ -1093,8 +1273,10 @@ public class _LANG_COMPILER {
 	}
 
 	public static boolean isConstant(String value) {
-		if (register.matcher(value).matches() && registers_constant.get(value))
-			return true;
+		if (register.matcher(value).matches())
+			return registers_constant.get(value);
+		if (value.matches("^.*\\[.*].*$"))
+			return !value.matches("^.*(" + regs.replaceAll(" ", "|") + ").*$") && memory_constant.get(value.substring(value.indexOf('[') + 1, value.indexOf(']')));
 		return value.matches("^\\d+$");
 	}
 
@@ -1103,7 +1285,7 @@ public class _LANG_COMPILER {
 			return name;
 		if (register.matcher(name).matches())
 			return Integer.toString(registers_values.get(name));
-		return null;
+		return Integer.toString(memory_values.get(name.matches(".*\\[.*]") ? name.substring(name.indexOf('[') + 1, name.indexOf(']')) : name));
 	}
 
 	private static Value evaluate(Token[] valueTokens) {
