@@ -61,11 +61,11 @@ readValue:
 .l2:
 	movzx rcx, BYTE [INTERNAL____READ + r10]
 	sub rcx, '0'
-	INC r10
+	inc r10
 	mul DWORD[const10]
 	add rax, rcx
-	CMP r10d, ebx
-	JL .l2
+	cmp r10d, ebx
+	jl .l2
 	ret
 	global _start
 _start:
@@ -73,15 +73,38 @@ _start:
 	mov QWORD [a], 43
 	mov QWORD [INTERNAL____CACHE + 0], 43
 	mov QWORD [b], 43
-	cmp 43, 43
+	mov r10, 43
+	mov r11, 43
+	cmp r10, 43
 	jne .LOGIC_1_FALSE
 	mov r10, 1
-	JMP .LOGIC_1_END
+	jmp .LOGIC_1_END
 .LOGIC_1_FALSE:
 	mov r10, 0
 .LOGIC_1_END:
-	CMP r10, 0
-	JE .COND_1_FALSE
+	mov QWORD [INTERNAL____CACHE + 0], r10
+	cmp QWORD [INTERNAL____CACHE + 0], 0
+	jne .COND_1_TRUE
+	mov r10, QWORD[a]
+	mov QWORD [INTERNAL____CACHE + 8], r10
+	mov r10, QWORD[b]
+	add r10, 1
+	mov QWORD [INTERNAL____CACHE + 16], r10
+	mov r10, QWORD [INTERNAL____CACHE + 8]
+	cmp r10, QWORD [INTERNAL____CACHE + 16]
+	jne .LOGIC_2_FALSE
+	mov r10, 1
+	jmp .LOGIC_2_END
+.LOGIC_2_FALSE:
+	mov r10, 0
+.LOGIC_2_END:
+	mov QWORD [INTERNAL____CACHE + 16], r10
+	mov r10, QWORD [INTERNAL____CACHE + 0]
+	mov r11, QWORD [INTERNAL____CACHE + 16]
+	or r10, r11
+	and r10, 1
+	cmp r10, 0
+	je .COND_1_FALSE
 .COND_1_TRUE:
 	mov r8, 1
 	mov rax, [a]
@@ -92,7 +115,7 @@ _start:
 	mov ecx, str_1
 	mov edx, 21
 	int 0x80
-	JMP .COND_1_FINAL_END
+	jmp .COND_1_FINAL_END
 .COND_1_FALSE:;FORWARD_JUMP
 	mov eax, 4
 	mov ebx, 2
@@ -131,7 +154,7 @@ COUT:;METHOD
 	sub rsp, 8
 	lea r10, [rbp + 16]
 	mov QWORD [rbp - 8], r10
-	INC QWORD[recind]
+	inc QWORD[recind]
 	mov r10, [rbp + 16]
 	mov r11, 10
 	mov eax, r10d
@@ -140,15 +163,15 @@ COUT:;METHOD
 	mov r10d, edx
 	mov QWORD [INTERNAL____CACHE + 0], r10
 	mov r11, 9
-	cmp r10, r11
-	je .LOGIC_2_FALSE
+	cmp r10, 9
+	je .LOGIC_3_FALSE
 	mov r10, 1
-	JMP .LOGIC_2_END
-.LOGIC_2_FALSE:
+	jmp .LOGIC_3_END
+.LOGIC_3_FALSE:
 	mov r10, 0
-.LOGIC_2_END:
-	CMP r10, 0
-	JE .COND_2_FINAL_END
+.LOGIC_3_END:
+	cmp r10, 0
+	je .COND_2_FINAL_END
 .COND_2_TRUE:
 	mov r10, [rbp + 16]
 	add r10, 1
@@ -156,15 +179,16 @@ COUT:;METHOD
 	mov [r11], r10
 .COND_2_FINAL_END:;FORWARD JUMP
 	mov r10, [rbp + 16]
+	mov r11, 9
 	cmp r10, 9
-	jle .LOGIC_3_FALSE
+	jle .LOGIC_4_FALSE
 	mov r10, 1
-	JMP .LOGIC_3_END
-.LOGIC_3_FALSE:
+	jmp .LOGIC_4_END
+.LOGIC_4_FALSE:
 	mov r10, 0
-.LOGIC_3_END:
-	CMP r10, 0
-	JE .COND_3_FINAL_END
+.LOGIC_4_END:
+	cmp r10, 0
+	je .COND_3_FINAL_END
 .COND_3_TRUE:
 	mov r10, [rbp + 16]
 	mov r11, 10
@@ -188,15 +212,16 @@ COUT:;METHOD
 	sub r10, 1
 	mov QWORD [recind], r10
 	mov r10, QWORD[recind]
+	mov r11, 0
 	cmp r10, 0
-	jne .LOGIC_4_FALSE
+	jne .LOGIC_5_FALSE
 	mov r10, 1
-	JMP .LOGIC_4_END
-.LOGIC_4_FALSE:
+	jmp .LOGIC_5_END
+.LOGIC_5_FALSE:
 	mov r10, 0
-.LOGIC_4_END:
-	CMP r10, 0
-	JE .COND_4_FINAL_END
+.LOGIC_5_END:
+	cmp r10, 0
+	je .COND_4_FINAL_END
 .COND_4_TRUE:
 	call printNewLine
 .COND_4_FINAL_END:;FORWARD JUMP

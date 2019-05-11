@@ -34,6 +34,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public class _LANG_COMPILER {
+	private static final int OPTMAX = 32;
 	public static int strCode = 0;
 	private static final String functions_code = "print_char:\n" +
 			"\tpush rax\n" +
@@ -241,6 +242,7 @@ public class _LANG_COMPILER {
 		optimizationStrategies.add(new OptimizationStrategy("mov (.*), (.*)" + nlr + "push \\1", "push $2"));//REPLACE MOV a,b PUSH a with PUSH b
 		optimizationStrategies.add(new OptimizationStrategy("mov (.*), (.*)" + nlr + "mov \\2, \\1", "mov $1, $2"));//REPLACE MOV a,b MOV b,a with MOV a,b
 		optimizationStrategies.add(new OptimizationStrategy("mov r10, (.*)" + nlr + "mov r11, (.*)" + nlr + "cmp r10, r11", "mov r10, $1" + nl + "cmp r10, $2"));
+//		optimizationStrategies.add(new OptimizationStrategy("mov (.*), r10" + nlr + "cmp \\1, (.*)", "cmp r10, $2"));
 	}
 
 	public static REGISTER reg(String name) {
@@ -784,7 +786,7 @@ public class _LANG_COMPILER {
 				} else if (asmop.OP.matches("^lea$")) {
 					setConstant(asmop.arg1.value, false, 0);
 					setConstant(asmop.arg2.value, false, 0); // ASSUME IT IS GOING TO BE MODIFIED
-				} else if (asmop.OP.matches("^(add|sub)$")) {
+				} else if (asmop.OP.matches("^(add|sub|or|xor|and)$")) {
 					operand.value_is_constant = isConstant(operand.value);
 					if (operand.value_is_constant) {
 						operand.value = cvalue(asmop.arg2.value);
@@ -793,10 +795,10 @@ public class _LANG_COMPILER {
 						setConstant(asmop.arg1.value, firstIsConstant, firstIsConstant ? (Integer.parseInt(cvalue(asmop.arg1.value)) + (asmop.OP.equals("add") ? a : (-a))) : 0);
 					} else setConstant(asmop.arg1.value, false, 0);
 				} else if (asmop.OP.equals("cmp")) {
-//					operand.value_is_constant = isConstant(operand.value);
-//					if (operand.value_is_constant) {
-//						operand.value = cvalue(asmop.arg2.value);
-//					}
+					operand.value_is_constant = isConstant(operand.value);
+					if (operand.value_is_constant) {
+						operand.value = cvalue(asmop.arg2.value);
+					}
 				}
 			} else { // 1 or 0 args
 				if (asmop.OP.equals("int") && asmop.arg1.value.equals("0x80")) {
@@ -872,8 +874,38 @@ public class _LANG_COMPILER {
 			} else if (op.OP.equals("cmp")) {
 				setrequired(op.arg1.value, true);
 				setrequired(op.arg2.value, true);
+			} else if (op.OP.matches("^(add|sub|and|or|xor)$")) {
+				setrequired(op.arg1.value, true);
+				setrequired(op.arg2.value, true);
 			}
 		}
+		for (int opt = 0; opt < OPTMAX; opt++)
+			for (int i = OPERATIONS.size() - 1; i >= 2; i--) {
+				ASMOP op = OPERATIONS.get(i);
+				ASMOP op1 = OPERATIONS.get(i - 1);
+				ASMOP op2 = OPERATIONS.get(i - 2);
+				if (op.isLabel || op1.isLabel || op2.isLabel)
+					continue;
+				if (op.OP.equals("pop") && op1.OP.equals("push")) {
+					if (op.arg1.value.equals(op1.arg1.value)) {
+						OPERATIONS.remove(i);
+						OPERATIONS.remove(i - 1);
+					}
+				}
+				if (op.OP.equals("mov") && op1.OP.equals("mov") && op2.OP.equals("cmp")) {
+					boolean rem_a = false, rem_b = false;
+					if (op.arg1.value.equals(op2.arg1.value)) {
+						op2.arg1.value = op.arg2.value;
+						rem_a = true;
+					}
+					if (op1.arg1.value.equals(op2.arg2.value)) {
+						op2.arg2.value = op1.arg2.value;
+						rem_b = true;
+					}
+					if (rem_b) OPERATIONS.remove(i - 1);
+					if (rem_a) OPERATIONS.remove(i - 2);
+				}
+			}
 
 		for (ASMOP op : OPERATIONS) {
 			optimized.append(op.OP);
@@ -954,9 +986,9 @@ public class _LANG_COMPILER {
 	}
 
 	private static ASMOP operation(String line) {
-		if (line.endsWith(":") || !line.contains(" "))
+		if (line.contains(":") || !line.contains(" "))
 			return new ASMOP(line, null, null);
-		String opcode = line.substring(0, line.indexOf(' '));
+		String opcode = line.substring(0, line.indexOf(' ')).toLowerCase();
 		String argsfull = line.substring(line.indexOf(' ') + 1);
 		String comment = null;
 		if (argsfull.contains("//")) {
