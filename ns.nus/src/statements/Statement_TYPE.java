@@ -17,21 +17,72 @@
 
 package statements;
 
+import lang.exceptions.ParsingError;
+import tokens.*;
+
 public enum Statement_TYPE {
-	DELETE_VAR("^\\s*delete\\s[a-zA-Z_][a-zA-Z0-9_]*$"),
-	VAR_DECLARE("^\\s*[a-zA-Z]+(\\*)*\\s[a-zA-Z_][a-zA-Z0-9_]*(\\s*=\\s*.*)?$"),
-	VAR_UPDATE("^\\s*(\\*)*[a-zA-Z_][a-zA-Z0-9_\\.]*\\s?=\\s?.*$"),
-	CONDITIONAL("^\\s*if\\s*\\(.+\\)$"),
-	WHILE_LOOP("^\\s*D\\d+while\\s*\\(.*\\)\\s*do\\s*$"),
-	LOOP_END("^\\s*D\\d+done$"),
-	INCREMENT("^\\s*[a-zA-Z_][a-zA-Z0-9_]*(\\+\\+|--)$"),
-	METHOD_CALL("^\\s*[a-zA-Z_][a-zA-Z0-9_\\s]*\\(.*\\)$"),
-	METHOD_DECLARE("^void\\s*[a-zA-Z_][a-zA-Z0-9_\\s]*\\(.*\\)\\s*\\{$"),
-	METHOD_RETURN("^return(.|\\s)*$");
+	DELETE_VAR,
+	VAR_DECLARE,
+	VAR_UPDATE,
+	CONDITIONAL,
+	WHILE_LOOP,
+	INCREMENT,
+	METHOD_CALL,
+	METHOD_RETURN,
+	METHOD_DECLARE;
 
-	public String pattern;
-
-	Statement_TYPE(String regex) {
-		this.pattern = regex;
+	public boolean fits(Token[] t, int ind) {
+		boolean ret = false;
+		switch (this) {
+			case DELETE_VAR:
+				break;
+			case VAR_DECLARE: {
+				int off = t[ind + 1] instanceof PointerToken ? 1 : 0;
+				ret = (t[ind] instanceof CompositeTypeToken || t[ind] instanceof TypeToken) && (t[ind + off + 1] instanceof NameToken || t[ind + off + 1] instanceof IdentifierToken) && (t[ind + off + 2] instanceof AssignmentToken || t[ind + off + 2] instanceof SemicolonToken);
+				break;
+			}
+			case VAR_UPDATE: {
+				ret = t[ind] instanceof IdentifierToken && t[ind + 1] instanceof AssignmentToken;
+				if (!ret && t[ind] instanceof UnaryOperatorToken && ((UnaryOperatorToken) t[ind]).op == UnaryOperatorToken.OP.DEREFERENCE) {
+					ret = t[ind + 1] instanceof IdentifierToken && t[ind + 2] instanceof AssignmentToken;
+					if (!ret && t[ind + 1] instanceof ParenthesisOpenedToken) {
+						int i = ind + 2, d = 1;
+						for (; i < t.length; i++) {
+							if (t[i] instanceof ParenthesisOpenedToken)
+								d++;
+							else if (t[i] instanceof ParenthesisClosedToken) {
+								d--;
+								if (d == 0)
+									break;
+							}
+						}
+						if (d != 0)
+							throw new ParsingError("Expected closed parenthesis");
+						if (t[i + 1] instanceof AssignmentToken)
+							ret = true;
+					}
+				}
+				break;
+			}
+			case CONDITIONAL:
+				ret = t[ind] instanceof IfToken && t[ind + 1] instanceof ParenthesisOpenedToken;
+				break;
+			case WHILE_LOOP:
+				ret = t[ind] instanceof WhileToken && t[ind + 1] instanceof ParenthesisOpenedToken;
+				break;
+			case INCREMENT:
+				ret = t[ind] instanceof IdentifierToken && t[ind + 1] instanceof IncrementToken;
+				break;
+			case METHOD_CALL:
+				ret = t[ind] instanceof IdentifierToken && t[ind + 1] instanceof ParenthesisOpenedToken;
+				break;
+			case METHOD_RETURN:
+				ret = t[ind] instanceof ControlToken && ((ControlToken) t[ind]).instr == CONTROL_INSTRUCTION.RETURN;
+				break;
+			case METHOD_DECLARE:
+				ret = (t[ind] instanceof CompositeTypeToken || t[ind] instanceof TypeToken) && (t[ind + 1] instanceof NameToken || t[ind + 1] instanceof IdentifierToken) && (t[ind + 2] instanceof ParenthesisOpenedToken);
+				break;
+		}
+		return ret;
 	}
 }

@@ -1,34 +1,34 @@
-long recind = 0
+long recind = 0;
 
 void cout(arg1){
-    long* var2 = &arg1
-    recind++
-    if(arg1%10!=9)
-    then
-        *var2 = arg1 + 1
-    fi
+    long* var2 = &arg1;
+    recind = recind + 1;
+    if(arg1%10!=9){
+        *var2 = arg1 + 1;
+    }
     if(arg1 > 9)
-    then
-        cout(arg1/10)
-    fi
-    print digit(arg1%10)
-    recind = recind - 1
+    {
+        cout(arg1/10);
+    }
+    print_digit(arg1%10);
+    recind = recind - 1;
     if(recind == 0)
-    then
-        ASM("call printNewLine")
-    fi
-    return
+    {
+        ASM("call printNewLine");
+    }
+    return;
 }
 
-long a = (1 + (3 * (5 + (4/2))) * 2)
-long b = a
+long a = (1 + (3 * (5 + (4/2))) * 2);
+long b = a;
 if(a == b || a == b + 1)
-then
-debug print(a)
-debug print("compilation alright")
-else
-error("compilation problem")
-exit(1)
-fi
-cout(a)
-exit((1+1)/3)
+{
+debug_print(a);
+debug_print("compilation alright");
+}
+else{
+error("compilation problem");
+exit(1);
+}
+cout(a);
+exit((1+1)/3);

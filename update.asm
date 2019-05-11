@@ -154,7 +154,9 @@ COUT:;METHOD
 	sub rsp, 8
 	lea r10, [rbp + 16]
 	mov QWORD [rbp - 8], r10
-	inc QWORD[recind]
+	mov r10, QWORD[recind]
+	add r10, 1
+	mov QWORD [recind], r10
 	mov r10, [rbp + 16]
 	mov r11, 10
 	mov eax, r10d

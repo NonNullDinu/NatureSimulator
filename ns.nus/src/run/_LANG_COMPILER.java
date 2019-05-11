@@ -20,7 +20,6 @@ package run;
 import lang.*;
 import lang.exceptions.InvalidExpressionException;
 import lang.exceptions.ParsingError;
-import lang.exceptions.SyntaxError;
 import lang.exceptions.TokenException;
 import statements.*;
 import tokens.*;
@@ -122,7 +121,7 @@ public class _LANG_COMPILER {
 	private static int locvarsize = 0;
 
 	private static void tokenizeProgram() {
-		statements = getStatements(parsed_src.toString(), 0);
+		statements = getStatements(parsed_src.toString());
 	}
 
 	public static void addNewVar(String name, byte[] value) {
@@ -268,26 +267,7 @@ public class _LANG_COMPILER {
 				continue;
 			if (spl[i].contains("###"))
 				spl[i] = spl[i].split("###")[0];
-			if (spl[i].startsWith("for")) {
-				String inside = spl[i].substring(spl[i].indexOf('(') + 1, spl[i].lastIndexOf(')'));
-				String[] pts = inside.split(";\\s*");
-				if (pts.length != 3)
-					throw new SyntaxError("Expected 3 comma-separated parts in the for at line " + (i + 1) + " but found " + pts.length);
-				parsed_src.append(pts[0]).append("\nD").append(d).append("while(").append(pts[1]).append(")do\n");
-				beforeDoneOnFor[d] = pts[2];
-				d++;
-			} else if (spl[i].startsWith("done")) {
-				d--;
-				if (beforeDoneOnFor[d] != null) {
-					parsed_src.append(beforeDoneOnFor[d]).append("\nD").append(d).append(spl[i]).append("\n");
-					beforeDoneOnFor[d] = null;
-				} else parsed_src.append("D").append(d).append(spl[i]).append("\n");
-			} else if (spl[i].startsWith("while")) {
-				parsed_src.append("D").append(d).append(spl[i]).append("\n");
-				d++;
-			} else {
-				parsed_src.append(spl[i]).append("\n");
-			}
+			parsed_src.append(spl[i]).append("\n");
 		}
 	}
 
@@ -815,10 +795,6 @@ public class _LANG_COMPILER {
 				}
 			}
 		}
-//		for(int i = 0; i < OPERATIONS.size(); i++){
-//			System.out.print((i+1) + " ");
-//			OPERATIONS.get(i).print();
-//		}
 		for (int i = OPERATIONS.size() - 1; i >= 0; i--) {
 			ASMOP op = OPERATIONS.get(i);
 			if (op.isLabel) {
@@ -1004,186 +980,431 @@ public class _LANG_COMPILER {
 		else return new ASMOP(opcode, null, null).withComment(comment);
 	}
 
-	private static Statement[] getStatements(String lines, int d) throws TokenException, ParsingError {
-		String[] split = lines.split("\n");
-		List<Statement> statements = new ArrayList<>();
-		int i;
-		for (i = 0; i < split.length; i++) {
-			String line = split[i];
-			if (line.isEmpty())
+	private static Statement[] getStatements(String lines) throws TokenException, ParsingError {
+		Token[] tokens = tokenize(lines);
+		int first_type_token_ind = -2, last_type_token_ind = -2, first_pointer_token = -2, last_pointer_token = -2;
+		for (int i = 0; i < tokens.length; i++) {
+			if (tokens[i] == null)
 				continue;
-			if (line.equals("PAYLOAD:"))
-				break;
-			for (Statement_TYPE type : Statement_TYPE.values())
-				if (line.matches(type.pattern)) {
-					switch (type) {
-						case VAR_DECLARE: {
-							String type_ = line.substring(0, line.indexOf(' '));
-							DATA_TYPE type__ = null;
-							for (DATA_TYPE data_type : DATA_TYPE.values()) {
-								if (type_.matches(data_type.pattern)) {
-									type__ = data_type;
-									break;
-								}
-							}
-							String l = line.substring(line.indexOf(' ') + 1);
-							int ind = l.indexOf('=');
-							String name = l.substring(0, ind == -1 ? l.length() : ind);
-							while (name.startsWith(" ") || name.startsWith("\t"))
-								name = name.substring(1);
-							while (name.endsWith(" ") || name.endsWith("\t"))
-								name = name.substring(0, name.length() - 1);
-							statements.add(new VarDeclare_Statement(name, type__));
-							if (line.contains("=")) {
-								String value = line.substring(line.indexOf('=') + 1);
-								Token[] valueTokens = tokensOfValue(value);
-								statements.add(new VarUpdate_Statement(name, valueTokens));
-							}
-							break;
-						}
-						case VAR_UPDATE: {
-							String name = line.substring(0, line.indexOf('='));
-							while (name.startsWith(" ") || name.startsWith("\t"))
-								name = name.substring(1);
-							while (name.endsWith(" ") || name.endsWith("\t"))
-								name = name.substring(0, name.length() - 1);
-							String value = line.substring(line.indexOf('=') + 1);
-							Token[] valueTokens = tokensOfValue(value);
-							statements.add(new VarUpdate_Statement(name, valueTokens));
-							break;
-						}
-						case CONDITIONAL: {
-							Token[] conditionTokens = tokensOfValue(line.substring(line.indexOf('(') + 1, line.lastIndexOf(')')));
-							Statements onTrue = null, onFalse = null;
-							for (i++; i < split.length && !split[i].equals("fi"); i++) {
-								if (split[i].equals("then")) {
-									int j = ++i;
-									for (; i < split.length && !split[i].equals("else") && !split[i].equals("fi"); i++)
-										;
-									String[] lines_arr = new String[i - j];
-									if (i - j >= 0) System.arraycopy(split, j, lines_arr, 0, i - j);
-									StringBuilder code = new StringBuilder();
-									for (String line_ : lines_arr)
-										code.append(line_).append("\n");
-									onTrue = new Statements(getStatements(code.toString(), d + 1));
-									i--;
-								}
-								if (split[i].equals("else")) {
-									int j = ++i;
-									for (; i < split.length && !split[i].equals("fi"); i++) ;
-									String[] lines_arr = new String[i - j];
-									if (i - j >= 0) System.arraycopy(split, j, lines_arr, 0, i - j);
-									StringBuilder code = new StringBuilder();
-									for (String line_ : lines_arr)
-										code.append(line_).append("\n");
-									onFalse = new Statements(getStatements(code.toString(), d + 1));
-									i--;
-								}
-							}
-							statements.add(new Conditional(conditionTokens, onTrue, onFalse));
-							break;
-						}
-						case WHILE_LOOP: {
-							Token[] conditionTokens_while = tokensOfValue(line.substring(line.indexOf('(') + 1, line.lastIndexOf(')')));
-							int j = ++i;
-							for (; i < split.length && !split[i].equals("D" + (d) + "done"); i++)
-								;
-							String[] lines_arr = new String[i - j];
-							if (i - j >= 0) System.arraycopy(split, j, lines_arr, 0, i - j);
-							StringBuilder code = new StringBuilder();
-							for (String line_ : lines_arr)
-								code.append(line_).append("\n");
-							i--;
-							statements.add(new WhileLoop(conditionTokens_while, new Statements(getStatements(code.toString(), d + 1))));
-							break;
-						}
-						case DELETE_VAR: {
-							String name = line.split(" ")[1];
-							statements.add(new DeleteVariableStatement(name));
-							break;
-						}
-						case INCREMENT: {
-							int ind = line.indexOf('+');
-							String name = line.substring(0, ind != -1 ? ind : line.indexOf('-'));
-							statements.add(new Increment_Statement(name));
-							break;
-						}
-						case METHOD_CALL: {
-							String methodName = line.substring(0, line.indexOf('(')).toUpperCase().replaceAll(" ", "_");
-							Method method2 = methods.getOrDefault(methodName, null);
-							METHOD method1 = method2 == null ? METHOD.valueOf(methodName) : METHOD.DEFINED_METHOD;
-
-							String argfull = line.substring(line.indexOf('(') + 1, line.lastIndexOf(')'));
-							MethodCallStatement mcs;
-							if (!argfull.isEmpty()) {
-								String[] args;
-								if (method1 == METHOD.ASM) {
-									args = argfull.split("\"\\s*,\\s*\"");
-									args[0] += '"';
-									for (int j = 1; j < args.length - 1; j++)
-										args[j] = '"' + args[j] + '"';
-									args[args.length - 1] = '"' + args[args.length - 1];
-								} else {
-									args = argfull.split(",");
-								}
-								Token[][] v = new Token[args.length][];
-								for (int j = 0; j < args.length; j++)
-									v[j] = tokensOfValue(args[j]);
-								mcs = new MethodCallStatement(method1, v);
-							} else {
-								mcs = new MethodCallStatement(method1);
-							}
-							mcs.def_m = method2;
-							statements.add(mcs);
-							break;
-						}
-						case METHOD_DECLARE: {
-							String name = split[i].substring(split[i].indexOf(' ') + 1, split[i].indexOf('(')).toUpperCase().replaceAll(" ", "_");
-							methods.put(name, new Method(name, null));
-							int j = ++i;
-							for (; i < split.length && !split[i].equals("}"); i++)
-								;
-							String[] lines_arr = new String[i - j];
-							if (i - j >= 0) System.arraycopy(split, j, lines_arr, 0, i - j);
-							StringBuilder code = new StringBuilder();
-							for (String line_ : lines_arr)
-								code.append(line_).append("\n");
-							methods.get(name).body = new Statements(getStatements(code.toString(), d + 1));
-							i--;
-							break;
-						}
-						case METHOD_RETURN: {
-							statements.add(new ReturnStatement());
-							break;
-						}
+			if (tokens[i] instanceof TypeToken) {
+				if (last_type_token_ind == i - 1) {
+					if (tokens[first_type_token_ind] instanceof CompositeTypeToken) {
+						((CompositeTypeToken) tokens[first_type_token_ind]).tkns.add(((TypeToken) tokens[i]));
+						tokens[i] = null;
+					} else {
+						tokens[first_type_token_ind] = new CompositeTypeToken(((TypeToken) tokens[first_type_token_ind]), ((TypeToken) tokens[i]));
+						tokens[i] = null;
 					}
-					break;
-				}
-		}
-		int begin = lines.indexOf("PAYLOAD:") + 9;
-		if (begin != 8) {
-			byte[] data = lines.substring(begin).getBytes();
-			i = 0;
-			while (i < data.length) {
-				String name = new String(new byte[]{data[i], data[i + 1], data[i + 2]});
-				i += 4;
-				StringBuilder cs = new StringBuilder();
-				while (i < data.length && data[i] != (byte) ' ')
-					cs.append((char) data[i++]);
-				if (i == data.length)
-					throw new Error("Unexpected end of payload");
-				int c = Integer.parseInt(cs.toString());
-				int j;
-				byte[] buf = new byte[c];
-				for (j = ++i; i < j + c; i++) {
-					buf[i - j] = data[i];
-				}
-				i++;
-				new Payload(name, buf);
+				} else first_type_token_ind = i;
+				last_type_token_ind = i;
+			}
+			if (tokens[i] instanceof PointerToken) {
+				if (last_pointer_token == i - 1) {
+					((PointerToken) tokens[first_pointer_token]).increment();
+					tokens[i] = null;
+				} else first_pointer_token = i;
+				last_pointer_token = i;
 			}
 		}
+		int l = 0;
+		for (int i = 0; i < tokens.length; i++)
+			if (tokens[i] != null)
+				l++;
+		Token[] tk = new Token[l];
+		int ptr = 0;
+		for (int i = 0; i < tokens.length; i++)
+			if (tokens[i] != null)
+				tk[ptr++] = tokens[i];
+		tokens = tk;
+		Statement[] statements = parse(tokens);
+		return statements;
+	}
 
+	private static Token[] tokenize(String lines) {
+		List<Token> tokens = new ArrayList<>();
+		Token prev = null;
+		while (!lines.isBlank()) {
+			String t = nextToken(lines);
+			Token tk = getToken(prev, t);
+			if (tk == null)
+				System.out.println(lines);
+			lines = lines.substring(lines.indexOf(t) + t.length());
+			prev = tk;
+			tokens.add(tk);
+		}
+		return tokens.toArray(new Token[0]);
+	}
+
+	private static Statement[] parse(Token[] tokens) {
+		List<Statement> statements = new ArrayList<>();
+		IndObj ind = new IndObj();
+		while (ind.ind != tokens.length) {
+			Statement[] s = getStatement(tokens, ind);
+			if (s != null)
+				statements.addAll(Arrays.asList(s));
+		}
 		return statements.toArray(new Statement[0]);
+	}
+
+	private static Statement[] getStatement(Token[] t, IndObj ind) {
+		Statement_TYPE st = getFirstStatementType(t, ind.ind);
+		if (st == null)
+			throw new ParsingError("INVALID STATEMENT:" + t[ind.ind].toString() + " " + t[ind.ind + 1].toString() + " " + t[ind.ind + 2].toString());
+		switch (st) {
+			case VAR_DECLARE: {
+				VarDeclare_Statement vardecl = new VarDeclare_Statement(((IdentifierToken) t[ind.ind + (t[ind.ind + 1] instanceof PointerToken ? 2 : 1)]).identifier, t[ind.ind] instanceof CompositeTypeToken ? ((CompositeTypeToken) t[ind.ind]).data_type() : ((TypeToken) t[ind.ind]).data_type());
+				if (t[ind.ind + (t[ind.ind + 1] instanceof PointerToken ? 3 : 2)] instanceof AssignmentToken) {
+					int i = ind.ind + 1, j;
+					while (!(t[i] instanceof AssignmentToken))
+						i++;
+					i++;
+					for (j = i + 1; j < t.length && !(t[j] instanceof SemicolonToken); j++) ;
+					Token[] valtkns = new Token[j - i];
+					System.arraycopy(t, i, valtkns, 0, valtkns.length);
+					Statement[] arr = new Statement[]{vardecl, new VarUpdate_Statement(((IdentifierToken) t[ind.ind + (t[ind.ind + 1] instanceof PointerToken ? 2 : 1)]).identifier, valtkns)};
+					ind.ind = j + 1;
+					return arr;
+				} else {
+					ind.ind += 3;
+					return new Statement[]{vardecl};
+				}
+			}
+			case INCREMENT: {
+				ind.ind += 3;
+				return new Statement[]{new Increment_Statement(((IdentifierToken) t[ind.ind]).identifier)};
+			}
+			case CONDITIONAL: {
+				int i = ind.ind + 2, j, d = 1;
+				for (j = i + 1; j < t.length; j++) {
+					if (t[j] instanceof ParenthesisOpenedToken)
+						d++;
+					else if (t[j] instanceof ParenthesisClosedToken) {
+						d--;
+						if (d == 0)
+							break;
+					}
+				}
+				if (d != 0)
+					throw new ParsingError("Invalid parenthesis");
+				Token[] condition = new Token[j - i];
+				System.arraycopy(t, i, condition, 0, condition.length);
+				IndObj indObj = new IndObj();
+				indObj.ind = j + 1;
+				Statements onTrue = nextInstruction(t, indObj), onFalse = null;
+				if (t[indObj.ind] instanceof ElseToken) {
+					indObj.ind++;
+					onFalse = nextInstruction(t, indObj);
+				}
+				ind.ind = indObj.ind;
+				return new Statement[]{new Conditional(condition, onTrue, onFalse)};
+			}
+			case VAR_UPDATE: {
+				int i = ind.ind, j;
+				while (!(t[i] instanceof AssignmentToken))
+					i++;
+				i++;
+				for (j = i; j < t.length && !(t[j] instanceof SemicolonToken); j++) ;
+				Token[] valtkns = new Token[j - i];
+				System.arraycopy(t, i, valtkns, 0, valtkns.length);
+				Statement[] arr;
+				System.out.println(Arrays.deepToString(valtkns));
+				if (t[ind.ind] instanceof UnaryOperatorToken && ((UnaryOperatorToken) t[ind.ind]).op == UnaryOperatorToken.OP.DEREFERENCE)
+					arr = new Statement[]{new VarUpdate_Statement("*" + ((IdentifierToken) t[ind.ind + 1]).identifier, valtkns)};
+				else
+					arr = new Statement[]{new VarUpdate_Statement(((IdentifierToken) t[ind.ind]).identifier, valtkns)};
+				ind.ind = j + 1;
+				return arr;
+			}
+			case WHILE_LOOP: {
+				int i = ind.ind + 2, j, d = 1;
+				for (j = i + 1; j < t.length; j++) {
+					if (t[j] instanceof ParenthesisOpenedToken)
+						d++;
+					else if (t[j] instanceof ParenthesisClosedToken) {
+						d--;
+						if (d == 0)
+							break;
+					}
+				}
+				if (d != 0)
+					throw new ParsingError("Invalid parenthesis");
+				Token[] condition = new Token[j - i];
+				System.arraycopy(t, i, condition, 0, condition.length);
+				IndObj indObj = new IndObj();
+				indObj.ind = j + 1;
+				Statements repeat = nextInstruction(t, indObj);
+				ind.ind = indObj.ind;
+				return new Statement[]{new WhileLoop(condition, repeat)};
+			}
+			case METHOD_RETURN: {
+				ind.ind += 2;
+				return new Statement[]{new ReturnStatement()};
+			}
+			case METHOD_CALL: {
+				String methodName = ((IdentifierToken) t[ind.ind]).identifier.toUpperCase();
+				METHOD m = methods.containsKey(methodName) ? METHOD.DEFINED_METHOD : METHOD.valueOf(methodName);
+				Method def_m = methods.get(methodName);
+				Token[][] params = callParameterTokens(t, ind);
+				ind.ind++;
+				MethodCallStatement mcs = new MethodCallStatement(m, params);
+				mcs.def_m = def_m;
+				return new Statement[]{mcs};
+			}
+			case METHOD_DECLARE: {
+				int j, d = 0;
+				String name = ((IdentifierToken) t[ind.ind + 1]).identifier.toUpperCase();
+				Method m = new Method(name, null);
+				methods.put(name, m);
+				for (j = ind.ind + 2; j < t.length; j++) {
+					if (t[j] instanceof ParenthesisOpenedToken)
+						d++;
+					else if (t[j] instanceof ParenthesisClosedToken) {
+						d--;
+						if (d == 0)
+							break;
+					}
+				}
+				if (d != 0)
+					throw new ParsingError("Invalid parenthesis");
+				ind.ind = j + 1;
+				Statements body = nextInstruction(t, ind);
+				m.body = body;
+			}
+		}
+		return null;
+	}
+
+	private static Statements nextInstruction(Token[] t, IndObj indObj) {
+		if (t[indObj.ind] instanceof CompositeInstructionBeginToken) {
+			int i = indObj.ind + 1, j, d = 1;
+			for (j = i; j < t.length; j++) {
+				if (t[j] instanceof CompositeInstructionBeginToken) {
+					d++;
+				} else if (t[j] instanceof CompositeInstructionEndToken) {
+					d--;
+					if (d == 0)
+						break;
+				}
+			}
+			if (d != 0)
+				throw new ParsingError("Expected code block to end");
+			Token[] actions = new Token[j - i];
+			System.arraycopy(t, i, actions, 0, actions.length);
+			indObj.ind = j + 1;
+			return new Statements(parse(actions));
+		} else {
+			int i = indObj.ind, j;
+			for (j = i; j < t.length && !(t[j] instanceof SemicolonToken); j++) ;
+			Token[] actions = new Token[j - i];
+			System.arraycopy(t, i, actions, 0, actions.length);
+			indObj.ind = j + 1;
+			return new Statements(parse(actions));
+		}
+	}
+
+	public static Token[][] callParameterTokens(Token[] t, IndObj ind) {
+		int i = ind.ind + 2, j, d = 1;
+		int args = 1;
+		for (j = i; j < t.length; j++) {
+			if (t[j] instanceof ParenthesisOpenedToken)
+				d++;
+			else if (t[j] instanceof ParenthesisClosedToken) {
+				d--;
+				if (d == 0)
+					break;
+			} else if (t[j] instanceof CommaToken)
+				args++;
+		}
+		if (d != 0)
+			throw new ParsingError("Expected parenthesis to end");
+		if (j == i)
+			return null;
+		Token[][] tokens = new Token[args][];
+		int ptr = i;
+		for (int k = 0; k < args; k++) {
+			int ptr_b = ptr;
+			d = 0;
+			for (; ptr < j; ptr++) {
+				if (t[ptr] instanceof ParenthesisOpenedToken) {
+					d++;
+				} else if (t[ptr] instanceof ParenthesisClosedToken) {
+					d--;
+				} else if (t[ptr] instanceof CommaToken) {
+					if (d == 0) {
+						ptr++;
+						break;
+					}
+				}
+			}
+			Token[] tkn = new Token[ptr - ptr_b];
+			System.arraycopy(t, ptr_b, tkn, 0, tkn.length);
+			tokens[k] = tkn;
+		}
+		ind.ind = j + 1;
+		return tokens;
+	}
+
+	private static Statement_TYPE getFirstStatementType(Token[] t, int ind) {
+		for (Statement_TYPE st : Statement_TYPE.values())
+			if (st.fits(t, ind))
+				return st;
+		return null;
+	}
+
+	private static Token getToken(Token prev, String value) {
+		if (value.equals("&&")) {
+			return new OperatorToken(OperatorToken.Math_Operator.LOGIC_AND);
+		} else if (value.equals("||")) {
+			return new OperatorToken(OperatorToken.Math_Operator.LOGIC_OR);
+		} else if (value.equals("^")) {
+			return new OperatorToken(OperatorToken.Math_Operator.LOGIC_XOR);
+		} else if (value.equals("+")) {
+			return new OperatorToken(OperatorToken.Math_Operator.ADD);
+		} else if (value.equals("-")) {
+			return new OperatorToken(OperatorToken.Math_Operator.SUBTRACT);
+		} else if (value.equals("*")) {
+			if (prev instanceof NumberToken || prev instanceof IdentifierToken || prev instanceof ParenthesisClosedToken)
+				return new OperatorToken(OperatorToken.Math_Operator.MULTIPLY);
+			else if (prev instanceof TypeToken)
+				return new PointerToken();
+			else
+				return new UnaryOperatorToken(UnaryOperatorToken.OP.DEREFERENCE);
+		} else if (value.equals("/")) {
+			return new OperatorToken(OperatorToken.Math_Operator.DIVIDE);
+		} else if (value.equals("%")) {
+			return new OperatorToken(OperatorToken.Math_Operator.MODULO);
+		} else if (value.equals("==")) {
+			return new OperatorToken(OperatorToken.Math_Operator.LOGIC_E);
+		} else if (value.equals(">=")) {
+			return new OperatorToken(OperatorToken.Math_Operator.LOGIC_GE);
+		} else if (value.equals(">")) {
+			return new OperatorToken(OperatorToken.Math_Operator.LOGIC_G);
+		} else if (value.equals("<=")) {
+			return new OperatorToken(OperatorToken.Math_Operator.LOGIC_SE);
+		} else if (value.equals("<")) {
+			return new OperatorToken(OperatorToken.Math_Operator.LOGIC_S);
+		} else if (value.equals("!=")) {
+			return new OperatorToken(OperatorToken.Math_Operator.LOGIC_NE);
+		} else if (value.equals("(")) {
+			return new ParenthesisOpenedToken();
+		} else if (value.equals(")")) {
+			return new ParenthesisClosedToken();
+		} else if (value.equals(";"))
+			return new SemicolonToken();
+		else if (value.matches("^(void|int|long)$"))
+			return new TypeToken(value);
+		else if (value.equals("return"))
+			return new ControlToken(CONTROL_INSTRUCTION.RETURN);
+		else if (value.equals("continue"))
+			return new ControlToken(CONTROL_INSTRUCTION.CONTINUE);
+		else if (value.equals("break"))
+			return new ControlToken(CONTROL_INSTRUCTION.BREAK);
+		else if (value.equals("if"))
+			return new IfToken();
+		else if (value.equals("while"))
+			return new WhileToken();
+		else if (value.equals("for"))
+			return new ForToken();
+		else if (value.equals("="))
+			return new AssignmentToken();
+		else if (value.equals("{"))
+			return new CompositeInstructionBeginToken();
+		else if (value.equals("}"))
+			return new CompositeInstructionEndToken();
+		else if (value.matches("^\\d+$"))
+			return new NumberToken(Integer.parseInt(value));
+		else if (value.startsWith("\"") && value.endsWith("\""))
+			return new StringToken(value);
+		else if (value.equals("&"))
+			return new UnaryOperatorToken(UnaryOperatorToken.OP.REFERENCE);
+		else if (value.equals(","))
+			return new CommaToken();
+		else if (value.equals("else"))
+			return new ElseToken();
+		else if (value.matches("^arg\\d+\\.[a-zA-Z0-9_]+$")) {
+			String[] argp = value.split("\\.");
+			return new IdentifierToken(value, true, (8 * (Integer.parseInt(argp[0].substring(3)) + 1)));
+		} else if (value.matches("^arg\\d+$")) {
+			return new IdentifierToken(value, true, (8 * (Integer.parseInt(value.substring(3)) + 1)));
+		} else if (value.matches("^[a-zA-Z_][a-zA-Z0-9_]*$")) {
+			return new IdentifierToken(value, null, null);
+		}
+		return null;
+	}
+
+	private static boolean isDigit(char c) {
+		return c >= 48 && c <= 57;
+	}
+
+	private static String nextToken(String s) {
+		while (s.startsWith(" ") || s.startsWith("\t") || s.startsWith("\n"))
+			s = s.substring(1);
+		if (s.matches("^([(+\\-*%/)]|&&|\\|\\||\\^|==|>=|>|<=|<|!=)(.|\\n)*$")) {
+			if (s.matches("^(&&|\\|\\||==|>=|<=|!=)(.|\\n)*$"))
+				return s.substring(0, 2);
+			else
+				return s.substring(0, 1);
+		}
+		if (s.matches("^\\d+(.|\\n)*$")) {
+			int i;
+			char c = s.charAt(0);
+			for (i = 1; i < s.length() && isDigit(c); i++) {
+				c = s.charAt(i);
+			}
+			return s.substring(0, i - 1);
+		}
+		if (s.startsWith(";"))
+			return ";";
+		if (s.startsWith("("))
+			return "(";
+		if (s.startsWith(")"))
+			return ")";
+		if (s.startsWith(","))
+			return ",";
+		if (s.startsWith("void") || s.startsWith("long"))
+			return s.substring(0, 4);
+		if (s.startsWith("int"))
+			return "int";
+		if (s.startsWith("if"))
+			return "if";
+		if (s.startsWith("while"))
+			return "while";
+		if (s.startsWith("for"))
+			return "for";
+		if (s.matches("^[a-zA-Z_][a-zA-Z0-9_]*(.|\\n)*$")) {
+			int i;
+			char c = s.charAt(0);
+			for (i = 1; i < s.length() && (Character.isLetterOrDigit(c) || c == '_'); i++) {
+				c = s.charAt(i);
+			}
+			return s.substring(0, i - 1);
+		}
+		if (s.startsWith("return"))
+			return "return";
+		if (s.startsWith("continue"))
+			return "continue";
+		if (s.startsWith("break"))
+			return "break";
+		if (s.startsWith("="))
+			return "=";
+		if (s.startsWith("{"))
+			return "{";
+		if (s.startsWith("}"))
+			return "}";
+		if (s.startsWith("&"))
+			return "&";
+		if (s.startsWith("\"")) {
+			int i;
+			for (i = 1; i < s.length() && s.charAt(i) != '"'; i++) ;
+			return s.substring(0, i + 1);
+		}
+		if (s.startsWith("else"))
+			return "else";
+		return null;
+	}
+
+	private static class IndObj {
+		int ind = 0;
 	}
 
 	private static Token[] tokensOfValue(String value) {
