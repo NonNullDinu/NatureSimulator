@@ -34,6 +34,6 @@ public class UniformMat4 extends UniformVar {
 	public void load(Matrix4f value) {
 		value.store(matrix);
 		matrix.flip();
-		GL20.glUniformMatrix4(location, false, matrix);
+        GL20.glUniformMatrix4fv(location, false, matrix);
 	}
 }

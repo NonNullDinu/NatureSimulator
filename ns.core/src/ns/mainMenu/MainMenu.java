@@ -19,7 +19,8 @@ package ns.mainMenu;
 
 import ns.entities.Entity;
 import ns.interfaces.UIMenu;
-import org.lwjgl.input.Mouse;
+import ns.utils.GU;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.util.vector.Vector4f;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class MainMenu implements UIMenu {
 		for (MainMenuButton button : buttons) {
 			if (button.isMouseOver()) {
 				DNA.setRotY(idx * 36f);
-				if (Mouse.isButtonDown(0)) {
+                if (GU.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT)) {
 					button.executeAction();
 				}
 			}

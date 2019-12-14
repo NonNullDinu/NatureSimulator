@@ -18,7 +18,7 @@
 package ns.parallelComputing;
 
 import data.GameData;
-import org.lwjgl.opengl.Display;
+import ns.display.DisplayManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +66,7 @@ public class Thread extends java.lang.Thread {
 	}
 
 	public void waitForDisplayInit() {
-		while (!Display.isCreated())
+        while (DisplayManager.window == 0)
 			Thread.yield();
 	}
 

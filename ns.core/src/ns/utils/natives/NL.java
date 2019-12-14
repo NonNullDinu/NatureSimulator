@@ -28,7 +28,6 @@ public class NL /* NativeLibrary */ {
 	private static final NL_ENV env;
 
 	static {
-		System.load(GU.path + "lib/natives/libnl.so");
 		if (GU.OS_LINUX) {
 			env = new NL_LINUX_ENV();
 		} else if (GU.OS_WINDOWS) {

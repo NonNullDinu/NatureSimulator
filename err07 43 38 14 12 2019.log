@@ -1,0 +1,19 @@
+¼java.lang.NullPointerException:"File at /home/dinu/NS/saveData/saves.dir could not be found" in  thread "main thread"
+Stack trace: ns.core/resources.In.asInputStream(In.java:84)
+	ns.core/ns.worldLoad.WorldLoadMaster.buildUI(WorldLoadMaster.java:42)
+	ns.gameModule/ns.mainEngine.MainGameLoop.run(MainGameLoop.java:256)
+	java.base/java.lang.Thread.run(Thread.java:830)
+	
+ Proprieties:
+sun.desktop:null
+java.specification.version:13
+os.name:Linux
+java.vm.specification.version:13
+java.runtime.version:13.0.1+9
+os.version:5.3.12-arch1-1
+java.runtime.name:OpenJDK Runtime Environment
+java.vm.name:OpenJDK 64-Bit Server VM
+java.version:13.0.1
+os.arch:amd64
+java.vm.version:13.0.1+9
+java.class.version:57.0

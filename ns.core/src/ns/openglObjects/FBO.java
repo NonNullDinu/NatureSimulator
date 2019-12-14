@@ -19,7 +19,10 @@ package ns.openglObjects;
 
 import ns.parallelComputing.FBOCreateRequest;
 import ns.utils.GU;
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL32;
 import org.lwjgl.util.vector.Vector2f;
 
 import java.nio.ByteBuffer;
@@ -55,7 +58,7 @@ public class FBO implements IOpenGLObject {
 
 	public static void unbind() {
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-		GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
+        GL11.glViewport(0, 0, GU.WIDTH, GU.HEIGHT);
 	}
 
 	public void createNewTexture() {
@@ -139,7 +142,7 @@ public class FBO implements IOpenGLObject {
 		GL11.glDrawBuffer(GL11.GL_BACK);
 		GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, id);
 		GL11.glReadBuffer(GL30.GL_COLOR_ATTACHMENT0);
-		GL30.glBlitFramebuffer(0, 0, width, height, 0, 0, Display.getWidth(), Display.getHeight(),
+        GL30.glBlitFramebuffer(0, 0, width, height, 0, 0, GU.WIDTH, GU.HEIGHT,
 				GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 	}

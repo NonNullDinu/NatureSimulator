@@ -61,6 +61,7 @@ public class In {
 			this.asInputStream = location.openInput();
 			exists = true;
 		} catch (FileNotFoundException ignored) {
+//			ignored.printStackTrace();
 		}
 		if (this.exists && this.hasVersion) {
 			try {

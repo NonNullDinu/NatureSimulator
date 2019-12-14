@@ -19,8 +19,6 @@ package ns.utils;
 
 import ns.camera.ICamera;
 import ns.terrain.Terrain;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -43,9 +41,7 @@ public class MousePicker {
 	}
 
 	private static Vector3f calculateMouseRay() {
-		float mouseX = Mouse.getX();
-		float mouseY = Mouse.getY();
-		Vector2f normalizedCoords = getNormalisedDeviceCoordinates(mouseX, mouseY);
+		Vector2f normalizedCoords = GU.normalizedMousePos();
 		Vector4f clipCoords = new Vector4f(normalizedCoords.x, normalizedCoords.y, -1.0f, 1.0f);
 		Vector4f eyeCoords = toEyeCoords(clipCoords);
 		return toWorldCoords(eyeCoords);
@@ -64,12 +60,6 @@ public class MousePicker {
 
 	public static Vector3f getCurrentTerrainPoint() {
 		return currentTerrainPoint;
-	}
-
-	private static Vector2f getNormalisedDeviceCoordinates(float mouseX, float mouseY) {
-		float x = (2.0f * mouseX) / Display.getWidth() - 1f;
-		float y = (2.0f * mouseY) / Display.getHeight() - 1f;
-		return new Vector2f(x, y);
 	}
 
 	private static Vector4f toEyeCoords(Vector4f clipCoords) {

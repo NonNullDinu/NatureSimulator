@@ -24,7 +24,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,19 +80,24 @@ public class Texture implements IOpenGLObject {
 		return id;
 	}
 
-	public IntBuffer getAsIntBuffer() {
-		IntBuffer pixels = BufferUtils.createIntBuffer(width * height);
+	public ByteBuffer getAsByteBufferForGLFW() {
+		ByteBuffer pixels = BufferUtils.createByteBuffer(width * height * 4);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
 		GL11.glGetTexImage(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, pixels);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+//		return getAsByteBufferForGLFW(0, pixels);
 		return pixels;
 	}
 
-	public IntBuffer getAsIntBuffer(int sub, IntBuffer pixels) {
-		IntBuffer true_pixels = BufferUtils.createIntBuffer((width - sub) * (height - sub));
+	public ByteBuffer getAsByteBufferForGLFW(int sub, ByteBuffer pixels) {
+		ByteBuffer true_pixels = BufferUtils.createByteBuffer((width - sub) * (height - sub) * 4);
 		for (int y = sub / 2; y < height - sub / 2; y++) {
 			for (int x = sub / 2; x < width - sub / 2; x++) {
-				true_pixels.put(pixels.get(y * width + x));
+				int ind = ((height - y - 1) * width + x) * 4;
+				true_pixels.put(pixels.get(ind));
+				true_pixels.put(pixels.get(ind + 1));
+				true_pixels.put(pixels.get(ind + 2));
+				true_pixels.put(pixels.get(ind + 3));
 			}
 		}
 		true_pixels.flip();

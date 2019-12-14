@@ -49,6 +49,7 @@ public class Camera extends ICamera {
 	@Override
 	public void update(World world) {
 		Vector3f mouseDelta = new Vector3f(GU.mouseDelta);
+		mouseDelta.y *= -1;
 		if (GU.mouseButtons.y) {
 			if (mouseDelta.lengthSquared() != 0f) {
 				mouseDelta.scale(SENSITIVITY);

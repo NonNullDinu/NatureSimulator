@@ -1,0 +1,22 @@
+Ujava.lang.IndexOutOfBoundsException:"null" in  thread "main thread"
+Stack trace: java.base/java.nio.Buffer.checkIndex(Buffer.java:716)
+	java.base/java.nio.DirectByteBuffer.get(DirectByteBuffer.java:274)
+	ns.core/ns.openglObjects.Texture.getAsByteBufferForGLFW(Texture.java:97)
+	ns.core/ns.openglObjects.Texture.getAsByteBufferForGLFW(Texture.java:89)
+	ns.core/ns.utils.GU.initMouseCursors(GU.java:230)
+	ns.gameModule/ns.mainEngine.MainGameLoop.run(MainGameLoop.java:245)
+	java.base/java.lang.Thread.run(Thread.java:830)
+	
+ Proprieties:
+sun.desktop:null
+java.specification.version:13
+os.name:Linux
+java.vm.specification.version:13
+java.runtime.version:13.0.1+9
+os.version:5.3.12-arch1-1
+java.runtime.name:OpenJDK Runtime Environment
+java.vm.name:OpenJDK 64-Bit Server VM
+java.version:13.0.1
+os.arch:amd64
+java.vm.version:13.0.1+9
+java.class.version:57.0

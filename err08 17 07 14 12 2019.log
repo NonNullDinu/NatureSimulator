@@ -1,0 +1,21 @@
+&java.lang.NullPointerException:"null" in  thread "main thread"
+Stack trace: org.lwjgl/org.lwjgl.system.Checks.check(Checks.java:100)
+	org.lwjgl.glfw/org.lwjgl.glfw.GLFW.nglfwSetScrollCallback(GLFW.java:3820)
+	org.lwjgl.glfw/org.lwjgl.glfw.GLFW.glfwSetScrollCallback(GLFW.java:3842)
+	ns.core/ns.display.DisplayManager.createDisplay(DisplayManager.java:74)
+	ns.gameModule/ns.mainEngine.MainGameLoop.run(MainGameLoop.java:220)
+	java.base/java.lang.Thread.run(Thread.java:830)
+	
+ Proprieties:
+sun.desktop:null
+java.specification.version:13
+os.name:Linux
+java.vm.specification.version:13
+java.runtime.version:13.0.1+9
+os.version:5.3.12-arch1-1
+java.runtime.name:OpenJDK Runtime Environment
+java.vm.name:OpenJDK 64-Bit Server VM
+java.version:13.0.1
+os.arch:amd64
+java.vm.version:13.0.1+9
+java.class.version:57.0

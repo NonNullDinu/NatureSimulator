@@ -1,6 +1,5 @@
 /.idea/
 /.settings/
-/.gitignore
-/saveData/save0.nssv
+/saveData/save*.nssv
 /bin/
 /out/

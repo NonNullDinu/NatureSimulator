@@ -20,7 +20,7 @@ package ns.options;
 import ns.fontMeshCreator.GUIText;
 import ns.fontRendering.TextMaster;
 import ns.utils.GU;
-import org.lwjgl.input.Mouse;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.util.vector.Vector2f;
 
 public abstract class Option {
@@ -36,7 +36,7 @@ public abstract class Option {
 	}
 
 	void checkAndClick(Vector2f pos) {
-		if (Math.abs(pos.x) <= scale.x && Math.abs(pos.y) <= scale.y && Mouse.isButtonDown(0) && !GU.prevFrameClicked)
+		if (Math.abs(pos.x) <= scale.x && Math.abs(pos.y) <= scale.y && GU.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT) && !GU.prevFrameClicked)
 			click(pos.x - scale.x, pos.y - scale.y);
 	}
 
